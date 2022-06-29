@@ -19,6 +19,8 @@ export(int, 'co', 'es', 'en') var language_idx := 0 setget _set_language_idx
 export var use_translations := false
 export var items_on_start := []
 export var inventory_limit := 0
+export var inventory_always_visible := false
+export var toolbar_always_visible := false
 
 var in_run := false
 # Used to prevent going to another room when there is one being loaded
@@ -92,8 +94,12 @@ func _process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_released('popochiu-skip'):
 		cutscene_skipped = true
-		$TransitionLayer.play_transition('pass_down_in', skip_cutscene_time)
+		$TransitionLayer.play_transition(
+			TransitionLayer.PASS_DOWN_IN, skip_cutscene_time
+		)
+		
 		yield($TransitionLayer, 'transition_finished')
+		
 		G.emit_signal('continue_clicked')
 
 
@@ -233,6 +239,10 @@ func room_readied(room: PopochiuRoom) -> void:
 			room.add_character(C.player)
 		
 		yield(C.player.idle(false), 'completed')
+	
+	# Sort the characters in the room based on their baseline to avoid issues
+	# with z_index
+	room.sort_characters()
 	
 	for c in get_tree().get_nodes_in_group('PopochiuClickable'):
 		c.room = room
