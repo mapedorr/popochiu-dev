@@ -1,4 +1,5 @@
 extends Node
+class_name PopochiuResources
 
 enum Types {
 	ROOM,
@@ -46,3 +47,85 @@ const TRANSITION_LAYER_SCENE := BASE_DIR + '/TransitionLayer/TransitionLayer.tsc
 const POPOCHIU_SCENE := 'res://addons/Popochiu/Engine/Popochiu.tscn'
 const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
 const WIKI := 'https://github.com/mapedorr/popochiu/wiki/'
+const DATA := 'res://popochiu//PopochiuData.cfg'
+
+
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
+# Verify if the folders (where Popochiu's objects will be) exists
+static func init_file_structure() -> bool:
+	var directory := Directory.new()
+	var is_first_install := !directory.dir_exists(BASE_DIR)
+	
+	# Create the folders that does not exist
+	for d in _get_directories().values():
+		if not directory.dir_exists(d):
+			directory.make_dir_recursive(d)
+	
+	# Create config file
+	if not directory.file_exists(DATA):
+		_create_empty_file(DATA)
+	
+	return is_first_install
+
+
+static func get_data_cfg() -> ConfigFile:
+	var config := ConfigFile.new()
+	var err: int = config.load(DATA)
+	
+	if err == OK:
+		return config
+	
+	prints("[Popochiu] Couldn't load PopochiuData config.")
+	return null
+
+
+static func set_data_value(section: String, key: String, value) -> int:
+	var config := get_data_cfg()
+	
+	config.set_value(section, key, value)
+	return config.save(DATA)
+
+
+static func has_data_value(section: String, key: String) -> bool:
+	return get_data_cfg().has_section_key(section, key)
+
+
+static func erase_data_value(section: String, key: String) -> void:
+	var config := get_data_cfg()
+	
+	if config.has_section_key(section, key):
+		config.erase_section_key(section, key)
+		config.save(DATA)
+	else:
+		prints("[Popochiu] Can't delete %s key from %s section" %\
+		[key, section])
+
+
+
+static func get_section(section: String) -> Array:
+	var config := get_data_cfg()
+	var resources := []
+	
+	if config.has_section(section):
+		for key in config.get_section_keys(section):
+			resources.append(config.get_value(section, key))
+	
+	return resources
+
+
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
+static func _create_empty_file(path):
+	var file = File.new()
+	file.open(path, File.WRITE)
+	file.store_string('')
+	file.close()
+
+
+static func _get_directories() -> Dictionary:
+	return {
+		BASE = BASE_DIR,
+		ROOMS = BASE_DIR + '/Rooms',
+		CHARACTERS = BASE_DIR + '/Characters',
+		INVENTORY_ITEMS = BASE_DIR + '/InventoryItems',
+		DIALOGS = BASE_DIR + '/Dialogs',
+	}

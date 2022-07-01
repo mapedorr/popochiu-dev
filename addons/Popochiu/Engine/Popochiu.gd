@@ -6,10 +6,10 @@ extends Node
 signal text_speed_changed(idx)
 signal language_changed
 
-export(Array, Resource) var rooms = []
-export(Array, Resource) var characters = []
-export(Array, Resource) var inventory_items = []
-export(Array, Resource) var dialogs = []
+#export(Array, Resource) var rooms = []
+#export(Array, Resource) var characters = []
+#export(Array, Resource) var inventory_items = []
+#export(Array, Resource) var dialogs = []
 export var skip_cutscene_time := 0.2
 export var text_speeds := [0.1, 0.01, 0.0]
 export var text_speed_idx := 0 setget _set_text_speed_idx
@@ -22,13 +22,14 @@ export var inventory_limit := 0
 export var inventory_always_visible := false
 export var toolbar_always_visible := false
 
+#var rooms = []
 var in_run := false
 # Used to prevent going to another room when there is one being loaded
 var in_room := false setget _set_in_room
 var current_room: PopochiuRoom = null
 # Stores the las PopochiuClickable node clicked to ease access to it from
 # any other class
-var clicked: Node
+var clicked: Node = null
 var cutscene_skipped := false
 var rooms_states := {}
 var history := []
@@ -47,6 +48,7 @@ var _shake_timer := 0.0
 # during the execution of another
 var _running := false
 var _use_transition_on_room_change := true
+var _config: ConfigFile = null
 
 onready var main_camera: Camera2D = find_node('MainCamera')
 onready var _defaults := {
@@ -61,7 +63,10 @@ onready var _defaults := {
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	_config = PopochiuResources.get_data_cfg()
+	
 	# Set the first character on the list to be the default PC (playable character)
+	var characters := PopochiuResources.get_section('characters')
 	if not characters.empty():
 		var pc: PopochiuCharacter = load(
 			(characters[0] as PopochiuCharacterData).scene
@@ -189,7 +194,8 @@ func goto_room(script_name := '', use_transition := true) -> void:
 		$TransitionLayer.play_transition($TransitionLayer.FADE_IN)
 		yield($TransitionLayer, 'transition_finished')
 	
-	C.player.last_room = current_room.script_name
+	if is_instance_valid(C.player):
+		C.player.last_room = current_room.script_name
 	
 	# Store the room state
 	rooms_states[current_room.script_name] = current_room.state
@@ -204,7 +210,12 @@ func goto_room(script_name := '', use_transition := true) -> void:
 	main_camera.limit_top = _defaults.camera_limits.top
 	main_camera.limit_bottom = _defaults.camera_limits.bottom
 	
-	for r in rooms:
+#	for room_key in _config.get_section_keys('rooms'):
+#		if room_key.to_lower() == script_name.to_lower():
+#			get_tree().change_scene(_config.get_value('rooms', room_key).scene)
+#			return
+	
+	for r in PopochiuResources.get_section('rooms'):
 		var room = r as PopochiuRoomData
 		if room.script_name.to_lower() == script_name.to_lower():
 			get_tree().change_scene(room.scene)
@@ -310,7 +321,7 @@ func get_text(msg: String) -> String:
 
 # Gets the PopochiuCharacter with script_name
 func get_character_instance(script_name: String) -> PopochiuCharacter:
-	for c in characters:
+	for c in PopochiuResources.get_section('characters'):
 		var popochiu_character: PopochiuCharacterData = c
 		if popochiu_character.script_name == script_name:
 			return load(popochiu_character.scene).instance()
@@ -321,7 +332,7 @@ func get_character_instance(script_name: String) -> PopochiuCharacter:
 
 # Gets the PopochiuInventoryItem with script_name
 func get_inventory_item_instance(script_name: String) -> PopochiuInventoryItem:
-	for ii in inventory_items:
+	for ii in PopochiuResources.get_section('inventory_items'):
 		var popochiu_inventory_item: PopochiuInventoryItemData = ii
 		if popochiu_inventory_item.script_name == script_name:
 			return load(popochiu_inventory_item.scene).instance()
@@ -332,7 +343,7 @@ func get_inventory_item_instance(script_name: String) -> PopochiuInventoryItem:
 
 # Gets the PopochiuDialog with script_name
 func get_dialog(script_name: String) -> PopochiuDialog:
-	for dt in dialogs:
+	for dt in PopochiuResources.get_section('dialogs'):
 		var tree: PopochiuDialog = dt
 		if tree.script_name.to_lower() == script_name.to_lower():
 			return tree
@@ -377,7 +388,8 @@ func runnable(
 
 # Checks if the room with script_name exists in the array of rooms of Popochiu
 func room_exists(script_name: String) -> bool:
-	for r in rooms:
+#	for r in rooms:
+	for r in PopochiuResources.get_section('rooms'):
 		var room = r as PopochiuRoomData
 		if room.script_name.to_lower() == script_name.to_lower():
 			return true

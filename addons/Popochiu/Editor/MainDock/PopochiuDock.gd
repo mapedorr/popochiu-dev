@@ -138,7 +138,9 @@ func fill_data() -> void:
 				
 				match t:
 					Constants.Types.ROOM:
-						is_in_core = popochiu.rooms.has(resource)
+						is_in_core = PopochiuResources.has_data_value(
+							'rooms', resource.script_name
+						)
 						
 						# Check if the room is the main scene
 						var main_scene: String = ProjectSettings.get_setting(\
@@ -146,14 +148,20 @@ func fill_data() -> void:
 						if main_scene == resource.scene:
 							row.is_main = true
 					Constants.Types.CHARACTER:
-						is_in_core = popochiu.characters.has(resource)
+						is_in_core = PopochiuResources.has_data_value(
+							'characters', resource.script_name
+						)
 					Constants.Types.INVENTORY_ITEM:
-						is_in_core = popochiu.inventory_items.has(resource)
+						is_in_core = PopochiuResources.has_data_value(
+							'inventory_items', resource.script_name
+						)
 						
 						if resource.script_name in popochiu.items_on_start:
 							row.is_on_start = true
 					Constants.Types.DIALOG:
-						is_in_core = popochiu.dialogs.has(resource)
+						is_in_core = PopochiuResources.has_data_value(
+							'dialogs', resource.script_name
+						)
 				
 				if not is_in_core:
 					row.show_add_to_core()
@@ -184,14 +192,7 @@ func get_popochiu() -> Node:
 
 
 func add_resource_to_popochiu(target: String, resource: Resource) -> int:
-	get_popochiu()
-	
-	if popochiu[target].empty():
-		popochiu[target] = [resource]
-	else:
-		popochiu[target].append(resource)
-	
-	return save_popochiu()
+	return PopochiuResources.set_data_value(target, resource.script_name, resource)
 
 
 func save_popochiu() -> int:

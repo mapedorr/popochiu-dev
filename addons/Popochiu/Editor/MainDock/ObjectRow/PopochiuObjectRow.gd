@@ -275,25 +275,13 @@ func _remove_from_core() -> void:
 			popochiu = main_dock.get_popochiu()
 			continue
 		Constants.Types.ROOM:
-			for r in popochiu.rooms:
-				if (r as PopochiuRoomData).script_name == name:
-					popochiu.rooms.erase(r)
-					break
+			PopochiuResources.erase_data_value('rooms', name)
 		Constants.Types.CHARACTER:
-			for c in popochiu.characters:
-				if (c as PopochiuCharacterData).script_name == name:
-					popochiu.characters.erase(c)
-					break
+			PopochiuResources.erase_data_value('characters', name)
 		Constants.Types.INVENTORY_ITEM:
-			for ii in popochiu.inventory_items:
-				if (ii as PopochiuInventoryItemData).script_name == name:
-					popochiu.inventory_items.erase(ii)
-					break
+			PopochiuResources.erase_data_value('inventory_items', name)
 		Constants.Types.DIALOG:
-			for d in popochiu.dialogs:
-				if (d as PopochiuDialog).script_name == name:
-					popochiu.dialogs.erase(d)
-					break
+			PopochiuResources.erase_data_value('dialogs', name)
 		Constants.Types.PROP, Constants.Types.HOTSPOT, Constants.Types.REGION:
 			var opened_room: PopochiuRoom = main_dock.get_opened_room()
 			if opened_room:

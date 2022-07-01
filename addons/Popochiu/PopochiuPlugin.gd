@@ -16,13 +16,14 @@ var _is_first_install := false
 var _input_actions :=\
 preload('res://addons/Popochiu/Engine/Others/InputActions.gd')
 var _shown_helpers := []
+var _export_plugin: EditorExportPlugin = null
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _init() -> void:
 	# Thanks Dialogic ;)
 	if Engine.editor_hint:
-		_init_file_structure()
+		_is_first_install = PopochiuResources.init_file_structure()
 	
 	# Cargar los singleton para acceder directamente a objetos de Popochiu
 	add_autoload_singleton('U', Constants.UTILS_SNGL)
@@ -67,6 +68,15 @@ func _enter_tree() -> void:
 	if _is_first_install:
 		main_dock.connect('move_folders_pressed', self, '_move_addon_folders')
 		main_dock.show_move_folders_button()
+	
+	_export_plugin = load('res://addons/Popochiu/ExportPlugin.gd').new()
+	add_export_plugin(_export_plugin)
+
+
+func _exit_tree() -> void:
+	remove_control_from_docks(main_dock)
+	main_dock.queue_free()
+	remove_export_plugin(_export_plugin)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -101,28 +111,6 @@ func disable_plugin() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
-# Verify if the folders (where Popochiu's objects will be) exists
-func _init_file_structure() -> void:
-	var directory := Directory.new()
-	
-	_is_first_install = !directory.dir_exists(Constants.BASE_DIR)
-	
-	# Create the folders that does not exist
-	for d in _get_directories().values():
-		if not directory.dir_exists(d):
-			directory.make_dir_recursive(d)
-
-
-func _get_directories() -> Dictionary:
-	return {
-		BASE = Constants.BASE_DIR,
-		ROOMS = Constants.BASE_DIR + '/Rooms',
-		CHARACTERS = Constants.BASE_DIR + '/Characters',
-		INVENTORY_ITEMS = Constants.BASE_DIR + '/InventoryItems',
-		DIALOGS = Constants.BASE_DIR + '/Dialogs',
-	}
-
-
 func _create_input_actions() -> void:
 	# Register in the Project settings the Inputs for popochiu-interact,
 	# popochiu-look and popochiu-skip. Thanks QuentinCaffeino ;)
