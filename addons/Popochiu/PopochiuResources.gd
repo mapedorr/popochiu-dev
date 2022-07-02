@@ -48,6 +48,8 @@ const POPOCHIU_SCENE := 'res://addons/Popochiu/Engine/Popochiu.tscn'
 const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
 const WIKI := 'https://github.com/mapedorr/popochiu/wiki/'
 const DATA := 'res://popochiu//PopochiuData.cfg'
+const SETTINGS := 'res://popochiu//PopochiuSettings.tres'
+const SETTINGS_CLASS := preload('res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -65,9 +67,14 @@ static func init_file_structure() -> bool:
 	if not directory.file_exists(DATA):
 		_create_empty_file(DATA)
 	
+	if not directory.file_exists(SETTINGS):
+		if ResourceSaver.save(SETTINGS, SETTINGS_CLASS.new()) != OK:
+			prints('[Popochiu] Error %s creating PopochiuSettings.tres')
+	
 	return is_first_install
 
 
+# ▨▨▨▨ GAME DATA ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨
 static func get_data_cfg() -> ConfigFile:
 	var config := ConfigFile.new()
 	var err: int = config.load(DATA)
@@ -100,8 +107,6 @@ static func erase_data_value(section: String, key: String) -> void:
 		prints("[Popochiu] Can't delete %s key from %s section" %\
 		[key, section])
 
-
-
 static func get_section(section: String) -> Array:
 	var config := get_data_cfg()
 	var resources := []
@@ -111,6 +116,11 @@ static func get_section(section: String) -> Array:
 			resources.append(config.get_value(section, key))
 	
 	return resources
+
+
+# ▨▨▨▨ SETTINGS ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨
+static func get_settings() -> PopochiuSettings:
+	return load(SETTINGS) as PopochiuSettings
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

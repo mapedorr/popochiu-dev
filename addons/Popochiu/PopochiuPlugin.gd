@@ -5,7 +5,7 @@ extends EditorPlugin
 #	godot\editor\editor_themes.cpp
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-const Constants := preload('res://addons/Popochiu/Constants.gd')
+const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
 
 var main_dock: Panel
 

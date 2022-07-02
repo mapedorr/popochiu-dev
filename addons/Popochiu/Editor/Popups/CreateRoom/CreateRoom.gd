@@ -11,7 +11,7 @@ const ROOM_SCRIPT_TEMPLATE :=\
 'res://addons/Popochiu/Engine/Templates/RoomTemplate.gd'
 const BASE_ROOM_PATH :=\
 'res://addons/Popochiu/Engine/Objects/Room/PopochiuRoom.tscn'
-const Constants := preload('res://addons/Popochiu/Constants.gd')
+const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
 
 var show_set_as_main := false setget _set_show_set_as_main
 

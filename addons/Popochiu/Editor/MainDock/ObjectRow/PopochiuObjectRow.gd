@@ -15,7 +15,7 @@ enum MenuOptions {
 const SELECTED_FONT_COLOR := Color('706deb')
 const INVENTORY_START_ICON := preload(\
 'res://addons/Popochiu/icons/inventory_item_start.png')
-const Constants := preload('res://addons/Popochiu/Constants.gd')
+const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
 const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd')
 
 var type := -1

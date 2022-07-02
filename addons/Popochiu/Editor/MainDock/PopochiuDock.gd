@@ -12,7 +12,7 @@ const ROOMS_PATH := 'res://popochiu/Rooms/'
 const CHARACTERS_PATH := 'res://popochiu/Characters/'
 const INVENTORY_ITEMS_PATH := 'res://popochiu/InventoryItems/'
 const DIALOGS_PATH := 'res://popochiu/Dialogs/'
-const Constants := preload('res://addons/Popochiu/Constants.gd')
+const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
 const PopochiuObjectRow := preload('ObjectRow/PopochiuObjectRow.gd')
 
 var ei: EditorInterface
@@ -33,8 +33,8 @@ onready var _btn_move_folders: Button = find_node('BtnMoveFolders')
 onready var _tab_container: TabContainer = find_node('TabContainer')
 onready var _tab_room: VBoxContainer = _tab_container.get_node('Room')
 onready var _tab_audio: VBoxContainer = _tab_container.get_node('Audio')
-onready var _tab_settings: VBoxContainer = _tab_container.get_node('Settings')
 onready var _btn_docs: Button = find_node('BtnDocs')
+onready var _btn_settings: Button = find_node('BtnSettings')
 onready var _types := {
 	Constants.Types.ROOM: {
 		path = ROOMS_PATH,
@@ -69,6 +69,7 @@ func _ready() -> void:
 	
 	_btn_move_folders.icon = get_icon('MoveUp', 'EditorIcons')
 	_btn_docs.icon = get_icon('HelpSearch', 'EditorIcons')
+	_btn_settings.icon = get_icon('Tools', 'EditorIcons')
 	
 	# Set the Main tab selected by default
 	_tab_container.current_tab = 0
@@ -83,12 +84,12 @@ func _ready() -> void:
 	_tab_room.main_dock = self
 	_tab_room.object_row = _object_row
 	_tab_audio.main_dock = self
-	_tab_settings.main_dock = self
 	
 	_tab_container.connect('tab_changed', self, '_on_tab_changed')
 	_tab_room.connect('row_clicked', self, 'emit_signal', ['room_row_clicked'])
 	
 	_btn_docs.connect('pressed', OS, 'shell_open', [Constants.WIKI])
+	_btn_settings.connect('pressed', self, '_open_settings')
 	
 	_btn_move_folders.hide()
 
@@ -168,7 +169,6 @@ func fill_data() -> void:
 	
 	# Load other tabs data
 	_tab_audio.fill_data()
-	_tab_settings.fill_data()
 
 
 func add_to_list(type: int, name_to_add: String) -> PopochiuObjectRow:
@@ -303,3 +303,7 @@ func _select_object(por: PopochiuObjectRow) -> void:
 	
 	ei.select_file(por.path)
 	last_selected = por
+
+
+func _open_settings() -> void:
+	ei.edit_resource(PopochiuResources.get_settings())

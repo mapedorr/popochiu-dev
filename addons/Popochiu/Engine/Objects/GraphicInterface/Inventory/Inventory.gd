@@ -9,7 +9,7 @@ onready var _hide_y := rect_position.y - (rect_size.y - 4)
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready():
-	if not E.inventory_always_visible:
+	if not E.settings.inventory_always_visible:
 		rect_position.y = _hide_y
 		
 		# Connect to self signals
@@ -34,7 +34,7 @@ func _ready():
 func disable(use_tween := true) -> void:
 	is_disabled = true
 	
-	if E.inventory_always_visible:
+	if E.settings.inventory_always_visible:
 		hide()
 		return
 	
@@ -53,7 +53,7 @@ func disable(use_tween := true) -> void:
 func enable() -> void:
 	is_disabled = false
 	
-	if E.inventory_always_visible:
+	if E.settings.inventory_always_visible:
 		show()
 		return
 	
@@ -67,7 +67,7 @@ func enable() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _open() -> void:
-	if E.inventory_always_visible: return
+	if E.settings.inventory_always_visible: return
 	if not is_disabled and rect_position.y != _hide_y: return
 	
 	$Tween.interpolate_property(
@@ -79,7 +79,7 @@ func _open() -> void:
 
 
 func _close() -> void:
-	if E.inventory_always_visible: return
+	if E.settings.inventory_always_visible: return
 	
 	yield(get_tree(), 'idle_frame')
 	
@@ -107,7 +107,7 @@ func _add_item(item: PopochiuInventoryItem, animate := true) -> void:
 	item.connect('description_toggled', self, '_show_item_info')
 	item.connect('selected', self, '_change_cursor')
 	
-	if not E.inventory_always_visible and animate:
+	if not E.settings.inventory_always_visible and animate:
 		_open()
 		yield(get_tree().create_timer(2.0), 'timeout')
 		_close()

@@ -16,7 +16,7 @@ onready var _hide_y := rect_position.y - (rect_size.y - 4)
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	if not E.toolbar_always_visible:
+	if not E.settings.toolbar_always_visible:
 		rect_position.y = _hide_y
 	
 		# Connect to self signals
@@ -36,7 +36,7 @@ func _ready() -> void:
 func disable() -> void:
 	is_disabled = true
 	
-	if E.toolbar_always_visible:
+	if E.settings.toolbar_always_visible:
 		hide()
 		return
 	
@@ -51,7 +51,7 @@ func disable() -> void:
 func enable() -> void:
 	is_disabled = false
 	
-	if E.toolbar_always_visible:
+	if E.settings.toolbar_always_visible:
 		show()
 		return
 	
@@ -65,7 +65,7 @@ func enable() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _open() -> void:
-	if E.toolbar_always_visible: return
+	if E.settings.toolbar_always_visible: return
 	if not is_disabled and rect_position.y != _hide_y: return
 	
 	$Tween.interpolate_property(
@@ -77,7 +77,7 @@ func _open() -> void:
 
 
 func _close() -> void:
-	if E.toolbar_always_visible: return
+	if E.settings.toolbar_always_visible: return
 	
 	yield(get_tree(), 'idle_frame')
 	

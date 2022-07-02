@@ -3,26 +3,9 @@ extends Node
 # It is the system main class, and is in charge of a making the game to work
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-signal text_speed_changed(idx)
+signal text_speed_changed
 signal language_changed
 
-#export(Array, Resource) var rooms = []
-#export(Array, Resource) var characters = []
-#export(Array, Resource) var inventory_items = []
-#export(Array, Resource) var dialogs = []
-export var skip_cutscene_time := 0.2
-export var text_speeds := [0.1, 0.01, 0.0]
-export var text_speed_idx := 0 setget _set_text_speed_idx
-export var text_continue_auto := false
-export var languages := ['es_CO', 'es', 'en']
-export(int, 'co', 'es', 'en') var language_idx := 0 setget _set_language_idx
-export var use_translations := false
-export var items_on_start := []
-export var inventory_limit := 0
-export var inventory_always_visible := false
-export var toolbar_always_visible := false
-
-#var rooms = []
 var in_run := false
 # Used to prevent going to another room when there is one being loaded
 var in_room := false setget _set_in_room
@@ -37,6 +20,10 @@ var width := 0.0 setget ,get_width
 var height := 0.0 setget ,get_height
 var half_width := 0.0 setget ,get_half_width
 var half_height := 0.0 setget ,get_half_height
+var settings := PopochiuResources.get_settings()
+var current_text_speed_idx := settings.text_speed_idx
+var current_text_speed: float = settings.text_speeds[current_text_speed_idx]
+var current_language := 0
 
 # TODO: This could be in the camera's own script
 var _is_camera_shaking := false
@@ -75,7 +62,7 @@ func _ready() -> void:
 		C.characters.append(pc)
 	
 	# Add inventory items on start (ignore animations (3rd parameter))
-	for key in items_on_start:
+	for key in E.settings.items_on_start:
 		I.add_item(key, false, false)
 	
 	set_process_input(false)
@@ -100,7 +87,8 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_released('popochiu-skip'):
 		cutscene_skipped = true
 		$TransitionLayer.play_transition(
-			TransitionLayer.PASS_DOWN_IN, skip_cutscene_time
+			TransitionLayer.PASS_DOWN_IN,
+			E.settings.skip_cutscene_time
 		)
 		
 		yield($TransitionLayer, 'transition_finished')
@@ -174,7 +162,8 @@ func run_cutscene(instructions: Array) -> void:
 	
 	if cutscene_skipped:
 		$TransitionLayer.play_transition(
-			$TransitionLayer.PASS_DOWN_OUT, skip_cutscene_time
+			$TransitionLayer.PASS_DOWN_OUT,
+			E.settings.skip_cutscene_time
 		)
 		yield($TransitionLayer, 'transition_finished')
 	
@@ -316,7 +305,7 @@ target := Vector2.ONE, duration := 1.0, is_in_queue := true) -> void:
 
 # Returns a String of a text that could be a translation key
 func get_text(msg: String) -> String:
-	return tr(msg) if use_translations else msg
+	return tr(msg) if E.settings.use_translations else msg
 
 
 # Gets the PopochiuCharacter with script_name
@@ -423,6 +412,17 @@ func get_half_height() -> float:
 	return get_viewport().get_visible_rect().end.y / 2.0
 
 
+func change_text_speed() -> void:
+	current_text_speed_idx = wrapi(
+		current_text_speed_idx + 1,
+		0,
+		settings.text_speeds.size()
+	)
+	current_text_speed = settings.text_speeds[current_text_speed_idx]
+	
+	emit_signal('text_speed_changed')
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _eval_string(text: String) -> void:
 	match text:
@@ -472,12 +472,12 @@ func _set_in_room(value: bool) -> void:
 	Cursor.toggle_visibility(in_room)
 
 
-func _set_text_speed_idx(value: int) -> void:
-	text_speed_idx = value
-	emit_signal('text_speed_changed', text_speed_idx)
-
-
-func _set_language_idx(value: int) -> void:
-	language_idx = value
-	TranslationServer.set_locale(languages[value])
-	emit_signal('language_changed')
+#func _set_text_speed_idx(value: int) -> void:
+#	text_speed_idx = value
+#	emit_signal('text_speed_changed', text_speed_idx)
+#
+#
+#func _set_language_idx(value: int) -> void:
+#	language_idx = value
+#	TranslationServer.set_locale(languages[value])
+#	emit_signal('language_changed')
