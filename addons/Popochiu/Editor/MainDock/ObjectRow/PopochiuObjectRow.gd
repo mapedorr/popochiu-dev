@@ -111,6 +111,7 @@ func unselect() -> void:
 
 
 func show_add_to_core() -> void:
+	_label.modulate.a = 0.5
 	_menu_popup.set_item_disabled(0, false)
 
 
@@ -139,23 +140,16 @@ func _menu_item_pressed(id: int) -> void:
 			main_dock.set_main_scene(path)
 			self.is_main = true
 		MenuOptions.START_WITH_IT:
-			var popochiu: Node = main_dock.get_popochiu()
+			var settings := PopochiuResources.get_settings()
 			
-			if popochiu.items_on_start.empty():
-				popochiu.items_on_start = [name]
+			if name in settings.items_on_start:
+				settings.items_on_start.erase(name)
 			else:
-				if name in popochiu.items_on_start:
-					popochiu.items_on_start.erase(name)
-				else:
-					popochiu.items_on_start.append(name)
+				settings.items_on_start.append(name)
 			
-			assert(
-				main_dock.save_popochiu() == OK,
-				'[Popochiu] Could not put item "%s" on start' % name
-			)
+			PopochiuResources.save_settings(settings)
 			
-			prints('¿Está o no?', name in main_dock.get_popochiu().items_on_start)
-			self.is_on_start = name in main_dock.get_popochiu().items_on_start
+			self.is_on_start = name in settings.items_on_start
 		MenuOptions.DELETE:
 			_remove_object()
 
@@ -165,7 +159,6 @@ func _menu_item_pressed(id: int) -> void:
 # que pueda ser usado (p. ej. Que se pueda navegar a la habitación, que se pueda
 # mostrar a un personaje en una habitación, etc.).
 func _add_object_to_core() -> void:
-	var popochiu: Node = main_dock.get_popochiu()
 	var target_array := ''
 	var resource: Resource
 	
@@ -187,18 +180,12 @@ func _add_object_to_core() -> void:
 			# TODO: Mostrar un mensaje de error o algo.
 			return
 	
-	if popochiu[target_array].empty():
-		popochiu[target_array] = [resource]
-	else:
-		popochiu[target_array].append(resource)
-	
-	if main_dock.save_popochiu() != OK:
-		push_error('[Popochiu] Could not add Object to Popochiu: %s' %\
-		name)
+	if main_dock.add_resource_to_popochiu(target_array, resource) != OK:
+		push_error("[Popochiu] Couldn't add Object to Popochiu: %s" % name)
 		return
 	
+	_label.modulate.a = 1.0
 	_menu_popup.set_item_disabled(0, true)
-#	_btn_add.hide()
 
 
 # Selecciona el archivo principal del objeto en el FileSystem y lo abre para que
@@ -267,13 +254,7 @@ func _search_audio_files(dir: EditorFileSystemDirectory) -> Array:
 
 func _remove_from_core() -> void:
 	# Eliminar el objeto de Popochiu -------------------------------------------
-	var popochiu: Node = null
-	
 	match type:
-		Constants.Types.ROOM, Constants.Types.CHARACTER,\
-		Constants.Types.INVENTORY_ITEM, Constants.Types.DIALOG:
-			popochiu = main_dock.get_popochiu()
-			continue
 		Constants.Types.ROOM:
 			PopochiuResources.erase_data_value('rooms', name)
 		Constants.Types.CHARACTER:
@@ -304,23 +285,13 @@ func _remove_from_core() -> void:
 				_disconnect_popup()
 				return
 	
-	if popochiu:
-		# Save changes in Popochiu.tscn if the deleted object was a Room,
-		# a Character, an Inventory item or a Dialog.
-		if main_dock.save_popochiu() != OK:
-			push_error('[Popochiu] Could not remove Object from Popochiu: %s' %\
-			name)
-			# TODO: Mostrar retroalimentación en el mismo popup
-	
 	if _delete_all_checkbox.pressed:
 		_delete_from_file_system()
 	else:
 		show_add_to_core()
 	
 	_disconnect_popup()
-	
-	if not popochiu:
-		main_dock.ei.save_scene()
+	main_dock.ei.save_scene()
 
 
 # Remove this object's directory (subfolders included) from the file system.
@@ -344,15 +315,6 @@ func _delete_from_file_system() -> void:
 	main_dock.fs.scan()
 	main_dock.fs.scan_sources()
 	
-	match type:
-		Constants.Types.ROOM, Constants.Types.CHARACTER,\
-		Constants.Types.INVENTORY_ITEM, Constants.Types.DIALOG:
-			assert(
-				main_dock.save_popochiu() == OK,
-				'[Popochiu] Could not delete directory in filesystem: %s' %\
-				path.get_base_dir()
-			)
-
 	# Delete the element's row -------------------------------------------------
 	queue_free()
 

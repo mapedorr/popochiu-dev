@@ -96,6 +96,8 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func fill_data() -> void:
+	var settings := PopochiuResources.get_settings()
+	
 	# Buscar habitaciones, personajes, objetos de inventario y diálogos.
 	for t in _types:
 		if not _types[t].has('path'): continue
@@ -157,7 +159,7 @@ func fill_data() -> void:
 							'inventory_items', resource.script_name
 						)
 						
-						if resource.script_name in popochiu.items_on_start:
+						if resource.script_name in settings.items_on_start:
 							row.is_on_start = true
 					Constants.Types.DIALOG:
 						is_in_core = PopochiuResources.has_data_value(
@@ -185,35 +187,8 @@ func scene_closed(filepath: String) -> void:
 	_tab_room.scene_closed(filepath)
 
 
-func get_popochiu() -> Node:
-	popochiu.free()
-	popochiu = load(POPOCHIU_SCENE).instance()
-	return popochiu
-
-
 func add_resource_to_popochiu(target: String, resource: Resource) -> int:
 	return PopochiuResources.set_data_value(target, resource.script_name, resource)
-
-
-func save_popochiu() -> int:
-	var result := OK
-	var new_popochiu: PackedScene = PackedScene.new()
-	
-	new_popochiu.pack(popochiu)
-	
-	result = ResourceSaver.save(POPOCHIU_SCENE, new_popochiu)
-	if result != OK:
-		push_error('[Popochiu] ---- ◇ Update error: %d ◇ ----' % result)
-		return result
-	
-	ei.reload_scene_from_path(POPOCHIU_SCENE)
-	
-	# TODO: Do this when Popochiu.tscn is part of the opened tabs in the editor
-	if ei.get_edited_scene_root() \
-	and ei.get_edited_scene_root().name == 'Popochiu':
-		ei.save_scene()
-
-	return result
 
 
 func show_confirmation(title: String, message: String, ask := '') -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/RoomCasaPopochiu.gd" type="Script" id=1]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/bg.png" type="Texture" id=4]
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Hotspots/ToMap/HotspotToMap.gd" type="Script" id=5]
 [ext_resource path="res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn" type="PackedScene" id=6]
+[ext_resource path="res://popochiu/Rooms/CasaPopochiu/Hotspots/To101/HotspotTo101.gd" type="Script" id=7]
 
 [node name="RoomCasaPopochiu" type="Node2D"]
 script = ExtResource( 1 )
@@ -28,12 +29,23 @@ texture = ExtResource( 4 )
 
 [node name="ToMap" parent="Hotspots" instance=ExtResource( 2 )]
 script = ExtResource( 5 )
-description = "ToMap"
+description = "To Map"
 cursor = 1
 script_name = "ToMap"
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hotspots/ToMap"]
 polygon = PoolVector2Array( 31, -27, 28, -3, 48, -1, 51, -26 )
+
+[node name="ToEnd" parent="Hotspots" instance=ExtResource( 2 )]
+position = Vector2( -7, -17 )
+script = ExtResource( 7 )
+description = "To End"
+clickable = false
+cursor = 1
+script_name = "To101"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hotspots/ToEnd"]
+polygon = PoolVector2Array( -20, -13, -18, 12, 17, 11, 17, -12 )
 
 [node name="Regions" type="Node2D" parent="."]
 

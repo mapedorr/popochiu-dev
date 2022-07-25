@@ -107,6 +107,7 @@ static func erase_data_value(section: String, key: String) -> void:
 		prints("[Popochiu] Can't delete %s key from %s section" %\
 		[key, section])
 
+
 static func get_section(section: String) -> Array:
 	var config := get_data_cfg()
 	var resources := []
@@ -121,6 +122,16 @@ static func get_section(section: String) -> Array:
 # ▨▨▨▨ SETTINGS ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨
 static func get_settings() -> PopochiuSettings:
 	return load(SETTINGS) as PopochiuSettings
+
+
+static func save_settings(new_settings: PopochiuSettings) -> bool:
+	var result := ResourceSaver.save(SETTINGS, new_settings)
+	
+	if result != OK:
+		push_error('[Popochiu] Error %d when updating settings.' % result)
+		return false
+	
+	return true
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

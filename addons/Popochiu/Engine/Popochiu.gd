@@ -62,7 +62,7 @@ func _ready() -> void:
 		C.characters.append(pc)
 	
 	# Add inventory items on start (ignore animations (3rd parameter))
-	for key in E.settings.items_on_start:
+	for key in settings.items_on_start:
 		I.add_item(key, false, false)
 	
 	set_process_input(false)
