@@ -97,6 +97,15 @@ static func has_data_value(section: String, key: String) -> bool:
 	return get_data_cfg().has_section_key(section, key)
 
 
+static func get_data_value(section: String, key: String, default):
+	var config := get_data_cfg()
+	
+	if not config.has_section(section):
+		return default
+	
+	return config.get_value(section, key, default)
+
+
 static func erase_data_value(section: String, key: String) -> void:
 	var config := get_data_cfg()
 	

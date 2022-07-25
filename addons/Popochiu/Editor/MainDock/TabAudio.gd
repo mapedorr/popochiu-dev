@@ -3,20 +3,17 @@ extends VBoxContainer
 # Handles the Audio tab in Popochiu's dock
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-const AUDIO_MANAGER_SCENE := 'res://addons/Popochiu/Engine/AudioManager/AudioManager.tscn'
-#const CUES_PATH := 'res://popochiu/AudioManager/Cues'
 const SEARCH_PATH := 'res://popochiu/'
 const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd')
 
 var main_dock: Panel setget _set_main_dock
-var audio_manager: Node = null
 var last_played: Control = null
 var last_selected: Control = null
 
 var _audio_row := preload(\
 'res://addons/Popochiu/Editor/MainDock/AudioRow/PopochiuAudioRow.tscn')
 # Array with all the paths to files that are already assigned to a category
-# in AudioManager
+# in PopochiuData.cfg
 var _audio_files_in_group := []
 var _audio_files_to_assign := []
 # To count the AudioCue created during audio files search. Used when there
@@ -48,7 +45,6 @@ onready var _am_search_files: Button = find_node('BtnSearchAudioFiles')
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	audio_manager = load(AUDIO_MANAGER_SCENE).instance()
 	_am_search_files.icon = get_icon('Search', 'EditorIcons')
 	_am_search_files.connect('pressed', self, 'search_audio_files')
 
@@ -62,36 +58,11 @@ func fill_data() -> void:
 func search_audio_files() -> void:
 	_created_audio_cues = 0
 	
-	_read_audio_manager_cues()
+	_read_audio_cues()
 	_read_directory(main_dock.fs.get_filesystem_path(SEARCH_PATH))
 	
 	if _created_audio_cues > 0:
-		_read_audio_manager_cues()
-
-
-func get_audio_manager() -> Node:
-	audio_manager.free()
-	audio_manager = load(AUDIO_MANAGER_SCENE).instance()
-	return audio_manager
-
-
-func save_audio_manager() -> int:
-	var result := OK
-	
-	var new_audio_manager: PackedScene = PackedScene.new()
-	new_audio_manager.pack(audio_manager)
-	
-	result = ResourceSaver.save(AUDIO_MANAGER_SCENE, new_audio_manager)
-	
-	assert(result == OK, "[Popochiu] Couldn't save the AudioManager")
-	
-	# Save changes in AudioManager.tscn
-	main_dock.ei.reload_scene_from_path(AUDIO_MANAGER_SCENE)
-	
-	if main_dock.ei.get_edited_scene_root().name == 'AudioManager':
-		main_dock.ei.save_scene()
-	
-	return result
+		_read_audio_cues()
 
 
 func delete_rows(filepaths: Array) -> void:
@@ -117,25 +88,30 @@ func delete_rows(filepaths: Array) -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
-func _read_audio_manager_cues() -> void:
-	# Put already loaded (in AudioManager) AudioCues into their corresponding
+func _read_audio_cues() -> void:
+	# Put already loaded (in PopochiuData.cfg) AudioCues into their corresponding
 	# group
 	for d in _am_groups:
 		var group: Dictionary = _am_groups[d]
+		var group_data: Array = PopochiuResources.get_data_value(
+			'audio', group.array, []
+		)
 		
-		if not audio_manager[group.array].empty():
-			for m in audio_manager[group.array]:
-				if (m as AudioCue).audio.resource_path in _audio_files_in_group:
-					# TODO: Check if the resource_path has changed
-					continue
-				
-				var ar := _create_audio_cue_row(m)
-				ar.cue_group = group.array
-				group.group.add(ar)
-				
-				_audio_files_in_group.append(
-					(m as AudioCue).audio.resource_path
-				)
+		if not group_data:
+			continue
+		
+		for m in group_data:
+			if (m as AudioCue).audio.resource_path in _audio_files_in_group:
+				# TODO: Check if the resource_path has changed
+				continue
+			
+			var ar := _create_audio_cue_row(m)
+			ar.cue_group = group.array
+			group.group.add(ar)
+			
+			_audio_files_in_group.append(
+				(m as AudioCue).audio.resource_path
+			)
 
 
 func _create_audio_cue_row(audio_cue: AudioCue) -> HBoxContainer:
@@ -176,7 +152,7 @@ func _read_files(dir: EditorFileSystemDirectory) -> void:
 			if dir.get_file_path(idx) in _audio_files_in_group\
 			or dir.get_file_path(idx) in _audio_files_to_assign:
 				# Don't put in the list an audio file already assigned to an
-				# AudioCue in AudioManager
+				# AudioCue in PopochiuData.cfg
 				continue
 			
 			# Check if the file prefix matches one of the defined for automatic
@@ -216,9 +192,9 @@ func _create_audio_file_row(file_path: String) -> void:
 	_audio_files_to_assign.append(file_path)
 
 
-func _create_audio_cue(
-		type: String, path: String, audio_row: Container = null
-	) -> void:
+func _create_audio_cue(\
+type: String, path: String, audio_row: Container = null
+) -> void:
 	var cue_name := path.get_file().get_basename()
 	var cue_file_name := U.snake2pascal(cue_name)
 	cue_file_name += '.tres'
@@ -230,16 +206,11 @@ func _create_audio_cue(
 	ac.resource_name = cue_name.to_lower()
 	
 	var error: int = ResourceSaver.save(
-#		'%s/%s' % [CUES_PATH, cue_file_name],
 		'%s/%s' % [path.get_base_dir(), cue_file_name],
 		ac
 	)
 	
-	assert(error == OK, '[Popochiu] Can not save AudioCue: %s' % cue_file_name)
-	
-	# Put the created AudioCue into the corresponding Dictionary in the AudioManager
-	audio_manager.free()
-	audio_manager = load(AUDIO_MANAGER_SCENE).instance()
+	assert(error == OK, "[Popochiu] Can't save AudioCue: %s" % cue_file_name)
 	
 	var resource: AudioCue = load('%s/%s' % [path.get_base_dir(), cue_file_name])
 	var target := ''
@@ -254,14 +225,12 @@ func _create_audio_cue(
 		'ui':
 			target = 'ui_cues'
 	
-	if audio_manager[target].empty():
-		audio_manager[target] = [resource]
-	else:
-		audio_manager[target].append(resource)
-	
-	audio_manager[target].sort_custom(A, '_sort_cues')
-	
-	save_audio_manager()
+	var target_data: Array = PopochiuResources.get_data_value(
+		'audio', target, []
+	)
+	target_data.append(resource)
+	target_data.sort_custom(A, '_sort_cues')
+	PopochiuResources.set_data_value('audio', target, target_data)
 	
 	if is_instance_valid(audio_row):
 		# Delete the file row
@@ -269,8 +238,8 @@ func _create_audio_cue(
 		audio_row.queue_free()
 	
 		# Put the row in its corresponding group
-		yield(get_tree().create_timer(0.1), 'timeout')
-		_read_audio_manager_cues()
+#		yield(get_tree().create_timer(0.1), 'timeout')
+		_read_audio_cues()
 
 
 func _audio_cue_deleted(file_path: String) -> void:

@@ -177,8 +177,8 @@ func _ask_basic_delete() -> void:
 	
 	if is_instance_valid(audio_cue):
 		main_dock.show_confirmation(
-			'Remove %s from AudioManager' % audio_cue.resource_name,
-			'This will remove the [b]%s[/b] resource in AudioManager.'\
+			'Remove %s' % audio_cue.resource_name,
+			'This will remove the [b]%s[/b] resource.'\
 			% audio_cue.resource_name +\
 			' Calls to this audio in scripts will not work anymore.' +\
 			' This action cannot be reversed. Continue?',
@@ -205,16 +205,19 @@ func _ask_basic_delete() -> void:
 func _remove_in_audio_manager() -> void:
 	_confirmation_dialog.disconnect('confirmed', self, '_remove_in_audio_manager')
 	
-	# Eliminar el AudioCue del AudioManager ------------------------------------
-	var am: Node = audio_tab.get_audio_manager()
-	am[cue_group].erase(audio_cue)
+	# Remove the AudioCue from PopochiuData.cfg --------------------------------
+	var group_data: Array = PopochiuResources.get_data_value(
+		'audio', cue_group, []
+	)
+	if group_data:
+		group_data.erase(audio_cue)
+		
+		if group_data.empty():
+			PopochiuResources.erase_data_value('audio', cue_group)
+		else:
+			PopochiuResources.set_data_value('audio', cue_group, group_data)
 	
-	if audio_tab.save_audio_manager() != OK:
-		push_error('[Popochiu] Could not remove %s AudioCue in AudioManager.' \
-		% audio_cue.resource_name)
-		# TODO: Mostrar retroalimentación en el mismo popup
-	
-	# Crear una fila en el grupo de archivos sin asignar.
+	# Add the audio file to the "Not assigned" group
 	emit_signal('deleted', audio_cue.audio.resource_path)
 	
 	if _delete_all_checkbox.pressed:
@@ -223,9 +226,8 @@ func _remove_in_audio_manager() -> void:
 		queue_free()
 
 
-# Elimina el directorio del objeto del sistema.
 func _delete_from_file_system(path: String) -> void:
-	# Eliminar el .tres del AudioCue del disco
+	# Delete the AudioCue .tres file from the file system
 	var err: int = main_dock.dir.remove(path)
 	main_dock.fs.update_file(path)
 	
@@ -234,7 +236,6 @@ func _delete_from_file_system(path: String) -> void:
 		[err, path])
 		return
 	
-	# Eliminar el objeto de su lista -------------------------------------------
 	_disconnect_popup()
 	queue_free()
 

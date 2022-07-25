@@ -359,25 +359,22 @@ func _delete_files(dir: EditorFileSystemDirectory) -> int:
 				if resource is AudioCue:
 					deleted_audios.append(resource.audio.resource_path)
 					
-					# Si el archivo es un AudioCue, hay que primero sacarlo del
-					# AudioManager
-					var am: Node = main_dock.get_audio_tab().get_audio_manager()
-					
-					if am.mx_cues.has(resource):
-						am.mx_cues.erase(resource)
-					elif am.sfx_cues.has(resource):
-						am.sfx_cues.erase(resource)
-					elif am.vo_cues.has(resource):
-						am.vo_cues.erase(resource)
-					elif am.ui_cues.has(resource):
-						am.ui_cues.erase(resource)
-					
-					assert(
-						main_dock.get_audio_tab().save_audio_manager() == OK,
-						'[Popochiu] Could not save AudioManager after' +\
-						' attempting to delete AudioCue during deletion of' +\
-						' directory %s.' % dir.get_path()
-					)
+					# Delete the AudioCue in the PopochiuData.cfg
+					for arr in ['mx_cues', 'sfx_cues', 'vo_cues', 'ui_cues']:
+						var cues: Array = PopochiuResources.get_data_value(
+							'audio', arr, []
+						)
+						if cues.has(resource):
+							cues.erase(resource)
+							assert(
+								PopochiuResources.set_data_value(
+									'audio', arr, cues
+								) == OK,
+								'[Popochiu] Could not save AudioManager after' +\
+								' attempting to delete AudioCue during deletion of' +\
+								' directory %s.' % dir.get_path()
+							)
+							break
 		
 		files_paths.append(dir.get_file_path(file_idx))
 	

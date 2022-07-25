@@ -10,7 +10,7 @@ extends PopochiuRoom
 # What happens when Popochiu loads the room. At this point the room is in the
 # tree but it is not visible
 func on_room_entered() -> void:
-	yield(E.run([]), 'completed')
+	yield(E.run([A.play_music('mx_two_popochius')]), 'completed')
 
 
 # What happens when the room changing transition finishes. At this point the room
