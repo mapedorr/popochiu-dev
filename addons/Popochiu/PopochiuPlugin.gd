@@ -25,7 +25,7 @@ func _init() -> void:
 	if Engine.editor_hint:
 		_is_first_install = PopochiuResources.init_file_structure()
 	
-	# Cargar los singleton para acceder directamente a objetos de Popochiu
+	# Load Popochiu singletons
 	add_autoload_singleton('U', Constants.UTILS_SNGL)
 	add_autoload_singleton('Cursor', Constants.CURSOR_SNGL)
 	add_autoload_singleton('E', Constants.POPOCHIU_SNGL)
@@ -40,37 +40,36 @@ func _enter_tree() -> void:
 	prints('[es] Estás usando Popochiu, un plugin para crear juegos point n\' click')
 	prints('[en] You\'re using Popochiu, a plugin for making point n\' click games')
 	prints('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ \\( o )3(o)/ ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒')
-
+	
+	_export_plugin = load('res://addons/Popochiu/ExportPlugin.gd').new()
+	add_export_plugin(_export_plugin)
+	
 	main_dock = load(Constants.MAIN_DOCK_PATH).instance()
 	main_dock.ei = _editor_interface
 	main_dock.fs = _editor_file_system
 	main_dock.focus_mode = Control.FOCUS_ALL
-
+	
 	main_dock.connect('room_row_clicked', self, 'update_overlays')
 	add_control_to_dock(DOCK_SLOT_RIGHT_BR, main_dock)
 	
-	# Llenar las listas de habitaciones, personajes, objetos de inventario
-	# y árboles de diálogo.
 	yield(get_tree().create_timer(0.5), 'timeout')
-
+	
+	# Fill the dock with Rooms, Characters, Inventory items, Dialogs and Audio cues
 	main_dock.fill_data()
 	main_dock.grab_focus()
 	
 	_editor_interface.get_selection().connect(
 		'selection_changed', self, '_check_nodes'
 	)
-	_editor_file_system.connect('sources_changed', self, '_on_sources_changed')
+#	_editor_file_system.connect('sources_changed', self, '_on_sources_changed')
 	connect('scene_changed', main_dock, 'scene_changed')
 	connect('scene_closed', main_dock, 'scene_closed')
 	
 	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
-
+	
 	if _is_first_install:
 		main_dock.connect('move_folders_pressed', self, '_move_addon_folders')
 		main_dock.show_move_folders_button()
-	
-	_export_plugin = load('res://addons/Popochiu/ExportPlugin.gd').new()
-	add_export_plugin(_export_plugin)
 
 
 func _exit_tree() -> void:

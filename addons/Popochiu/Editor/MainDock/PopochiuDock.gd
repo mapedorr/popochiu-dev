@@ -29,6 +29,7 @@ var _rows_paths := []
 onready var delete_dialog: ConfirmationDialog = find_node('DeleteConfirmation')
 onready var delete_checkbox: CheckBox = delete_dialog.find_node('CheckBox')
 onready var delete_extra: Container = delete_dialog.find_node('Extra')
+onready var loading_dialog: WindowDialog = find_node('Loading')
 onready var _btn_move_folders: Button = find_node('BtnMoveFolders')
 onready var _tab_container: TabContainer = find_node('TabContainer')
 onready var _tab_room: VBoxContainer = _tab_container.get_node('Room')
@@ -98,7 +99,7 @@ func _ready() -> void:
 func fill_data() -> void:
 	var settings := PopochiuResources.get_settings()
 	
-	# Buscar habitaciones, personajes, objetos de inventario y diálogos.
+	# Search the FileSystem for Rooms, Characters, InventoryItems and Dialogs
 	for t in _types:
 		if not _types[t].has('path'): continue
 		

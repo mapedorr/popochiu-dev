@@ -16,12 +16,11 @@ var _audio_row := preload(\
 # in PopochiuData.cfg
 var _audio_files_in_group := []
 var _audio_files_to_assign := []
-# To count the AudioCue created during audio files search. Used when there
-# are files with the defined prefixes:  mx_, sfx_, vo_, ui_
+var _audio_cues_to_create := []
 var _created_audio_cues := 0
 
-onready var _am_unassigned_group: PopochiuGroup = find_node('UnassignedGroup')
-onready var _am_groups := {
+onready var _unassigned_group: PopochiuGroup = find_node('UnassignedGroup')
+onready var _groups := {
 	mx = {
 		array = 'mx_cues',
 		group = find_node('MusicGroup')
@@ -56,19 +55,37 @@ func fill_data() -> void:
 
 
 func search_audio_files() -> void:
-	_created_audio_cues = 0
-	
-	_read_audio_cues()
+	_group_audio_cues()
 	_read_directory(main_dock.fs.get_filesystem_path(SEARCH_PATH))
 	
-	if _created_audio_cues > 0:
-		_read_audio_cues()
+	if not _audio_cues_to_create.empty():
+		_created_audio_cues = 0
+		var progress: ProgressBar = main_dock.loading_dialog.find_node('Progress')
+		
+		progress.max_value = _audio_cues_to_create.size()
+		(main_dock.loading_dialog as WindowDialog).set_as_minsize()
+		(main_dock.loading_dialog as WindowDialog).popup_centered()
+		(main_dock.loading_dialog as WindowDialog).get_close_button().hide()
+		
+		yield(get_tree(), 'idle_frame')
+		
+		for arr in _audio_cues_to_create:
+			yield(_create_audio_cue(arr[0], arr[1]), 'completed')
+			progress.value = _created_audio_cues
+			yield(get_tree(), 'idle_frame')
+		
+		_group_audio_cues()
+		_audio_cues_to_create.clear()
+		
+#		yield(get_tree().create_timer(1.0), 'timeout')
+		
+		(main_dock.loading_dialog as WindowDialog).hide()
 
 
 func delete_rows(filepaths: Array) -> void:
 	for filepath in filepaths:
 		if filepath in _audio_files_to_assign:
-			for row in _am_unassigned_group.get_elements():
+			for row in _unassigned_group.get_elements():
 				if row.file_path == filepath:
 					row.queue_free()
 					break
@@ -76,7 +93,7 @@ func delete_rows(filepaths: Array) -> void:
 		elif filepath in _audio_files_in_group:
 			var deleted := false
 			
-			for group_dic in _am_groups.values():
+			for group_dic in _groups.values():
 				for row in group_dic.group.get_elements():
 					if row.audio_cue.audio.resource_path == filepath:
 						row.queue_free()
@@ -88,11 +105,11 @@ func delete_rows(filepaths: Array) -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
-func _read_audio_cues() -> void:
+func _group_audio_cues() -> void:
 	# Put already loaded (in PopochiuData.cfg) AudioCues into their corresponding
 	# group
-	for d in _am_groups:
-		var group: Dictionary = _am_groups[d]
+	for d in _groups:
+		var group: Dictionary = _groups[d]
 		var group_data: Array = PopochiuResources.get_data_value(
 			'audio', group.array, []
 		)
@@ -145,34 +162,33 @@ func _read_files(dir: EditorFileSystemDirectory) -> void:
 	for idx in dir.get_file_count():
 		var file_name = dir.get_file(idx)
 		
-		if file_name.get_extension() == "ogg" or \
-		file_name.get_extension() == "mp3" or \
-		file_name.get_extension() == "wav" or \
-		file_name.get_extension() == "opus":
-			if dir.get_file_path(idx) in _audio_files_in_group\
-			or dir.get_file_path(idx) in _audio_files_to_assign:
-				# Don't put in the list an audio file already assigned to an
-				# AudioCue in PopochiuData.cfg
-				continue
+		if not file_name.get_extension() in ['ogg', 'mp3', 'wav', 'opus']:
+			continue
+		
+		if dir.get_file_path(idx) in _audio_files_in_group\
+		or dir.get_file_path(idx) in _audio_files_to_assign:
+			# Don't put in the list an audio file already assigned to an
+			# AudioCue in PopochiuData.cfg
+			continue
 			
-			# Check if the file prefix matches one of the defined for automatic
-			# group assignation: mx_, sfx_, vo_, ui_
-			# TODO: This could be read from a settings file so developers can
-			# define their own prefixes.
-			if file_name.find('mx_') > -1:
-				_create_audio_cue('music', dir.get_file_path(idx))
-				_created_audio_cues += 1
-			elif file_name.find('sfx_') > -1:
-				_create_audio_cue('sfx', dir.get_file_path(idx))
-				_created_audio_cues += 1
-			elif file_name.find('vo_') > -1:
-				_create_audio_cue('voice', dir.get_file_path(idx))
-				_created_audio_cues += 1
-			elif file_name.find('ui_') > -1:
-				_create_audio_cue('ui', dir.get_file_path(idx))
-				_created_audio_cues += 1
-			else:
-				_create_audio_file_row(dir.get_file_path(idx))
+		# Check if the file prefix matches one of the defined for automatic
+		# group assignation: mx_, sfx_, vo_, ui_
+		# TODO: This could be read from a settings file so developers can
+		# define their own prefixes.
+		var target := ''
+		if file_name.find('mx_') > -1:
+			target = 'music'
+		elif file_name.find('sfx_') > -1:
+			target = 'sfx'
+		elif file_name.find('vo_') > -1:
+			target = 'voice'
+		elif file_name.find('ui_') > -1:
+			target = 'ui'
+		
+		if target:
+			_audio_cues_to_create.append([target, dir.get_file_path(idx)])
+		else:
+			_create_audio_file_row(dir.get_file_path(idx))
 
 
 func _create_audio_file_row(file_path: String) -> void:
@@ -187,8 +203,7 @@ func _create_audio_file_row(file_path: String) -> void:
 	
 	ar.connect('target_clicked', self, '_create_audio_cue', [file_path, ar])
 	
-	_am_unassigned_group.add(ar)
-	
+	_unassigned_group.add(ar)
 	_audio_files_to_assign.append(file_path)
 
 
@@ -212,7 +227,7 @@ type: String, path: String, audio_row: Container = null
 	
 	assert(error == OK, "[Popochiu] Can't save AudioCue: %s" % cue_file_name)
 	
-	var resource: AudioCue = load('%s/%s' % [path.get_base_dir(), cue_file_name])
+	var res: AudioCue = load('%s/%s' % [path.get_base_dir(), cue_file_name])
 	var target := ''
 	
 	match type:
@@ -228,10 +243,22 @@ type: String, path: String, audio_row: Container = null
 	var target_data: Array = PopochiuResources.get_data_value(
 		'audio', target, []
 	)
-	target_data.append(resource)
-	target_data.sort_custom(A, '_sort_cues')
-	PopochiuResources.set_data_value('audio', target, target_data)
 	
+	if not target_data.has(res):
+		target_data.append(res)
+		target_data.sort_custom(A, '_sort_cues')
+		PopochiuResources.set_data_value('audio', target, target_data)
+	else:
+		prints('ay!', res.resource_path)
+		yield(get_tree(), 'idle_frame')
+		return
+	
+	# ...
+#	main_dock.fs.scan()
+	yield(main_dock.fs, 'filesystem_changed')
+	
+	# Check if the AudioCue was created when assigning the audio file from the
+	# "Not assigned" group
 	if is_instance_valid(audio_row):
 		# Delete the file row
 		_audio_files_to_assign.erase(path)
@@ -239,7 +266,9 @@ type: String, path: String, audio_row: Container = null
 	
 		# Put the row in its corresponding group
 #		yield(get_tree().create_timer(0.1), 'timeout')
-		_read_audio_cues()
+		_group_audio_cues()
+	else:
+		_created_audio_cues += 1
 
 
 func _audio_cue_deleted(file_path: String) -> void:
