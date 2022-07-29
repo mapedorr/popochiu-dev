@@ -60,6 +60,7 @@ onready var _menu_cfg := [
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	_label.text = file_name if file_name else name
+	hint_tooltip = file_path if file_name else audio_cue.resource_path
 	_menu_btn.icon = get_icon('GuiTabMenu', 'EditorIcons')
 	_play.icon = get_icon('MainPlay', 'EditorIcons')
 	_stop.icon = get_icon('Stop', 'EditorIcons')

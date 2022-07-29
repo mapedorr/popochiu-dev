@@ -39,13 +39,13 @@ onready var _groups := {
 	}
 }
 onready var _asp: AudioStreamPlayer = find_node('AudioStreamPlayer')
-onready var _am_search_files: Button = find_node('BtnSearchAudioFiles')
+onready var _btn_search_files: Button = find_node('BtnSearchAudioFiles')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	_am_search_files.icon = get_icon('Search', 'EditorIcons')
-	_am_search_files.connect('pressed', self, 'search_audio_files')
+	_btn_search_files.icon = get_icon('Search', 'EditorIcons')
+	_btn_search_files.connect('pressed', self, 'search_audio_files')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -55,6 +55,8 @@ func fill_data() -> void:
 
 
 func search_audio_files() -> void:
+	# Look PopochiuData.cfg to remove entries for AudioCue files that don't
+	# exists in the project anymore
 	_group_audio_cues()
 	_read_directory(main_dock.fs.get_filesystem_path(SEARCH_PATH))
 	
@@ -63,9 +65,8 @@ func search_audio_files() -> void:
 		var progress: ProgressBar = main_dock.loading_dialog.find_node('Progress')
 		
 		progress.max_value = _audio_cues_to_create.size()
-		(main_dock.loading_dialog as WindowDialog).set_as_minsize()
-		(main_dock.loading_dialog as WindowDialog).popup_centered()
-		(main_dock.loading_dialog as WindowDialog).get_close_button().hide()
+		(main_dock.loading_dialog as Popup).set_as_minsize()
+		(main_dock.loading_dialog as Popup).popup_centered()
 		
 		yield(get_tree(), 'idle_frame')
 		
@@ -77,9 +78,7 @@ func search_audio_files() -> void:
 		_group_audio_cues()
 		_audio_cues_to_create.clear()
 		
-#		yield(get_tree().create_timer(1.0), 'timeout')
-		
-		(main_dock.loading_dialog as WindowDialog).hide()
+		(main_dock.loading_dialog as Popup).hide()
 
 
 func delete_rows(filepaths: Array) -> void:
@@ -249,7 +248,6 @@ type: String, path: String, audio_row: Container = null
 		target_data.sort_custom(A, '_sort_cues')
 		PopochiuResources.set_data_value('audio', target, target_data)
 	else:
-		prints('ay!', res.resource_path)
 		yield(get_tree(), 'idle_frame')
 		return
 	
