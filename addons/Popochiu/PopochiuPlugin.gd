@@ -25,7 +25,7 @@ func _init() -> void:
 	if Engine.editor_hint:
 		_is_first_install = PopochiuResources.init_file_structure()
 	
-	# Cargar los singleton para acceder directamente a objetos de Popochiu
+	# Load Popochiu singletons
 	add_autoload_singleton('U', Constants.UTILS_SNGL)
 	add_autoload_singleton('Cursor', Constants.CURSOR_SNGL)
 	add_autoload_singleton('E', Constants.POPOCHIU_SNGL)
@@ -40,37 +40,42 @@ func _enter_tree() -> void:
 	prints('[es] Estás usando Popochiu, un plugin para crear juegos point n\' click')
 	prints('[en] You\'re using Popochiu, a plugin for making point n\' click games')
 	prints('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ \\( o )3(o)/ ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒')
-
+	
+	_export_plugin = load('res://addons/Popochiu/ExportPlugin.gd').new()
+	add_export_plugin(_export_plugin)
+	
 	main_dock = load(Constants.MAIN_DOCK_PATH).instance()
 	main_dock.ei = _editor_interface
 	main_dock.fs = _editor_file_system
 	main_dock.focus_mode = Control.FOCUS_ALL
-
+	
 	main_dock.connect('room_row_clicked', self, 'update_overlays')
 	add_control_to_dock(DOCK_SLOT_RIGHT_BR, main_dock)
 	
-	# Llenar las listas de habitaciones, personajes, objetos de inventario
-	# y árboles de diálogo.
 	yield(get_tree().create_timer(0.5), 'timeout')
-
+	
+	# Fill the dock with Rooms, Characters, Inventory items, Dialogs and Audio cues
 	main_dock.fill_data()
 	main_dock.grab_focus()
 	
 	_editor_interface.get_selection().connect(
 		'selection_changed', self, '_check_nodes'
 	)
+	_editor_interface.get_file_system_dock().connect(
+		'files_moved', self, '_on_files_moved'
+	)
+	# TODO: This connection might be needed only by TabAudio.gd, so probably
+	# would be better if it is done there
 	_editor_file_system.connect('sources_changed', self, '_on_sources_changed')
+	
 	connect('scene_changed', main_dock, 'scene_changed')
 	connect('scene_closed', main_dock, 'scene_closed')
 	
 	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
-
+	
 	if _is_first_install:
 		main_dock.connect('move_folders_pressed', self, '_move_addon_folders')
 		main_dock.show_move_folders_button()
-	
-	_export_plugin = load('res://addons/Popochiu/ExportPlugin.gd').new()
-	add_export_plugin(_export_plugin)
 
 
 func _exit_tree() -> void:
@@ -185,6 +190,7 @@ func _move_addon_folders() -> void:
 	# Fix dependencies
 	yield(_editor_file_system, 'filesystem_changed')
 	yield(_check_popochiu_dependencies(), 'completed')
+	
 	main_dock.hide_move_folders_button()
 
 
@@ -290,6 +296,7 @@ func _fix_dependency(dependency, directory, resource_path):
 
 func _on_sources_changed(exist: bool) -> void:
 	if Engine.editor_hint and is_instance_valid(main_dock):
+		prints('sources changed')
 		main_dock.search_audio_files()
 
 
@@ -309,3 +316,9 @@ func _check_nodes() -> void:
 		if n.has_method('show_helpers'):
 			n.show_helpers()
 			_shown_helpers.append(n)
+
+
+func _on_files_moved(old_file: String, new_file: String) -> void:
+	# TODO: Check if the change affects one of the .tres files created by
+	# Popochiu and update the respective file names and rows in the Dock
+	pass
