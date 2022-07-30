@@ -56,7 +56,7 @@ func _ready() -> void:
 	var characters := PopochiuResources.get_section('characters')
 	if not characters.empty():
 		var pc: PopochiuCharacter = load(
-			(characters[0] as PopochiuCharacterData).scene
+			(load(characters[0]) as PopochiuCharacterData).scene
 		).instance()
 		C.player = pc
 		C.characters.append(pc)
@@ -199,13 +199,8 @@ func goto_room(script_name := '', use_transition := true) -> void:
 	main_camera.limit_top = _defaults.camera_limits.top
 	main_camera.limit_bottom = _defaults.camera_limits.bottom
 	
-#	for room_key in _config.get_section_keys('rooms'):
-#		if room_key.to_lower() == script_name.to_lower():
-#			get_tree().change_scene(_config.get_value('rooms', room_key).scene)
-#			return
-	
-	for r in PopochiuResources.get_section('rooms'):
-		var room = r as PopochiuRoomData
+	for rp in PopochiuResources.get_section('rooms'):
+		var room: PopochiuRoomData = load(rp)
 		if room.script_name.to_lower() == script_name.to_lower():
 			get_tree().change_scene(room.scene)
 			return
@@ -310,8 +305,8 @@ func get_text(msg: String) -> String:
 
 # Gets the PopochiuCharacter with script_name
 func get_character_instance(script_name: String) -> PopochiuCharacter:
-	for c in PopochiuResources.get_section('characters'):
-		var popochiu_character: PopochiuCharacterData = c
+	for rp in PopochiuResources.get_section('characters'):
+		var popochiu_character: PopochiuCharacterData = load(rp)
 		if popochiu_character.script_name == script_name:
 			return load(popochiu_character.scene).instance()
 	
@@ -321,8 +316,8 @@ func get_character_instance(script_name: String) -> PopochiuCharacter:
 
 # Gets the PopochiuInventoryItem with script_name
 func get_inventory_item_instance(script_name: String) -> PopochiuInventoryItem:
-	for ii in PopochiuResources.get_section('inventory_items'):
-		var popochiu_inventory_item: PopochiuInventoryItemData = ii
+	for rp in PopochiuResources.get_section('inventory_items'):
+		var popochiu_inventory_item: PopochiuInventoryItemData = load(rp)
 		if popochiu_inventory_item.script_name == script_name:
 			return load(popochiu_inventory_item.scene).instance()
 	
@@ -332,8 +327,8 @@ func get_inventory_item_instance(script_name: String) -> PopochiuInventoryItem:
 
 # Gets the PopochiuDialog with script_name
 func get_dialog(script_name: String) -> PopochiuDialog:
-	for dt in PopochiuResources.get_section('dialogs'):
-		var tree: PopochiuDialog = dt
+	for rp in PopochiuResources.get_section('dialogs'):
+		var tree: PopochiuDialog = load(rp)
 		if tree.script_name.to_lower() == script_name.to_lower():
 			return tree
 
@@ -378,8 +373,8 @@ func runnable(
 # Checks if the room with script_name exists in the array of rooms of Popochiu
 func room_exists(script_name: String) -> bool:
 #	for r in rooms:
-	for r in PopochiuResources.get_section('rooms'):
-		var room = r as PopochiuRoomData
+	for rp in PopochiuResources.get_section('rooms'):
+		var room: PopochiuRoomData = load(rp)
 		if room.script_name.to_lower() == script_name.to_lower():
 			return true
 	return false

@@ -189,7 +189,9 @@ func scene_closed(filepath: String) -> void:
 
 
 func add_resource_to_popochiu(target: String, resource: Resource) -> int:
-	return PopochiuResources.set_data_value(target, resource.script_name, resource)
+	return PopochiuResources.set_data_value(
+		target, resource.script_name, resource.resource_path
+	)
 
 
 func show_confirmation(title: String, message: String, ask := '') -> void:

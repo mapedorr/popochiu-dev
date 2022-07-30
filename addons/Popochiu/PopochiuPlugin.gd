@@ -62,6 +62,9 @@ func _enter_tree() -> void:
 		'selection_changed', self, '_check_nodes'
 	)
 	_editor_interface.get_file_system_dock().connect(
+		'file_removed', self, '_on_file_removed'
+	)
+	_editor_interface.get_file_system_dock().connect(
 		'files_moved', self, '_on_files_moved'
 	)
 	# TODO: This connection might be needed only by TabAudio.gd, so probably
@@ -321,4 +324,9 @@ func _check_nodes() -> void:
 func _on_files_moved(old_file: String, new_file: String) -> void:
 	# TODO: Check if the change affects one of the .tres files created by
 	# Popochiu and update the respective file names and rows in the Dock
+	pass
+
+
+func _on_file_removed(file: String) -> void:
+	prints('file removed')
 	pass

@@ -25,7 +25,8 @@ func _ready() -> void:
 	if Engine.editor_hint: return
 	
 	for arr in ['mx_cues', 'sfx_cues', 'vo_cues', 'ui_cues']:
-		for ac in PopochiuResources.get_data_value('audio', arr, []):
+		for rp in PopochiuResources.get_data_value('audio', arr, []):
+			var ac: AudioCue = load(rp)
 			self['_%s' % arr][ac.resource_name] = ac
 			_all_in_one[ac.resource_name] = ac
 
@@ -315,5 +316,11 @@ func _fadeout_finished(obj: Node, _key: NodePath) -> void:
 
 func _sort_cues(a: AudioCue, b: AudioCue) -> bool:
 	if a.resource_name < b.resource_name:
+		return true
+	return false
+
+
+func _sort_resource_paths(a: String, b: String) -> bool:
+	if a.get_file() < b.get_file():
 		return true
 	return false

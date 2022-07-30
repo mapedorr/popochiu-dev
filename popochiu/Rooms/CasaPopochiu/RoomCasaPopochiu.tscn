@@ -40,7 +40,6 @@ polygon = PoolVector2Array( 31, -27, 28, -3, 48, -1, 51, -26 )
 position = Vector2( -7, -17 )
 script = ExtResource( 7 )
 description = "To End"
-clickable = false
 cursor = 1
 script_name = "To101"
 

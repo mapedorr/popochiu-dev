@@ -364,8 +364,8 @@ func _delete_files(dir: EditorFileSystemDirectory) -> int:
 						var cues: Array = PopochiuResources.get_data_value(
 							'audio', arr, []
 						)
-						if cues.has(resource):
-							cues.erase(resource)
+						if cues.has(resource.resource_path):
+							cues.erase(resource.resource_path)
 							assert(
 								PopochiuResources.set_data_value(
 									'audio', arr, cues

@@ -105,6 +105,8 @@ func delete_rows(filepaths: Array) -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _group_audio_cues() -> void:
+	var entries_to_delete := {}
+	
 	# Put already loaded (in PopochiuData.cfg) AudioCues into their corresponding
 	# group
 	for d in _groups:
@@ -112,22 +114,38 @@ func _group_audio_cues() -> void:
 		var group_data: Array = PopochiuResources.get_data_value(
 			'audio', group.array, []
 		)
+		entries_to_delete[d] = []
 		
-		if not group_data:
-			continue
+		if not group_data: continue
 		
-		for m in group_data:
-			if (m as AudioCue).audio.resource_path in _audio_files_in_group:
+		for rp in group_data:
+			if not (main_dock.dir as Directory).file_exists(rp):
+				entries_to_delete[d].append(rp)
+				continue
+			
+			var ac: AudioCue = load(rp)
+			
+			if ac.audio.resource_path in _audio_files_in_group:
 				# TODO: Check if the resource_path has changed
 				continue
 			
-			var ar := _create_audio_cue_row(m)
+			var ar := _create_audio_cue_row(ac)
 			ar.cue_group = group.array
 			group.group.add(ar)
 			
-			_audio_files_in_group.append(
-				(m as AudioCue).audio.resource_path
+			_audio_files_in_group.append(ac.audio.resource_path)
+	
+	for dic in entries_to_delete:
+		var group: String = _groups[dic].array
+		var paths: Array = PopochiuResources.get_data_value('audio', group, [])
+		
+		for rp in entries_to_delete[dic]:
+			paths.erase(rp)
+			(_groups[dic].group as PopochiuGroup).remove_by_name(
+				rp.get_file().get_basename().capitalize().to_lower().replace(' ', '_')
 			)
+		
+		PopochiuResources.set_data_value('audio', group, paths)
 
 
 func _create_audio_cue_row(audio_cue: AudioCue) -> HBoxContainer:
@@ -243,9 +261,9 @@ type: String, path: String, audio_row: Container = null
 		'audio', target, []
 	)
 	
-	if not target_data.has(res):
-		target_data.append(res)
-		target_data.sort_custom(A, '_sort_cues')
+	if not target_data.has(res.resource_path):
+		target_data.append(res.resource_path)
+		target_data.sort_custom(A, '_sort_resource_paths')
 		PopochiuResources.set_data_value('audio', target, target_data)
 	else:
 		yield(get_tree(), 'idle_frame')

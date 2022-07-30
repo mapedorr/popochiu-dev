@@ -75,6 +75,7 @@ func _ready() -> void:
 	
 	if is_instance_valid(audio_cue):
 		_label.text = audio_cue.resource_name
+		name = audio_cue.resource_name
 		
 		for idx in range(4):
 			_menu_popup.set_item_disabled(idx, true)
@@ -211,7 +212,7 @@ func _remove_in_audio_manager() -> void:
 		'audio', cue_group, []
 	)
 	if group_data:
-		group_data.erase(audio_cue)
+		group_data.erase(audio_cue.resource_path)
 		
 		if group_data.empty():
 			PopochiuResources.erase_data_value('audio', cue_group)

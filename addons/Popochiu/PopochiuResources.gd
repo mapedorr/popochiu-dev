@@ -119,13 +119,13 @@ static func erase_data_value(section: String, key: String) -> void:
 
 static func get_section(section: String) -> Array:
 	var config := get_data_cfg()
-	var resources := []
+	var resource_paths := []
 	
 	if config.has_section(section):
 		for key in config.get_section_keys(section):
-			resources.append(config.get_value(section, key))
+			resource_paths.append(config.get_value(section, key))
 	
-	return resources
+	return resource_paths
 
 
 # ▨▨▨▨ SETTINGS ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨
