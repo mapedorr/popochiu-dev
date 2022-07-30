@@ -136,16 +136,23 @@ func _group_audio_cues() -> void:
 			_audio_files_in_group.append(ac.audio.resource_path)
 	
 	for dic in entries_to_delete:
+		if entries_to_delete[dic].empty(): continue
+		
 		var group: String = _groups[dic].array
 		var paths: Array = PopochiuResources.get_data_value('audio', group, [])
 		
 		for rp in entries_to_delete[dic]:
-			paths.erase(rp)
 			(_groups[dic].group as PopochiuGroup).remove_by_name(
-				rp.get_file().get_basename().capitalize().to_lower().replace(' ', '_')
+				rp.get_file().get_basename()\
+				.capitalize().to_lower().replace(' ', '_')
 			)
+			
+			paths.erase(rp)
 		
-		PopochiuResources.set_data_value('audio', group, paths)
+		if paths.empty():
+			PopochiuResources.erase_data_value('audio', group)
+		else:
+			PopochiuResources.set_data_value('audio', group, paths)
 
 
 func _create_audio_cue_row(audio_cue: AudioCue) -> HBoxContainer:

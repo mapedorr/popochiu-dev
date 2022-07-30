@@ -299,7 +299,6 @@ func _fix_dependency(dependency, directory, resource_path):
 
 func _on_sources_changed(exist: bool) -> void:
 	if Engine.editor_hint and is_instance_valid(main_dock):
-		prints('sources changed')
 		main_dock.search_audio_files()
 
 
@@ -328,5 +327,4 @@ func _on_files_moved(old_file: String, new_file: String) -> void:
 
 
 func _on_file_removed(file: String) -> void:
-	prints('file removed')
 	pass
