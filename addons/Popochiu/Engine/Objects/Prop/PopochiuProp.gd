@@ -15,6 +15,12 @@ onready var _sprite: Sprite = $Sprite
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	add_to_group('props')
+	
+	if Engine.editor_hint: return
+	
+	for c in get_children():
+		c.position.y -= baseline
+	position.y += baseline
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

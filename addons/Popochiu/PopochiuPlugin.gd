@@ -76,7 +76,10 @@ func _enter_tree() -> void:
 	
 	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
 	
-	if _is_first_install:
+	if not _is_first_install and (
+		PopochiuResources.get_settings().graphic_interface.resource_path.find('addons') > -1\
+		or PopochiuResources.get_settings().transition_layer.resource_path.find('addons') > -1
+	):
 		main_dock.connect('move_folders_pressed', self, '_move_addon_folders')
 		main_dock.show_move_folders_button()
 
@@ -97,8 +100,8 @@ func enable_plugin() -> void:
 		var ad := AcceptDialog.new()
 		# TODO: Localize
 		ad.window_title = 'Popochiu'
-		ad.dialog_text = '[es] Reinicia el motor para completar la instalación.\n' + \
-		'[en] Restart Godot to complete the instalation.'
+		ad.dialog_text = '[es] Reinicia el motor para completar la instalación (Proyecto > Volver a Cargar el Proyecto Actual).\n' + \
+		'[en] Restart Godot to complete the instalation (Project > Reload Current Project).'
 		_editor_interface.get_base_control().add_child(ad)
 		ad.popup_centered()
 

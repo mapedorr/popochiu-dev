@@ -4,15 +4,10 @@
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Prop/PopochiuProp.tscn" type="PackedScene" id=3]
 [ext_resource path="res://popochiu/Rooms/Map/Props/bg.png" type="Texture" id=4]
 
-[node name="RoomMap" type="Node2D"]
+[node name="RoomMap" type="YSort"]
 script = ExtResource( 1 )
-script_name = "Map"
-limit_left = 0.0
-limit_right = 0.0
-limit_top = 0.0
-limit_bottom = 0.0
 
-[node name="Props" type="Node2D" parent="."]
+[node name="Props" type="YSort" parent="."]
 
 [node name="Bg" parent="Props" instance=ExtResource( 3 )]
 description = "Bg"
@@ -31,4 +26,4 @@ texture = ExtResource( 4 )
 
 [node name="Navigation2D" type="Navigation2D" parent="WalkableAreas"]
 
-[node name="Characters" type="Node2D" parent="."]
+[node name="Characters" type="YSort" parent="."]

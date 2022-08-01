@@ -20,6 +20,7 @@ const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd
 
 var type := -1
 var path := ''
+var node_path := ''
 var main_dock: Panel = null setget _set_main_dock
 var is_main := false setget _set_is_main
 var is_on_start := false setget set_is_on_start

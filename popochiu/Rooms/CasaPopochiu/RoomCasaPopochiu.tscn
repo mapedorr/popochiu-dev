@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/RoomCasaPopochiu.gd" type="Script" id=1]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn" type="PackedScene" id=2]
@@ -7,27 +7,72 @@
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Hotspots/ToMap/HotspotToMap.gd" type="Script" id=5]
 [ext_resource path="res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn" type="PackedScene" id=6]
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Hotspots/To101/HotspotTo101.gd" type="Script" id=7]
+[ext_resource path="res://popochiu/Characters/Popsy/CharacterPopsy.tscn" type="PackedScene" id=8]
+[ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/blanket.png" type="Texture" id=9]
+[ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/toy_car.png" type="Texture" id=10]
 
-[node name="RoomCasaPopochiu" type="Node2D"]
+[sub_resource type="NavigationPolygon" id=1]
+vertices = PoolVector2Array( 28, 16, 301, 16, 325, 79, 92, 83, -169, 81, -400, 11, -389, 64 )
+polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ), PoolIntArray( 5, 0, 4, 6 ) ]
+outlines = [ PoolVector2Array( -389, 64, -400, 11, 28, 16, 301, 16, 325, 79, 92, 83, -169, 81 ) ]
+
+[node name="RoomCasaPopochiu" type="YSort"]
 script = ExtResource( 1 )
-script_name = "CasaPopochiu"
-limit_left = 0.0
-limit_right = 0.0
-limit_top = 0.0
-limit_bottom = 0.0
 
-[node name="Props" type="Node2D" parent="."]
+[node name="Props" type="YSort" parent="."]
 
 [node name="Bg" parent="Props" instance=ExtResource( 3 )]
+position = Vector2( 160, 90 )
 description = "Bg"
 clickable = false
+baseline = -90
 cursor = 1
 script_name = "Bg"
 texture = ExtResource( 4 )
 
+[node name="BaselineHelper" parent="Props/Bg" index="0"]
+position = Vector2( 0, -90 )
+
+[node name="Sprite" parent="Props/Bg" index="2"]
+texture = ExtResource( 4 )
+
+[node name="Blanket" parent="Props" instance=ExtResource( 3 )]
+position = Vector2( 212, 126 )
+description = "Blanket"
+clickable = false
+baseline = 5
+cursor = 1
+script_name = "Blanket"
+texture = ExtResource( 9 )
+
+[node name="BaselineHelper" parent="Props/Blanket" index="0"]
+position = Vector2( 0, 5 )
+
+[node name="Sprite" parent="Props/Blanket" index="2"]
+texture = ExtResource( 9 )
+
+[node name="Toy" parent="Props/Blanket" instance=ExtResource( 3 )]
+position = Vector2( 0, -3 )
+description = "Toy"
+clickable = false
+baseline = 4
+cursor = 1
+script_name = "Toy"
+texture = ExtResource( 10 )
+
+[node name="BaselineHelper" parent="Props/Blanket/Toy" index="0"]
+position = Vector2( 0, 4 )
+
+[node name="Sprite" parent="Props/Blanket/Toy" index="2"]
+texture = ExtResource( 10 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Props/Blanket/Toy"]
+polygon = PoolVector2Array( -7, 2, 5, 3, 8, 0, 2, -4, -3, -4 )
+
 [node name="Hotspots" type="Node2D" parent="."]
 
 [node name="ToMap" parent="Hotspots" instance=ExtResource( 2 )]
+position = Vector2( 160, 91 )
 script = ExtResource( 5 )
 description = "To Map"
 cursor = 1
@@ -37,7 +82,7 @@ script_name = "ToMap"
 polygon = PoolVector2Array( 31, -27, 28, -3, 48, -1, 51, -26 )
 
 [node name="ToEnd" parent="Hotspots" instance=ExtResource( 2 )]
-position = Vector2( -7, -17 )
+position = Vector2( 153, 74 )
 script = ExtResource( 7 )
 description = "To End"
 cursor = 1
@@ -54,7 +99,41 @@ polygon = PoolVector2Array( -20, -13, -18, 12, 17, 11, 17, -12 )
 
 [node name="Navigation2D" type="Navigation2D" parent="WalkableAreas"]
 
-[node name="Characters" type="Node2D" parent="."]
+[node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="WalkableAreas/Navigation2D"]
+position = Vector2( 160, 91 )
+navpoly = SubResource( 1 )
+
+[node name="Characters" type="YSort" parent="."]
 
 [node name="CharacterGoddiu" parent="Characters" instance=ExtResource( 6 )]
-position = Vector2( -7, 46 )
+position = Vector2( 161, 150 )
+
+[node name="CharacterPopsy" parent="Characters" instance=ExtResource( 8 )]
+position = Vector2( 232, 144 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -68.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = 68.0
+rect_min_size = Vector2( 64, 64 )
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Control"]
+visible = false
+margin_left = 191.0
+margin_top = 133.0
+margin_right = 231.0
+margin_bottom = 173.0
+
+[editable path="Props/Bg"]
+[editable path="Props/Blanket"]
+[editable path="Props/Blanket/Toy"]

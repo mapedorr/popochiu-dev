@@ -65,6 +65,9 @@ func _ready() -> void:
 	for key in settings.items_on_start:
 		I.add_item(key, false, false)
 	
+	add_child(settings.graphic_interface.instance())
+	add_child(settings.transition_layer.instance())
+	
 	set_process_input(false)
 
 
@@ -79,7 +82,9 @@ func _process(delta: float) -> void:
 		if _shake_timer <= 0.0:
 			_is_camera_shaking = false
 			main_camera.offset = Vector2.ZERO
-	elif not Engine.editor_hint and is_instance_valid(C.camera_owner):
+	elif not Engine.editor_hint\
+	and is_instance_valid(C.camera_owner)\
+	and C.camera_owner.is_inside_tree():
 		main_camera.position = C.camera_owner.position
 
 
