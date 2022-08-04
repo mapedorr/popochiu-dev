@@ -21,7 +21,7 @@ var height := 0.0 setget ,get_height
 var half_width := 0.0 setget ,get_half_width
 var half_height := 0.0 setget ,get_half_height
 var settings := PopochiuResources.get_settings()
-var current_text_speed_idx := settings.text_speed_idx
+var current_text_speed_idx := settings.default_text_speed
 var current_text_speed: float = settings.text_speeds[current_text_speed_idx]
 var current_language := 0
 
@@ -487,12 +487,7 @@ func _set_in_room(value: bool) -> void:
 	Cursor.toggle_visibility(in_room)
 
 
-#func _set_text_speed_idx(value: int) -> void:
-#	text_speed_idx = value
-#	emit_signal('text_speed_changed', text_speed_idx)
-#
-#
 #func _set_language_idx(value: int) -> void:
-#	language_idx = value
+#	default_language = value
 #	TranslationServer.set_locale(languages[value])
 #	emit_signal('language_changed')

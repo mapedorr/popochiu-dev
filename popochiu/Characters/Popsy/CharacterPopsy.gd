@@ -15,7 +15,7 @@ func on_interact() -> void:
 func on_look() -> void:
 	# Replace the call to .on_look() to implement your code. This only makes
 	# the default behavior to happen.
-	.on_look()
+	E.run(['Goddiu: ¡oñiiii mi pepechí!'])
 
 
 # When the node is clicked and there is an inventory item selected

@@ -10,6 +10,7 @@ script = ExtResource( 1 )
 [node name="Props" type="YSort" parent="."]
 
 [node name="Bg" parent="Props" instance=ExtResource( 3 )]
+position = Vector2( 160, 90 )
 description = "Bg"
 clickable = false
 cursor = 1

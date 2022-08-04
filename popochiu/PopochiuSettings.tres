@@ -1,23 +1,22 @@
-[gd_resource type="Resource" load_steps=4 format=2]
+[gd_resource type="Resource" load_steps=2 format=2]
 
 [ext_resource path="res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd" type="Script" id=1]
-[ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/GraphicInterface.tscn" type="PackedScene" id=2]
-[ext_resource path="res://addons/Popochiu/Engine/Objects/TransitionLayer/TransitionLayer.tscn" type="PackedScene" id=3]
 
 [resource]
 script = ExtResource( 1 )
 game_width = 320
 game_height = 180
-graphic_interface = ExtResource( 2 )
-transition_layer = ExtResource( 3 )
+test_width = 640
+test_height = 360
+game_type = 2
 skip_cutscene_time = 0.2
 text_speeds = [ 0.1, 0.01, 0.0 ]
-text_speed_idx = 0
-text_continue_auto = false
+default_text_speed = 0
+auto_continue_text = false
 languages = [ "en", "es", "es_CO" ]
-language_idx = 0
+default_language = 0
 use_translations = false
-items_on_start = [ "ToyCar" ]
+items_on_start = [  ]
 inventory_limit = 0
 inventory_always_visible = false
 toolbar_always_visible = false

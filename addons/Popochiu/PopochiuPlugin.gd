@@ -41,6 +41,8 @@ func _enter_tree() -> void:
 	prints('[en] You\'re using Popochiu, a plugin for making point n\' click games')
 	prints('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ \\( o )3(o)/ ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒')
 	
+	_editor_file_system.scan_sources()
+	
 	_export_plugin = load('res://addons/Popochiu/ExportPlugin.gd').new()
 	add_export_plugin(_export_plugin)
 	
@@ -162,24 +164,6 @@ func _remove_input_actions() -> void:
 
 
 func _move_addon_folders() -> void:
-	# Remove refs to the graphic interface and the transition animations
-	var result := OK
-#	var popochiu: Node = load(Constants.POPOCHIU_SCENE).instance()
-#	var gi: CanvasLayer = popochiu.get_node_or_null('GraphicInterface')
-#	var tl: CanvasLayer = popochiu.get_node_or_null('TransitionLayer')
-#
-#	popochiu.remove_child(gi)
-#	popochiu.remove_child(tl)
-#
-#	var new_popochiu: PackedScene = PackedScene.new()
-#	new_popochiu.pack(popochiu)
-#	_editor_file_system.scan()
-#	result = ResourceSaver.save(Constants.POPOCHIU_SCENE, new_popochiu)
-#	assert(
-#		result == OK,
-#		'[Popochiu] Could not save after removing GI and TL from Popochiu.'
-#	)
-
 	# Move files and folders so developer can overwrite them
 	_directory.rename(
 		Constants.GRAPHIC_INTERFACE_ADDON.get_base_dir(),
@@ -204,7 +188,7 @@ func _move_addon_folders() -> void:
 	PopochiuResources.save_settings(settings)
 	
 	main_dock.hide_move_folders_button()
-#	_editor_interface.edit_resource(PopochiuResources.get_settings())
+	_editor_interface.edit_resource(PopochiuResources.get_settings())
 
 
 func _check_popochiu_dependencies() -> void:
@@ -222,55 +206,10 @@ func _check_popochiu_dependencies() -> void:
 		)
 	)
 	
-	# Add the graphic interface and the transitions scenes to Popochiu
-#	var popochiu: Node = load(Constants.POPOCHIU_SCENE).instance()
-#
-#	if not popochiu:
-#		printerr('[Popochiu] Popochius.tscn is broken.')
-#		return
-#
-#	var save_popochiu := false
-
-#	if not popochiu.get_node_or_null('GraphicInterface'):
-#
-#		yield(get_tree().create_timer(0.3), 'timeout')
-#		var gi: CanvasLayer = load(Constants.GRAPHIC_INTERFACE_SCENE).instance()
-#		popochiu.add_child(gi)
-#		gi.owner = popochiu
-#
-#		save_popochiu = true
-#
-#	if not popochiu.get_node_or_null('TransitionLayer'):
-#		_fix_dependencies(
-#			_editor_file_system.get_filesystem_path(
-#				Constants.TRANSITION_LAYER_SCENE.get_base_dir()
-#			)
-#		)
-#		yield(get_tree().create_timer(0.3), 'timeout')
-#		var tl: CanvasLayer = load(Constants.TRANSITION_LAYER_SCENE).instance()
-#		popochiu.add_child(tl)
-#		tl.owner = popochiu
-#
-#		save_popochiu = true
-#
-#	if save_popochiu:
-#		var result := OK
-#		var new_popochiu: PackedScene = PackedScene.new()
-#		new_popochiu.pack(popochiu)
-#		result = ResourceSaver.save(Constants.POPOCHIU_SCENE, new_popochiu)
-#		assert(
-#			result == OK,
-#			'[Popochiu] Could not save Popochiu after fixing GI or TL dependencies.'
-#		)
-#
-#		yield(_editor_file_system, 'filesystem_changed')
-#
-#		prints('█████████████████████████████████████ Project structure ready ████')
-	
 	yield(get_tree(), 'idle_frame')
 
 
-# Thnaks PigDev ;)
+# Thanks PigDev ;)
 # https://github.com/pigdevstudio/godot_tools/blob/master/source/tools/DependencyFixer.gd
 func _fix_dependencies(dir: EditorFileSystemDirectory) -> void:
 	var res := _editor_file_system.get_filesystem()
