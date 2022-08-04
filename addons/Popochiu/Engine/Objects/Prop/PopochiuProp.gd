@@ -19,8 +19,8 @@ func _ready() -> void:
 	if Engine.editor_hint: return
 	
 	for c in get_children():
-		c.position.y -= baseline
-	position.y += baseline
+		c.position.y -= baseline * c.scale.y
+	position.y += baseline * scale.y
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

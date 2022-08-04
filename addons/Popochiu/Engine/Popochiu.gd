@@ -65,8 +65,23 @@ func _ready() -> void:
 	for key in settings.items_on_start:
 		I.add_item(key, false, false)
 	
-	add_child(settings.graphic_interface.instance())
-	add_child(settings.transition_layer.instance())
+	var gi: CanvasLayer = null
+	var tl: CanvasLayer = null
+	
+	if settings.graphic_interface:
+		gi = settings.graphic_interface.instance()
+		gi.name = 'GraphicInterface'
+	else:
+		gi = load(PopochiuResources.GRAPHIC_INTERFACE_ADDON).instance()
+	
+	if settings.transition_layer:
+		tl = settings.transition_layer.instance()
+		tl.name = 'TransitionLayer'
+	else:
+		tl = load(PopochiuResources.TRANSITION_LAYER_ADDON).instance()
+	
+	add_child(gi)
+	add_child(tl)
 	
 	set_process_input(false)
 
