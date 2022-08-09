@@ -78,12 +78,11 @@ func _enter_tree() -> void:
 	
 	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
 	
-	if not _is_first_install and (
-		not PopochiuResources.get_settings().graphic_interface
-		or not PopochiuResources.get_settings().transition_layer
-	):
-		main_dock.connect('move_folders_pressed', self, '_move_addon_folders')
-		main_dock.show_move_folders_button()
+	if PopochiuResources.get_section('setup').empty():
+		main_dock.open_setup()
+		(main_dock.setup_dialog as AcceptDialog).connect(
+			'popup_hide', self, '_move_addon_folders'
+		)
 
 
 func _exit_tree() -> void:
@@ -181,14 +180,15 @@ func _move_addon_folders() -> void:
 	yield(_editor_file_system, 'filesystem_changed')
 	yield(_check_popochiu_dependencies(), 'completed')
 	
+	# Save settings
 	var settings := PopochiuResources.get_settings()
 	settings.graphic_interface = load(Constants.GRAPHIC_INTERFACE_POPOCHIU)
 	settings.transition_layer = load(Constants.TRANSITION_LAYER_POPOCHIU)
 	
 	PopochiuResources.save_settings(settings)
 	
-	main_dock.hide_move_folders_button()
-	_editor_interface.edit_resource(PopochiuResources.get_settings())
+	# Mark setup as done in PopochiuData.cfg
+	PopochiuResources.set_data_value('setup', 'done', true)
 
 
 func _check_popochiu_dependencies() -> void:

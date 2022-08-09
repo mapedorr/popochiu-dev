@@ -61,7 +61,7 @@ static func init_file_structure() -> bool:
 		if not directory.dir_exists(d):
 			directory.make_dir_recursive(d)
 	
-	# Create config file
+	# Create config files
 	if not directory.file_exists(DATA):
 		_create_empty_file(DATA)
 	
