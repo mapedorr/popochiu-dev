@@ -177,11 +177,12 @@ size_flags_vertical = 3
 alignment = 2
 
 [node name="BtnSetup" type="Button" parent="MarginContainer/VBoxContainer/FooterPanel/HBoxContainer"]
-margin_left = 38.0
+margin_left = 20.0
 margin_right = 86.0
 margin_bottom = 22.0
 hint_tooltip = "Opens wiki in web browser"
 text = "Setup"
+icon = SubResource( 12 )
 
 [node name="BtnSettings" type="Button" parent="MarginContainer/VBoxContainer/FooterPanel/HBoxContainer"]
 margin_left = 90.0

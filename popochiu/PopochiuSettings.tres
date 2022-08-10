@@ -4,11 +4,6 @@
 
 [resource]
 script = ExtResource( 1 )
-game_width = 320
-game_height = 180
-test_width = 640
-test_height = 360
-game_type = 2
 skip_cutscene_time = 0.2
 text_speeds = [ 0.1, 0.01, 0.0 ]
 default_text_speed = 0

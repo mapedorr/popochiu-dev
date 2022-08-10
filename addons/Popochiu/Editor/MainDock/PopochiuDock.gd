@@ -69,8 +69,9 @@ onready var _types := {
 func _ready() -> void:
 	popochiu = load(POPOCHIU_SCENE).instance()
 	
-	_btn_docs.icon = get_icon('HelpSearch', 'EditorIcons')
+	_btn_setup.icon = get_icon("Edit", "EditorIcons")
 	_btn_settings.icon = get_icon('Tools', 'EditorIcons')
+	_btn_docs.icon = get_icon('HelpSearch', 'EditorIcons')
 	
 	# Set the Main tab selected by default
 	_tab_container.current_tab = 0
