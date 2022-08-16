@@ -8,7 +8,7 @@ extends PopochiuHotspot
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	.on_interact()
+	E.goto_room('CasaPopochiu')
 
 
 # When the node is right clicked

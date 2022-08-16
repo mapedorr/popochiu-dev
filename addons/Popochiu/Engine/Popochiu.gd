@@ -5,6 +5,10 @@ extends Node
 
 signal text_speed_changed
 signal language_changed
+signal game_saved
+signal game_loaded(data)
+
+const SaveLoad := preload('res://addons/Popochiu/Engine/Others/PopochiuSaveLoad.gd')
 
 var in_run := false
 # Used to prevent going to another room when there is one being loaded
@@ -36,6 +40,7 @@ var _shake_timer := 0.0
 var _running := false
 var _use_transition_on_room_change := true
 var _config: ConfigFile = null
+var _loaded_game := {}
 
 onready var main_camera: Camera2D = find_node('MainCamera')
 onready var _defaults := {
@@ -46,6 +51,7 @@ onready var _defaults := {
 		bottom = main_camera.limit_bottom
 	}
 }
+onready var _saveload := SaveLoad.new()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -222,6 +228,10 @@ func goto_room(script_name := '', use_transition := true) -> void:
 	for rp in PopochiuResources.get_section('rooms'):
 		var room: PopochiuRoomData = load(rp)
 		if room.script_name.to_lower() == script_name.to_lower():
+			if _loaded_game:
+				# TODO: Load the state of the room
+				pass
+			
 			get_tree().change_scene(room.scene)
 			return
 	
@@ -241,6 +251,9 @@ func room_readied(room: PopochiuRoom) -> void:
 	room.visited_first_time = true if room.visited_times == 0 else false
 	room.visited_times += 1
 	
+	# Store the room state
+	rooms_states[room.script_name] = current_room.state
+	
 	# Add the PopochiuCharacter instances to the room
 	for c in room.characters_cfg:
 		var chr: PopochiuCharacter = C.get_character(c.script_name)
@@ -254,10 +267,6 @@ func room_readied(room: PopochiuRoom) -> void:
 			room.add_character(C.player)
 		
 		yield(C.player.idle(false), 'completed')
-	
-	# Sort the characters in the room based on their baseline to avoid issues
-	# with z_index
-	room.sort_characters()
 	
 	for c in get_tree().get_nodes_in_group('PopochiuClickable'):
 		c.room = room
@@ -278,6 +287,12 @@ func room_readied(room: PopochiuRoom) -> void:
 	
 	# This enables the room to listen input events
 	room.on_room_transition_finished()
+	
+	if _loaded_game:
+		C.player.global_position = Vector2(
+			_loaded_game.position.x,
+			_loaded_game.position.y
+		)
 
 
 # Changes the main camera's offset (useful when zooming the camera)
@@ -436,6 +451,29 @@ func change_text_speed() -> void:
 	current_text_speed = settings.text_speeds[current_text_speed_idx]
 	
 	emit_signal('text_speed_changed')
+
+
+func has_save() -> bool:
+	return _saveload.save_exists()
+
+
+func save_game() -> void:
+	if _saveload.save_game():
+		emit_signal('game_saved')
+
+
+func load_game() -> void:
+	_loaded_game = _saveload.load_game()
+	
+	if not _loaded_game: return
+	
+	for item in _loaded_game.inventory:
+		I.add_item(item)
+	
+	if current_room.script_name != _loaded_game.room:
+		goto_room(_loaded_game.room, false)
+	
+	emit_signal('game_loaded', _loaded_game)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

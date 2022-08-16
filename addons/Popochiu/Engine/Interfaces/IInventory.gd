@@ -13,6 +13,8 @@ signal inventory_hide_requested(use_anim)
 
 
 var active: PopochiuInventoryItem
+# Used for saving the game
+var items := []
 
 var _item_instances := []
 var _items_count := 0
@@ -27,7 +29,7 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 	if E.settings.inventory_limit > 0\
 	and _items_count == E.settings.inventory_limit:
 		prints(
-			'[Popochiu] Could not add %s to the inventory because it is full' %\
+			'[Popochiu] Could not add %s to the inventory because it is full.' %\
 			item_name
 		)
 		
@@ -37,6 +39,7 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 	if is_instance_valid(i) and not i.in_inventory:
 		i.in_inventory = true
 		_items_count += 1
+		items.append(item_name)
 		
 		emit_signal('item_added', i, animate)
 		
@@ -81,6 +84,7 @@ func remove_item(item_name: String, is_in_queue := true) -> void:
 	if is_instance_valid(i):
 		i.in_inventory = false
 		_items_count -= 1
+		items.erase(item_name)
 		
 		set_active_item(null)
 		emit_signal('item_removed', i)
@@ -103,11 +107,13 @@ func is_full() -> bool:
 #	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 #	if is_instance_valid(i):
 #		i.on_discard()
+#		items.erase(item_name)
 #		emit_signal('item_discarded', i)
 #		yield(self.remove_item(item_name, is_in_queue), 'completed')
 #
 #
 #func clean_inventory() -> void:
+#	items.clear()
 #	for ii in _item_instances:
 #		ii.on_discard()
 #		emit_signal('item_discarded', ii)

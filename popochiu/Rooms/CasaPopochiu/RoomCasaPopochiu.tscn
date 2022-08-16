@@ -18,6 +18,7 @@ outlines = [ PoolVector2Array( -389, 64, -400, 11, 28, 16, 301, 16, 325, 79, 92,
 
 [node name="RoomCasaPopochiu" type="YSort"]
 script = ExtResource( 1 )
+script_name = "CasaPopochiu"
 
 [node name="Props" type="YSort" parent="."]
 
