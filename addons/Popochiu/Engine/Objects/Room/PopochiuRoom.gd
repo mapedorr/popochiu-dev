@@ -82,6 +82,12 @@ func _unhandled_input(event):
 		C.player.walk(get_local_mouse_position(), false)
 
 
+#func _get_property_list() -> Array:
+#	if stats == null: return []
+#
+#	return stats.get_property_list()
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # What happens when Popochiu loads the room. At this point the room is in the
 # tree but it is not visible

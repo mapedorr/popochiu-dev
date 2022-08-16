@@ -1,9 +1,13 @@
 tool
 extends PopochiuRoom
 
+export var simplona := false
+
+var chaperuca := 'sisas'
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
-# TODO: Overwrite Godot's methods
+
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░

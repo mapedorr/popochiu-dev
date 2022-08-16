@@ -24,17 +24,22 @@ func save_game() -> bool:
 		return false
 	
 	var data := {
-		room = E.current_room.script_name,
-		position = {
-			x = C.player.global_position.x,
-			y = C.player.global_position.y
+		player = {
+			id = C.player.script_name,
+			room = E.current_room.script_name,
+			position = {
+				x = C.player.global_position.x,
+				y = C.player.global_position.y
+			},
+			inventory = I.items,
 		},
-		inventory = I.items,
+		rooms = {}, # Stores the state of each room
+		items = {}, # Stores the state of each inventory item
 	}
 	
 	# Go over each Room to save its current state
 	for room_id in E.rooms_states:
-		data[room_id] = E.rooms_states[room_id]
+		data.rooms[room_id] = E.rooms_states[room_id]
 	
 	var json_string := JSON.print(data)
 	_file.store_string(json_string)

@@ -49,7 +49,6 @@ func _show_dialog_text(chr: PopochiuCharacter, msg := '') -> void:
 		text = msg,
 		color = chr.text_color,
 		position = U.get_screen_coords_for(chr.dialog_pos).floor(),
-		offset_y = chr.sprite.position.y
 	})
 
 

@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://popochiu/Rooms/Map/RoomMap.gd" type="Script" id=1]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Prop/PopochiuProp.tscn" type="PackedScene" id=3]
 [ext_resource path="res://popochiu/Rooms/Map/Props/bg.png" type="Texture" id=4]
 [ext_resource path="res://popochiu/Rooms/Map/Hotspots/CasaPopochiu/HotspotCasaPopochiu.gd" type="Script" id=5]
+[ext_resource path="res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn" type="PackedScene" id=6]
 
 [sub_resource type="NavigationPolygon" id=1]
 vertices = PoolVector2Array( 9, 127, 49, 58, 234, 56, 305, 123, 285, 173, 37, 174 )
@@ -21,6 +22,7 @@ script_name = "Map"
 position = Vector2( 160, 90 )
 description = "Bg"
 clickable = false
+baseline = -90
 cursor = 1
 script_name = "Bg"
 texture = ExtResource( 4 )
@@ -49,3 +51,6 @@ polygon = PoolVector2Array( -123, 5, -103, 5, -103, 45, -123, 45 )
 navpoly = SubResource( 1 )
 
 [node name="Characters" type="YSort" parent="."]
+
+[node name="CharacterGoddiu" parent="Characters" instance=ExtResource( 6 )]
+position = Vector2( 164, 127 )

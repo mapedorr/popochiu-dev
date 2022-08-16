@@ -58,19 +58,6 @@ onready var _saveload := SaveLoad.new()
 func _ready() -> void:
 	_config = PopochiuResources.get_data_cfg()
 	
-	# Set the first character on the list to be the default PC (playable character)
-	var characters := PopochiuResources.get_section('characters')
-	if not characters.empty():
-		var pc: PopochiuCharacter = load(
-			(load(characters[0]) as PopochiuCharacterData).scene
-		).instance()
-		C.player = pc
-		C.characters.append(pc)
-	
-	# Add inventory items on start (ignore animations (3rd parameter))
-	for key in settings.items_on_start:
-		I.add_item(key, false, false)
-	
 	var gi: CanvasLayer = null
 	var tl: CanvasLayer = null
 	
@@ -88,6 +75,19 @@ func _ready() -> void:
 	
 	add_child(gi)
 	add_child(tl)
+	
+	# Set the first character on the list to be the default PC (playable character)
+	var characters := PopochiuResources.get_section('characters')
+	if not characters.empty():
+		var pc: PopochiuCharacter = load(
+			(load(characters[0]) as PopochiuCharacterData).scene
+		).instance()
+		C.player = pc
+		C.characters.append(pc)
+	
+	# Add inventory items on start (ignore animations (3rd parameter))
+	for key in settings.items_on_start:
+		I.add_item(key, false, false)
 	
 	set_process_input(false)
 
@@ -241,6 +241,8 @@ func goto_room(script_name := '', use_transition := true) -> void:
 # Called once the loaded room is _ready
 func room_readied(room: PopochiuRoom) -> void:
 	current_room = room
+	for p in current_room.get_script().get_script_property_list():
+		prints(p.name, p.usage, current_room[p.name])
 	
 	# Load the room state
 	if rooms_states.has(room.script_name):
@@ -273,6 +275,9 @@ func room_readied(room: PopochiuRoom) -> void:
 	
 	room.on_room_entered()
 	
+	if _loaded_game:
+		_load_player()
+	
 	if _use_transition_on_room_change:
 		$TransitionLayer.play_transition($TransitionLayer.FADE_OUT)
 		yield($TransitionLayer, 'transition_finished')
@@ -287,12 +292,6 @@ func room_readied(room: PopochiuRoom) -> void:
 	
 	# This enables the room to listen input events
 	room.on_room_transition_finished()
-	
-	if _loaded_game:
-		C.player.global_position = Vector2(
-			_loaded_game.position.x,
-			_loaded_game.position.y
-		)
 
 
 # Changes the main camera's offset (useful when zooming the camera)
@@ -467,11 +466,18 @@ func load_game() -> void:
 	
 	if not _loaded_game: return
 	
-	for item in _loaded_game.inventory:
-		I.add_item(item)
+	# Load inventory items
+	for item in _loaded_game.player.inventory:
+		I.add_item(item, false, false)
 	
-	if current_room.script_name != _loaded_game.room:
-		goto_room(_loaded_game.room, false)
+	# Load room states
+	for room_data in _loaded_game.rooms:
+		rooms_states[room_data] = _loaded_game.rooms[room_data]
+	
+	if current_room.script_name != _loaded_game.player.room:
+		goto_room(_loaded_game.player.room)
+	else:
+		_load_player()
 	
 	emit_signal('game_loaded', _loaded_game)
 
@@ -523,6 +529,14 @@ func _eval_string(text: String) -> void:
 func _set_in_room(value: bool) -> void:
 	in_room = value
 	Cursor.toggle_visibility(in_room)
+
+
+func _load_player() -> void:
+	C.set_player(C.get_character(_loaded_game.player.id))
+	C.player.global_position = Vector2(
+		_loaded_game.player.position.x,
+		_loaded_game.player.position.y
+	)
 
 
 #func _set_language_idx(value: int) -> void:
