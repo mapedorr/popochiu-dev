@@ -25,7 +25,6 @@ var emotion := ''
 
 var _looking_dir := 'd'
 
-onready var sprite: Sprite = $Sprite
 onready var dialog_pos: Position2D = $DialogPos
 
 
@@ -64,11 +63,12 @@ func walk(target_pos: Vector2, is_in_queue := true) -> void:
 	is_moving = true
 	_looking_dir = 'l' if target_pos.x < position.x else 'r'
 	
-	match flips_when:
-		FlipsWhen.MOVING_LEFT:
-			$Sprite.flip_h = target_pos.x < position.x
-		FlipsWhen.MOVING_RIGHT:
-			$Sprite.flip_h = target_pos.x > position.x
+	if has_node('Sprite'):
+		match flips_when:
+			FlipsWhen.MOVING_LEFT:
+				$Sprite.flip_h = target_pos.x < position.x
+			FlipsWhen.MOVING_RIGHT:
+				$Sprite.flip_h = target_pos.x > position.x
 	
 	if E.cutscene_skipped:
 		is_moving = false

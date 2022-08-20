@@ -28,6 +28,7 @@ var settings := PopochiuResources.get_settings()
 var current_text_speed_idx := settings.default_text_speed
 var current_text_speed: float = settings.text_speeds[current_text_speed_idx]
 var current_language := 0
+var auto_continue_after := -1.0
 
 # TODO: This could be in the camera's own script
 var _is_camera_shaking := false
@@ -504,30 +505,42 @@ func _eval_string(text: String) -> void:
 		'....':
 			yield(wait(2.0, false), 'completed')
 		_:
-			var char_talk: int = text.find(':')
-			if char_talk:
-				var char_and_emotion: String = text.substr(0, char_talk)
-				var emotion_idx: int = char_and_emotion.find('(')
-				var char_name: String = char_and_emotion.substr(\
-				0, emotion_idx).to_lower()
+			var colon_idx: int = text.find(':')
+			if colon_idx:
+				var colon_prefix: String = text.substr(0, colon_idx)
+				
+				var emotion_idx := colon_prefix.find('(')
+				var auto_idx := colon_prefix.find('[')
+				var name_idx := emotion_idx\
+				if (emotion_idx > 0 and emotion_idx < auto_idx)\
+				else auto_idx
+				
+				var character_name: String = colon_prefix.substr(
+					0, name_idx
+				).to_lower()
+				
 				var emotion := ''
-
 				if emotion_idx > 0:
-					emotion = char_and_emotion.substr(emotion_idx + 1).rstrip(')')
+					emotion = colon_prefix.substr(emotion_idx + 1).rstrip(')')
 				
-				C.get_character(char_name).emotion = emotion
+				var auto := -1.0
+				if auto_idx > 0:
+					auto_continue_after = float(
+						colon_prefix.substr(auto_idx + 1).rstrip(')')
+					)
 				
-				if char_name.to_lower() == 'player':
-					var char_line := text.substr(char_talk + 1).trim_prefix(' ')
-
-					yield(C.player_say(char_line, false), 'completed')
+				C.get_character(character_name).emotion = emotion
+				
+				var dialogue := text.substr(colon_idx + 1).trim_prefix(' ')
+				
+				if character_name == 'player'\
+				or C.player.script_name.to_lower() == character_name:
+					yield(C.player_say(dialogue, false), 'completed')
 
 					G.block()
-				if C.is_valid_character(char_name):
-					var char_line := text.substr(char_talk + 1).trim_prefix(' ')
-
+				elif C.is_valid_character(character_name):
 					yield(
-						C.character_say(char_name, char_line, false),
+						C.character_say(character_name, dialogue, false),
 						'completed'
 					)
 
@@ -536,6 +549,8 @@ func _eval_string(text: String) -> void:
 					yield(get_tree(), 'idle_frame')
 			else:
 				yield(get_tree(), 'idle_frame')
+	
+	auto_continue_after = -1.0
 
 
 func _set_in_room(value: bool) -> void:
