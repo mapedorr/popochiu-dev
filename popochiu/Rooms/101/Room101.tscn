@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://popochiu/Rooms/101/Room101.gd" type="Script" id=1]
+
+[node name="Room101" type="YSort"]
+script = ExtResource( 1 )
+script_name = "101"
+
+[node name="Props" type="YSort" parent="."]
+
+[node name="Hotspots" type="Node2D" parent="."]
+
+[node name="Regions" type="Node2D" parent="."]
+
+[node name="Points" type="Node2D" parent="."]
+
+[node name="WalkableAreas" type="Node2D" parent="."]
+
+[node name="Navigation2D" type="Navigation2D" parent="WalkableAreas"]
+
+[node name="Characters" type="YSort" parent="."]

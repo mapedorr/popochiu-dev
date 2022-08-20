@@ -5,6 +5,9 @@ extends Node
 
 # TODO: This could be in PopochiuSettings for devs to change the path
 const SAVE_GAME_PATH := 'user://save.json'
+const VALID_TYPES := [
+	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING, TYPE_ARRAY, TYPE_DICTIONARY
+]
 
 var _file := File.new()
 
@@ -37,9 +40,27 @@ func save_game() -> bool:
 		items = {}, # Stores the state of each inventory item
 	}
 	
-	# Go over each Room to save its current state
-	for room_id in E.rooms_states:
-		data.rooms[room_id] = E.rooms_states[room_id]
+	# Go over each Room to save its current state ------------------------------
+	for rp in PopochiuResources.get_section('rooms'):
+		var prd: PopochiuRoomData = load(rp)
+	
+#	for room_id in E.rooms_states:
+#		var prd: PopochiuRoomData = E.rooms_states[room_id]
+		
+		data.rooms[prd.script_name] = {}
+		
+		for p in prd.get_script().get_script_property_list():
+			# p = {class_name, hint, hint_string, name, type, usage}
+			if p.name == 'script_name' or p.name == 'scene'\
+			or not p.type in VALID_TYPES:
+				continue
+			
+			# Check if the property is a script variable (8192)
+			# or a export variable (8199)
+			if p.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or p.usage == (
+				PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
+			):
+				data.rooms[prd.script_name][p.name] = prd[p.name]
 	
 	var json_string := JSON.print(data)
 	_file.store_string(json_string)

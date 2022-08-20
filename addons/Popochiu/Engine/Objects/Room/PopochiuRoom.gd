@@ -16,10 +16,6 @@ export var limit_top := INF
 export var limit_bottom := INF
 
 var is_current := false setget set_is_current
-var visited := false
-var visited_first_time := false
-var visited_times := 0
-var state := {} setget set_state, get_state
 var characters_cfg := [] # Array of Dictionary
 
 var _path := []
@@ -80,12 +76,6 @@ func _unhandled_input(event):
 
 	if is_instance_valid(C.player) and C.player.can_move:
 		C.player.walk(get_local_mouse_position(), false)
-
-
-#func _get_property_list() -> Array:
-#	if stats == null: return []
-#
-#	return stats.get_property_list()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -205,23 +195,6 @@ func get_characters_count() -> int:
 func set_is_current(value: bool) -> void:
 	is_current = value
 	set_process_unhandled_input(is_current)
-
-
-func set_state(stored_state: Dictionary) -> void:
-	state = stored_state
-
-	self.visited = stored_state.visited
-	self.visited_first_time = stored_state.visited_first_time
-	self.visited_times = stored_state.visited_times
-
-
-# Returns the state of the room
-func get_state() -> Dictionary:
-	state.visited = self.visited
-	state.visited_first_time = self.visited_first_time
-	state.visited_times = self.visited_times
-
-	return state
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

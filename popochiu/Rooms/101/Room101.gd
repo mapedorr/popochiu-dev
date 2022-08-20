@@ -1,30 +1,24 @@
 tool
 extends PopochiuRoom
 
-var state: PopochiuRoomData = preload('RoomCasaPopochiu.tres')
+var state: PopochiuRoomData = preload('Room101.tres')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
-func _ready() -> void:
-	if Engine.editor_hint: return
+# TODO: Overwrite Godot's methods
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # What happens when Popochiu loads the room. At this point the room is in the
 # tree but it is not visible
 func on_room_entered() -> void:
-#	yield(E.run([A.play_music('mx_classic')]), 'completed')
-	pass
+	yield(E.run([]), 'completed')
 
 
 # What happens when the room changing transition finishes. At this point the room
 # is visible.
 func on_room_transition_finished() -> void:
-	if state.visited_first_time:
-		E.run([
-			'Player: Welcome player!'
-		])
-	pass
+	yield(E.run([]), 'completed')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░

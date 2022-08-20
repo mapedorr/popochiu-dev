@@ -147,8 +147,9 @@ func fill_data() -> void:
 						)
 						
 						# Check if the room is the main scene
-						var main_scene: String = ProjectSettings.get_setting(\
-						'application/run/main_scene')
+						var main_scene: String = ProjectSettings.get_setting(
+							PopochiuResources.MAIN_SCENE
+						)
 						if main_scene == resource.scene:
 							row.is_main = true
 					Constants.Types.CHARACTER:

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" load_steps=2 format=2]
 
-[ext_resource path="res://addons/Popochiu/Engine/Objects/Room/PopochiuRoomData.gd" type="Script" id=1]
+[ext_resource path="res://popochiu/Rooms/CasaPopochiu/RoomCasaPopochiuState.gd" type="Script" id=1]
 
 [resource]
 resource_name = "CasaPopochiu"
@@ -10,5 +10,4 @@ scene = "res://popochiu/Rooms/CasaPopochiu/RoomCasaPopochiu.tscn"
 visited = false
 visited_first_time = false
 visited_times = 0
-cocoliso = 4
-saporrita = false
+pera = ""

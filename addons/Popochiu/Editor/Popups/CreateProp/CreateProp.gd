@@ -88,8 +88,8 @@ func create() -> void:
 	_room.get_node('Props').add_child(prop)
 	prop.owner = _room
 	prop.position = Vector2(
-		ProjectSettings.get_setting('display/window/size/width'),
-		ProjectSettings.get_setting('display/window/size/height')
+		ProjectSettings.get_setting(PopochiuResources.DISPLAY_WIDTH),
+		ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
 	) / 2.0
 	_main_dock.ei.save_scene()
 	

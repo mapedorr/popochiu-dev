@@ -10,5 +10,3 @@ scene = "res://popochiu/Rooms/Map/RoomMap.tscn"
 visited = false
 visited_first_time = false
 visited_times = 0
-cocoliso = 2
-saporrita = false

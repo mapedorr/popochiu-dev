@@ -71,8 +71,8 @@ func create() -> void:
 	_room.get_node('Hotspots').add_child(hotspot)
 	hotspot.owner = _room
 	hotspot.position = Vector2(
-		ProjectSettings.get_setting('display/window/size/width'),
-		ProjectSettings.get_setting('display/window/size/height')
+		ProjectSettings.get_setting(PopochiuResources.DISPLAY_WIDTH),
+		ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
 	) / 2.0
 	_main_dock.ei.save_scene()
 	

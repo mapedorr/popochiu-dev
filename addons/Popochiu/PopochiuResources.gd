@@ -48,6 +48,14 @@ const WIKI := 'https://github.com/mapedorr/popochiu/wiki/'
 const DATA := 'res://popochiu//PopochiuData.cfg'
 const SETTINGS := 'res://popochiu//PopochiuSettings.tres'
 const SETTINGS_CLASS := preload('res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd')
+const DISPLAY_WIDTH := 'display/window/size/width'
+const DISPLAY_HEIGHT := 'display/window/size/height'
+const MAIN_SCENE := 'application/run/main_scene'
+const TEST_WIDTH := 'display/window/size/test_width'
+const TEST_HEIGHT := 'display/window/size/test_height'
+const STRETCH_MODE := 'display/window/stretch/mode'
+const STRETCH_ASPECT := 'display/window/stretch/aspect'
+const IMPORTER_TEXTURE := 'importer_defaults/texture'
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░

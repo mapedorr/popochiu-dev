@@ -198,8 +198,11 @@ func run_cutscene(instructions: Array) -> void:
 
 # Loads the room with script_name. use_transition can be used to trigger a fade
 # out animation before loading the room, and a fade in animation once it is ready
-func goto_room(script_name := '', use_transition := true) -> void:
+func goto_room(\
+script_name := '', use_transition := true, store_state := true
+) -> void:
 	if not in_room: return
+	
 	self.in_room = false
 	
 	G.block()
@@ -213,7 +216,8 @@ func goto_room(script_name := '', use_transition := true) -> void:
 		C.player.last_room = current_room.script_name
 	
 	# Store the room state
-	rooms_states[current_room.script_name] = current_room.state
+	if store_state:
+		rooms_states[current_room.script_name] = current_room.state
 	
 	# Remove PopochiuCharacter nodes from the room so they are not deleted
 	current_room.on_room_exited()
@@ -225,58 +229,52 @@ func goto_room(script_name := '', use_transition := true) -> void:
 	main_camera.limit_top = _defaults.camera_limits.top
 	main_camera.limit_bottom = _defaults.camera_limits.bottom
 	
-	for rp in PopochiuResources.get_section('rooms'):
-		var room: PopochiuRoomData = load(rp)
-		if room.script_name.to_lower() == script_name.to_lower():
-			if _loaded_game:
-				# TODO: Load the state of the room
-				pass
-			
-			get_tree().change_scene(room.scene)
-			return
+	var rp: String = PopochiuResources.get_data_value('rooms', script_name, null)
+	if not rp:
+		prints('[Popochiu] No PopochiuRoom with name: %s' % script_name)
+		return
 	
-	prints('[Popochiu] No PopochiuRoom with name: %s' % script_name)
+	get_tree().change_scene(load(rp).scene)
 
 
 # Called once the loaded room is _ready
 func room_readied(room: PopochiuRoom) -> void:
 	current_room = room
-	for p in current_room.get_script().get_script_property_list():
-		prints(p.name, p.usage, current_room[p.name])
 	
-	# Load the room state
-	if rooms_states.has(room.script_name):
-		room.state = rooms_states[room.script_name]
+	# Update the core state
+	current_room.state.visited = true
+	current_room.state.visited_times += 1
+	current_room.state.visited_first_time = current_room.state.visited_times == 1
 	
-	room.is_current = true
-	room.visited = true
-	room.visited_first_time = true if room.visited_times == 0 else false
-	room.visited_times += 1
+	current_room.is_current = true
 	
-	# Store the room state
-	rooms_states[room.script_name] = current_room.state
+	if _loaded_game:
+		_load_player()
 	
 	# Add the PopochiuCharacter instances to the room
-	for c in room.characters_cfg:
+	for c in current_room.characters_cfg:
 		var chr: PopochiuCharacter = C.get_character(c.script_name)
 		
 		if chr:
 			chr.position = c.position
-			room.add_character(chr)
+			current_room.add_character(chr)
 	
-	if room.has_player and is_instance_valid(C.player):
-		if not room.has_character(C.player.script_name):
-			room.add_character(C.player)
+	if current_room.has_player and is_instance_valid(C.player):
+		if not current_room.has_character(C.player.script_name):
+			current_room.add_character(C.player)
 		
 		yield(C.player.idle(false), 'completed')
 	
 	for c in get_tree().get_nodes_in_group('PopochiuClickable'):
-		c.room = room
+		c.room = current_room
 	
-	room.on_room_entered()
+	current_room.on_room_entered()
 	
 	if _loaded_game:
-		_load_player()
+		C.player.global_position = Vector2(
+			_loaded_game.player.position.x,
+			_loaded_game.player.position.y
+		)
 	
 	if _use_transition_on_room_change:
 		$TransitionLayer.play_transition($TransitionLayer.FADE_OUT)
@@ -285,13 +283,19 @@ func room_readied(room: PopochiuRoom) -> void:
 	else:
 		yield(get_tree(), 'idle_frame')
 	
-	if not room.hide_gi:
+	if not current_room.hide_gi:
 		G.done()
 	
 	self.in_room = true
 	
 	# This enables the room to listen input events
-	room.on_room_transition_finished()
+	current_room.on_room_transition_finished()
+	
+	if _loaded_game:
+		emit_signal('game_loaded', _loaded_game)
+		E.run([G.display('Game loaded')])
+		
+		_loaded_game = {}
 
 
 # Changes the main camera's offset (useful when zooming the camera)
@@ -459,6 +463,8 @@ func has_save() -> bool:
 func save_game() -> void:
 	if _saveload.save_game():
 		emit_signal('game_saved')
+		
+		E.run([G.display('Game saved')])
 
 
 func load_game() -> void:
@@ -471,15 +477,21 @@ func load_game() -> void:
 		I.add_item(item, false, false)
 	
 	# Load room states
-	for room_data in _loaded_game.rooms:
-		rooms_states[room_data] = _loaded_game.rooms[room_data]
+	for room_id in _loaded_game.rooms:
+		var prd: PopochiuRoomData = load(
+			PopochiuResources.get_data_value('rooms', room_id, '')
+		)
+		
+		for p in _loaded_game.rooms[room_id]:
+			prd[p] = _loaded_game.rooms[room_id][p]
+		
+		rooms_states[room_id] = prd
 	
-	if current_room.script_name != _loaded_game.player.room:
-		goto_room(_loaded_game.player.room)
-	else:
-		_load_player()
-	
-	emit_signal('game_loaded', _loaded_game)
+	goto_room(
+		_loaded_game.player.room,
+		true,
+		false # Do not store the state of the current room
+	)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
