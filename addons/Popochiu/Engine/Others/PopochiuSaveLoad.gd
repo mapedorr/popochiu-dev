@@ -44,9 +44,6 @@ func save_game() -> bool:
 	for rp in PopochiuResources.get_section('rooms'):
 		var prd: PopochiuRoomData = load(rp)
 	
-#	for room_id in E.rooms_states:
-#		var prd: PopochiuRoomData = E.rooms_states[room_id]
-		
 		data.rooms[prd.script_name] = {}
 		
 		for p in prd.get_script().get_script_property_list():

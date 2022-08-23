@@ -243,9 +243,10 @@ func room_readied(room: PopochiuRoom) -> void:
 	current_room = room
 	
 	# Update the core state
-	current_room.state.visited = true
-	current_room.state.visited_times += 1
-	current_room.state.visited_first_time = current_room.state.visited_times == 1
+	if not _loaded_game:
+		current_room.state.visited = true
+		current_room.state.visited_times += 1
+		current_room.state.visited_first_time = current_room.state.visited_times == 1
 	
 	current_room.is_current = true
 	

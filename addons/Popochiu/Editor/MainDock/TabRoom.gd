@@ -62,7 +62,7 @@ func _ready() -> void:
 	
 	_btn_script.icon = get_icon('Script', 'EditorIcons')
 	_btn_resource.icon = get_icon('Object', 'EditorIcons')
-	_btn_resource_script.icon = get_icon('Script', 'EditorIcons')
+	_btn_resource_script.icon = get_icon('GDScript', 'EditorIcons')
 	
 	_room_name.connect('pressed', self, '_select_file')
 	_btn_script.connect('pressed', self, '_open_script')

@@ -36,18 +36,26 @@ const POPOCHIU_SNGL := 'res://addons/Popochiu/Engine/Popochiu.tscn'
 const ICHARACTER_SNGL := 'res://addons/Popochiu/Engine/Interfaces/ICharacter.gd'
 const IINVENTORY_SNGL := 'res://addons/Popochiu/Engine/Interfaces/IInventory.gd'
 const IDIALOG_SNGL := 'res://addons/Popochiu/Engine/Interfaces/IDialog.gd'
-const IGRAPHIC_INTERFACE_SNGL := 'res://addons/Popochiu/Engine/Interfaces/IGraphicInterface.gd'
-const IAUDIO_MANAGER_SNGL := 'res://addons/Popochiu/Engine/AudioManager/AudioManager.tscn'
-const GRAPHIC_INTERFACE_ADDON := 'res://addons/Popochiu/Engine/Objects/GraphicInterface/GraphicInterface.tscn'
-const GRAPHIC_INTERFACE_POPOCHIU := BASE_DIR + '/GraphicInterface/GraphicInterface.tscn'
-const TRANSITION_LAYER_ADDON := 'res://addons/Popochiu/Engine/Objects/TransitionLayer/TransitionLayer.tscn'
-const TRANSITION_LAYER_POPOCHIU := BASE_DIR + '/TransitionLayer/TransitionLayer.tscn'
+const IGRAPHIC_INTERFACE_SNGL :=\
+'res://addons/Popochiu/Engine/Interfaces/IGraphicInterface.gd'
+const IAUDIO_MANAGER_SNGL :=\
+'res://addons/Popochiu/Engine/AudioManager/AudioManager.tscn'
+const GRAPHIC_INTERFACE_ADDON :=\
+'res://addons/Popochiu/Engine/Objects/GraphicInterface/GraphicInterface.tscn'
+const GRAPHIC_INTERFACE_POPOCHIU :=\
+BASE_DIR + '/GraphicInterface/GraphicInterface.tscn'
+const TRANSITION_LAYER_ADDON :=\
+'res://addons/Popochiu/Engine/Objects/TransitionLayer/TransitionLayer.tscn'
+const TRANSITION_LAYER_POPOCHIU :=\
+BASE_DIR + '/TransitionLayer/TransitionLayer.tscn'
 const POPOCHIU_SCENE := 'res://addons/Popochiu/Engine/Popochiu.tscn'
-const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
+const CURSOR_TYPE :=\
+preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
 const WIKI := 'https://github.com/mapedorr/popochiu/wiki/'
 const DATA := 'res://popochiu//PopochiuData.cfg'
 const SETTINGS := 'res://popochiu//PopochiuSettings.tres'
-const SETTINGS_CLASS := preload('res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd')
+const SETTINGS_CLASS :=\
+preload('res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd')
 const DISPLAY_WIDTH := 'display/window/size/width'
 const DISPLAY_HEIGHT := 'display/window/size/height'
 const MAIN_SCENE := 'application/run/main_scene'
@@ -56,6 +64,10 @@ const TEST_HEIGHT := 'display/window/size/test_height'
 const STRETCH_MODE := 'display/window/stretch/mode'
 const STRETCH_ASPECT := 'display/window/stretch/aspect'
 const IMPORTER_TEXTURE := 'importer_defaults/texture'
+const MAIN_TYPES := [
+	Types.ROOM, Types.CHARACTER, Types.INVENTORY_ITEM, Types.DIALOG
+]
+const ROOM_TYPES := [Types.PROP, Types.HOTSPOT, Types.REGION, Types.POINT]
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░

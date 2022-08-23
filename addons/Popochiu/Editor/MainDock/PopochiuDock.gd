@@ -269,10 +269,9 @@ func _on_tab_changed(tab: int) -> void:
 
 
 func _select_object(por: PopochiuObjectRow) -> void:
-	if last_selected:
+	if last_selected and last_selected != por:
 		last_selected.unselect()
 	
-	ei.select_file(por.path)
 	last_selected = por
 
 

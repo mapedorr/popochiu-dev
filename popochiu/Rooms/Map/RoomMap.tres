@@ -1,6 +1,6 @@
 [gd_resource type="Resource" load_steps=2 format=2]
 
-[ext_resource path="res://addons/Popochiu/Engine/Objects/Room/PopochiuRoomData.gd" type="Script" id=1]
+[ext_resource path="res://popochiu/Rooms/Map/RoomMapState.gd" type="Script" id=1]
 
 [resource]
 resource_name = "Map"
@@ -10,3 +10,4 @@ scene = "res://popochiu/Rooms/Map/RoomMap.tscn"
 visited = false
 visited_first_time = false
 visited_times = 0
+roberto_house_found = false

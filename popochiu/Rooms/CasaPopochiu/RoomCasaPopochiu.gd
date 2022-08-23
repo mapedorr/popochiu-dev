@@ -20,16 +20,16 @@ func on_room_entered() -> void:
 # What happens when the room changing transition finishes. At this point the room
 # is visible.
 func on_room_transition_finished() -> void:
-	if state.visited_first_time:
-		E.run([
-			'Player: Hi Popsy!',
-			'Popsy: Hi Goddiu',
-			'Player: How are ya?',
-			'Popsy[]: Fine, and',
-			'Player: That is great! And what are you doing?',
-			'Popsy[]: Well, I was',
-			'Player: Interesting!'
-		])
+#	if state.visited_first_time:
+#		E.run([
+#			'Player: Hi Popsy!',
+#			'Popsy: Hi Goddiu',
+#			'Player: How are ya?',
+#			'Popsy[]: Fine, and',
+#			'Player: That is great! And what are you doing?',
+#			'Popsy[]: Well, I was',
+#			'Player: Interesting!'
+#		])
 	pass
 
 

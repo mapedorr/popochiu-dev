@@ -277,6 +277,9 @@ func _check_nodes() -> void:
 		if n.has_method('show_helpers'):
 			n.show_helpers()
 			_shown_helpers.append(n)
+		elif n.get_parent().has_method('show_helpers'):
+			n.get_parent().show_helpers()
+			_shown_helpers.append(n.get_parent())
 
 
 func _on_files_moved(old_file: String, new_file: String) -> void:

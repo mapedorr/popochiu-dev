@@ -40,5 +40,4 @@ texture = ExtResource( 2 )
 hframes = 6
 
 [node name="DialogPos" type="Position2D" parent="."]
-visible = false
 position = Vector2( 0, -51 )

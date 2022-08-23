@@ -12,10 +12,10 @@ signal stoped_walk
 
 export var text_color := Color.white
 export var is_player := false
-export var walk_speed := 200.0
 export(FlipsWhen) var flips_when := 0
 export(Array, Dictionary) var voices := [] setget set_voices
 export var follow_player := false
+export var walk_speed := 200.0
 export var can_move := true
 
 var last_room := ''
