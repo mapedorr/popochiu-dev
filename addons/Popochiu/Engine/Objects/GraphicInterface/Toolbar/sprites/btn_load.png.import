@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tree.png-19539a593c34d89f5f65bac2c1b67c09.stex"
+path="res://.import/btn_load.png-8914ed605b0c7b9c174e0b03743a07eb.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://popochiu/Tests/tree.png"
-dest_files=[ "res://.import/tree.png-19539a593c34d89f5f65bac2c1b67c09.stex" ]
+source_file="res://addons/Popochiu/Engine/Objects/GraphicInterface/Toolbar/sprites/btn_load.png"
+dest_files=[ "res://.import/btn_load.png-8914ed605b0c7b9c174e0b03743a07eb.stex" ]
 
 [params]
 

@@ -4,18 +4,32 @@ extends PopochiuCharacter
 # Use yield(E.run([]), 'completed') if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
+var state: PopochiuCharacterData = preload('CharacterPopsy.tres')
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	C.player = self
+	D.show_dialog('TestA')
+#	if state.is_hungry:
+#		state.is_hungry = false
+#		E.run([
+#			'Goddiu: ¡oñiiii mi pepechí!',
+#			'Popsy: ¡Tengo hambre!'
+#		])
+#	else:
+#		E.run([
+#			'Goddiu: ¡oñiiii mi pepechí!',
+#			'Popsy: oñiiiiiiiiiiiiiii',
+#			'Popsy: Ya me comí un ' + state.wants
+#		])
 
 
 # When the node is right clicked
 func on_look() -> void:
 	# Replace the call to .on_look() to implement your code. This only makes
 	# the default behavior to happen.
-	E.run(['Goddiu: ¡oñiiii mi pepechí!'])
+	C.player = self
 
 
 # When the node is clicked and there is an inventory item selected

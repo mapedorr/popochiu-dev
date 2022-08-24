@@ -25,17 +25,17 @@ func _ready() -> void:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func appear() -> void:
 	# Set initial values for fields
-	_game_width.value = ProjectSettings.get_setting('display/window/size/width')
-	_game_height.value = ProjectSettings.get_setting('display/window/size/height')
-	_test_width.value = ProjectSettings.get_setting('display/window/size/test_width')
-	_test_height.value = ProjectSettings.get_setting('display/window/size/test_height')
+	_game_width.value = ProjectSettings.get_setting(PopochiuResources.DISPLAY_WIDTH)
+	_game_height.value = ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
+	_test_width.value = ProjectSettings.get_setting(PopochiuResources.TEST_WIDTH)
+	_test_height.value = ProjectSettings.get_setting(PopochiuResources.TEST_HEIGHT)
 	
 	_game_type.selected = 0
-	if ProjectSettings.get_setting('display/window/stretch/mode') == '2d'\
-	and ProjectSettings.get_setting('display/window/stretch/aspect') == 'keep':
+	if ProjectSettings.get_setting(PopochiuResources.STRETCH_MODE) == '2d'\
+	and ProjectSettings.get_setting(PopochiuResources.STRETCH_ASPECT) == 'keep':
 		_game_type.selected = 1
 		
-		if ProjectSettings.get_setting('importer_defaults/texture').values()\
+		if ProjectSettings.get_setting(PopochiuResources.IMPORTER_TEXTURE).values()\
 		== ImporterDefaults.PIXEL_TEXTURES.values():
 			_game_type.selected = 2
 	

@@ -1,6 +1,8 @@
 tool
 extends PopochiuRoom
 
+var state: PopochiuRoomData = preload('Room101.tres')
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 # TODO: Overwrite Godot's methods
@@ -16,11 +18,7 @@ func on_room_entered() -> void:
 # What happens when the room changing transition finishes. At this point the room
 # is visible.
 func on_room_transition_finished() -> void:
-	I.hide_inventory(false, false)
-	yield(E.wait(1, false), 'completed')
-	find_node('The').self_modulate.a = 1.0
-	yield(E.wait(1, false), 'completed')
-	find_node('End').self_modulate.a = 1.0
+	yield(E.run([]), 'completed')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░

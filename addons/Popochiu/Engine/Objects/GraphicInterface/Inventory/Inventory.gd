@@ -123,6 +123,13 @@ func _remove_item(item: PopochiuInventoryItem) -> void:
 	
 	$Box.remove_child(item)
 	
+	if not E.settings.inventory_always_visible:
+		_can_hide_inventory = true
+		
+		Cursor.set_cursor()
+		G.show_info()
+		_close()
+	
 	yield(get_tree(), 'idle_frame')
 	
 	I.emit_signal('item_remove_done', item)

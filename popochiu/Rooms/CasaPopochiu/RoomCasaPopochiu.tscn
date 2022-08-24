@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/RoomCasaPopochiu.gd" type="Script" id=1]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn" type="PackedScene" id=2]
@@ -10,6 +10,8 @@
 [ext_resource path="res://popochiu/Characters/Popsy/CharacterPopsy.tscn" type="PackedScene" id=8]
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/blanket.png" type="Texture" id=9]
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/toy_car.png" type="Texture" id=10]
+[ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/Toy/PropToy.gd" type="Script" id=11]
+[ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/Blanket/PropBlanket.gd" type="Script" id=12]
 
 [sub_resource type="NavigationPolygon" id=1]
 vertices = PoolVector2Array( 28, 16, 301, 16, 325, 79, 92, 83, -169, 81, -400, 11, -389, 64 )
@@ -18,6 +20,7 @@ outlines = [ PoolVector2Array( -389, 64, -400, 11, 28, 16, 301, 16, 325, 79, 92,
 
 [node name="RoomCasaPopochiu" type="YSort"]
 script = ExtResource( 1 )
+script_name = "CasaPopochiu"
 
 [node name="Props" type="YSort" parent="."]
 
@@ -38,12 +41,8 @@ texture = ExtResource( 4 )
 
 [node name="Blanket" parent="Props" instance=ExtResource( 3 )]
 position = Vector2( 212, 126 )
-description = "Blanket"
-clickable = false
+script = ExtResource( 12 )
 baseline = 5
-cursor = 1
-script_name = "Blanket"
-texture = ExtResource( 9 )
 
 [node name="BaselineHelper" parent="Props/Blanket" index="0"]
 position = Vector2( 0, 5 )
@@ -53,12 +52,8 @@ texture = ExtResource( 9 )
 
 [node name="Toy" parent="Props/Blanket" instance=ExtResource( 3 )]
 position = Vector2( 0, -3 )
-description = "Toy"
-clickable = false
+script = ExtResource( 11 )
 baseline = 4
-cursor = 1
-script_name = "Toy"
-texture = ExtResource( 10 )
 
 [node name="BaselineHelper" parent="Props/Blanket/Toy" index="0"]
 position = Vector2( 0, 4 )
