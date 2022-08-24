@@ -12,6 +12,7 @@ export var always_on := false
 # TODO: Store the localization code
 var script_name := ''
 var used := false
+var used_times := 0
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░

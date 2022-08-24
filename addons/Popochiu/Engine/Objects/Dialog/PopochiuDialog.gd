@@ -27,7 +27,7 @@ func start() -> void:
 	
 	yield(D, 'dialog_finished')
 	
-	D.disconnect('option_selected', self, 'option_selected')
+	D.disconnect('option_selected', self, '_on_option_selected')
 
 
 func stop() -> void:
@@ -82,5 +82,12 @@ func _show_options() -> void:
 	
 	D.emit_signal('dialog_options_requested', options)
 	
-	if not D.is_connected('option_selected', self, 'option_selected'):
-		D.connect('option_selected', self, 'option_selected')
+	if not D.is_connected('option_selected', self, '_on_option_selected'):
+		D.connect('option_selected', self, '_on_option_selected')
+
+
+func _on_option_selected(opt: PopochiuDialogOption) -> void:
+	opt.used = true
+	opt.used_times += 1
+	
+	option_selected(opt)

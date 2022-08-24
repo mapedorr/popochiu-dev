@@ -113,5 +113,4 @@ func show_options() -> void:
 
 func _on_option_clicked(opt: PopochiuDialogOption) -> void:
 	hide()
-	opt.used = true
 	D.emit_signal('option_selected', opt)
