@@ -8,6 +8,7 @@ signal clicked(node)
 
 enum MenuOptions {
 	ADD_TO_CORE,
+	CREATE_STATE_SCRIPT,
 	SET_AS_MAIN,
 	START_WITH_IT,
 	CREATE_SCRIPT,
@@ -17,6 +18,12 @@ enum MenuOptions {
 const SELECTED_FONT_COLOR := Color('706deb')
 const INVENTORY_START_ICON := preload(\
 'res://addons/Popochiu/icons/inventory_item_start.png')
+const ROOM_STATE_TEMPLATE :=\
+'res://addons/Popochiu/Engine/Templates/RoomStateTemplate.gd'
+const CHARACTER_STATE_TEMPLATE :=\
+'res://addons/Popochiu/Engine/Templates/CharacterStateTemplate.gd'
+const INVENTORY_ITEM_STATE_TEMPLATE :=\
+'res://addons/Popochiu/Engine/Templates/InventoryItemStateTemplate.gd'
 const PROP_SCRIPT_TEMPLATE :=\
 'res://addons/Popochiu/Engine/Templates/PropTemplate.gd'
 const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
@@ -47,6 +54,12 @@ onready var _menu_cfg := [
 		icon = preload(\
 		'res://addons/Popochiu/Editor/MainDock/ObjectRow/add_to_core.png'),
 		label = 'Add to Popochiu',
+		types = Constants.MAIN_TYPES
+	},
+	{
+		id = MenuOptions.CREATE_STATE_SCRIPT,
+		icon = get_icon('ScriptCreate', 'EditorIcons'),
+		label = 'Create state script',
 		types = Constants.MAIN_TYPES
 	},
 	{
@@ -101,8 +114,12 @@ func _ready() -> void:
 	_create_menu()
 	
 	if type in Constants.MAIN_TYPES:
+		# By default disable the Add to Popochiu button. This will be enabled
+		# by PopochiuDock.gd if this object is not in PopochiuData.cfg
 		_menu_popup.set_item_disabled(0, true)
+		_menu_popup.set_item_disabled(1, true)
 	elif path.find('.gd') > -1:
+		# If the Room object has a script, disable the Create script button
 		_menu_popup.set_item_disabled(0, true)
 	
 	# Hide buttons based on the type of the Object this row represents
@@ -143,6 +160,11 @@ func show_add_to_core() -> void:
 	_menu_popup.set_item_disabled(0, false)
 
 
+func show_create_state_script() -> void:
+	_btn_state_script.disabled = true
+	_menu_popup.set_item_disabled(1, false)
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _create_menu() -> void:
 	_menu_popup.clear()
@@ -175,6 +197,8 @@ func _menu_item_pressed(id: int) -> void:
 		MenuOptions.SET_AS_MAIN:
 			main_dock.set_main_scene(path)
 			self.is_main = true
+		MenuOptions.CREATE_STATE_SCRIPT:
+			_create_state_script()
 		MenuOptions.START_WITH_IT:
 			var settings := PopochiuResources.get_settings()
 			
@@ -290,10 +314,11 @@ func _edit_state() -> void:
 
 
 func _open_state_script() -> void:
-	var prd: PopochiuRoomData = load(path.replace('.tscn', '.tres'))
-	main_dock.ei.select_file(prd.get_script().resource_path)
+	var state := load(path.replace('.tscn', '.tres'))
+	
+	main_dock.ei.select_file(state.get_script().resource_path)
 	main_dock.ei.set_main_screen_editor('Script')
-	main_dock.ei.edit_resource(prd.get_script())
+	main_dock.ei.edit_resource(state.get_script())
 	
 	select()
 
@@ -521,3 +546,45 @@ func _set_is_main(value: bool) -> void:
 func set_is_on_start(value: bool) -> void:
 	is_on_start = value
 	_fav_icon.visible = value
+
+
+func _create_state_script() -> void:
+	var template: Script = null
+	
+	match type:
+		Constants.Types.ROOM:
+			template = load(ROOM_STATE_TEMPLATE)
+		Constants.Types.CHARACTER:
+			template = load(CHARACTER_STATE_TEMPLATE)
+		Constants.Types.INVENTORY_ITEM:
+			template = load(INVENTORY_ITEM_STATE_TEMPLATE)
+	
+	var script_path := path.replace('.tscn', 'State.gd')
+	
+	# Create the folder for the script
+	if main_dock.dir.make_dir_recursive(script_path.get_base_dir()) != OK:
+		push_error('[Popochiu] Could not create state script for ' + name)
+		return
+	
+	# Create the script
+	if ResourceSaver.save(script_path, template) != OK:
+		push_error('[Popochiu] Could not create script: %s.gd' % name)
+		return
+	
+	# Assign the created Script to the object's state resource
+	var state_resource := load(path.replace('tscn', 'tres'))
+	state_resource.set_script(load(script_path))
+	state_resource.script_name = name
+	state_resource.scene = path
+	
+	if ResourceSaver.save(state_resource.resource_path, state_resource) != OK:
+		push_error('[Popochiu] Could not create script: %s.gd' % name)
+		return
+	
+	# Disable the context menu option and enable the button to open the state
+	# script
+	_menu_popup.set_item_disabled(1, true)
+	_btn_state_script.disabled = false
+	
+	# Select and open the created script
+	_open_state_script()

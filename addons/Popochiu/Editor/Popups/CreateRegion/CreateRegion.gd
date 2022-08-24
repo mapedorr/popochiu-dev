@@ -54,7 +54,7 @@ func create() -> void:
 	var region_template := load(SCRIPT_TEMPLATE)
 	if ResourceSaver.save(script_path, region_template) != OK:
 		push_error('[Popochiu] Could not create script: %s.gd' % _new_region_name)
-		# TODO: Mostrar retroalimentación en el mismo popup
+		# TODO: Show feedback in the popup
 		return
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

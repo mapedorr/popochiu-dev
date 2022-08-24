@@ -1,11 +1,9 @@
 tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
-# Permite crear una nueva habitación con los archivos necesarios para que funcione
-# en el Popochiu: RoomRRR.tscn, RoomRRR.gd, RoomRRR.tres.
-
-# TODO: Definir más propiedades en el popup de creación de la habitación: p. ej.
-#		si va a tener al player, o los límites de la cámara. Aunque eso ya se
-#		puede hacer una vez se abra el .tscn.
+# Allows to create a new PopochiuRoom with the files required for its operation
+# within Popochiu and to store its state:
+#   Room???.tsn, Room???.gd, Room???.tres and Room???State.gd
+# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 const ROOM_STATE_TEMPLATE :=\
 'res://addons/Popochiu/Engine/Templates/RoomStateTemplate.gd'
@@ -36,7 +34,8 @@ func _ready() -> void:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: PopochiuDock) -> void:
 	.set_main_dock(node)
-	# Por defecto: res://popochiu/Rooms
+	
+	# res://popochiu/Rooms
 	_room_path_template = _main_dock.ROOMS_PATH + '%s/Room%s'
 
 
@@ -45,31 +44,32 @@ func create() -> void:
 		_error_feedback.show()
 		return
 	
-	# TODO: Verificar si no hay ya una habitación en el mismo PATH.
-	# TODO: Eliminar archivos creados si la creación no se completa.
+	# TODO: Check that there is not a room in the same PATH.
+	# TODO: Delete created files if creation is not complete.
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the folder for the room
 	_main_dock.dir.make_dir_recursive(_main_dock.ROOMS_PATH + _new_room_name)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Create the Resource state for the room and a script to devs to add extra
+	# Create the state Resource for the room and a script so devs can add extra
 	# properties to that state
 	var state_template: Script = load(ROOM_STATE_TEMPLATE)
 	if ResourceSaver.save(_new_room_path + 'State.gd', state_template) != OK:
 		push_error('[Popochiu] Could not create room state script: %s' %\
 		_new_room_name)
-		# TODO: Mostrar retroalimentación en el mismo popup
+		# TODO: Show feedback in the popup
 		return
 	
 	var room_resource: PopochiuRoomData = load(_new_room_path + 'State.gd').new()
 	room_resource.script_name = _new_room_name
 	room_resource.scene = _new_room_path + '.tscn'
 	room_resource.resource_name = _new_room_name
+	
 	if ResourceSaver.save(_new_room_path + '.tres', room_resource) != OK:
 		push_error('[Popochiu] Could not create PopochiuRoomData for room: %s' %\
 		_new_room_name)
-		# TODO: Mostrar retroalimentación en el mismo popup
+		# TODO: Show feedback in the popup
 		return
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -78,7 +78,7 @@ func create() -> void:
 	if ResourceSaver.save(_new_room_path + '.gd', room_template) != OK:
 		push_error('[Popochiu] Could not create script: %s' %\
 		_new_room_name)
-		# TODO: Mostrar retroalimentación en el mismo popup
+		# TODO: Show feedback in the popup
 		return
 	
 	# Assign the state to the room
@@ -92,8 +92,8 @@ func create() -> void:
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the room instance
 	var new_room: PopochiuRoom = preload(BASE_ROOM_PATH).instance()
-	#	Primero se asigna el script para que no se vayan a sobrescribir otras
-	#	propiedades por culpa de esa asignación.
+	# 	The script is assigned first so that other properties will not be
+	# 	overwritten by that assignment.
 	new_room.set_script(load(_new_room_path + '.gd'))
 	new_room.script_name = _new_room_name
 	new_room.name = 'Room' + _new_room_name
@@ -104,17 +104,17 @@ func create() -> void:
 	new_room_packed_scene.pack(new_room)
 	if ResourceSaver.save(_new_room_path + '.tscn', new_room_packed_scene) != OK:
 		push_error('[Popochiu] Could not create room: %s' % _new_room_name)
-		# TODO: Mostrar retroalimentación en el mismo popup
+		# TODO: Show feedback in the popup
 		return
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Add the created room to Popochiu's room list
+	# Add the created room to Popochiu's rooms list
 	if _main_dock.add_resource_to_popochiu(
 		'rooms', ResourceLoader.load(_new_room_path + '.tres')
 	) != OK:
 		push_error('[Popochiu] Could not add the created room to Popochiu: %s' %\
 		_new_room_name)
-		# TODO: Mostrar retroalimentación en el mismo popup
+		# TODO: Show feedback in the popup
 		return
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -152,7 +152,8 @@ func _update_name(new_text: String) -> void:
 				'Room' + _new_room_name + '.tscn',
 				'Room' + _new_room_name + '.gd',
 				'Room' + _new_room_name + '.tres'
-			])
+			]
+		)
 	else:
 		_info.clear()
 

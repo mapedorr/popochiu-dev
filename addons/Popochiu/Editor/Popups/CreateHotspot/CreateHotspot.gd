@@ -54,7 +54,7 @@ func create() -> void:
 	var hotspot_template := load(SCRIPT_TEMPLATE)
 	if ResourceSaver.save(script_path, hotspot_template) != OK:
 		push_error('[Popochiu] Could not create: %s.gd' % _new_hotspot_name)
-		# TODO: Mostrar retroalimentación en el mismo popup
+		# TODO: Show feedback in the popup
 		return
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

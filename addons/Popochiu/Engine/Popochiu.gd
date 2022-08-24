@@ -478,16 +478,9 @@ func load_game() -> void:
 	for item in _loaded_game.player.inventory:
 		I.add_item(item, false, false)
 	
-	# Load room states
-	for room_id in _loaded_game.rooms:
-		var prd: PopochiuRoomData = load(
-			PopochiuResources.get_data_value('rooms', room_id, '')
-		)
-		
-		for p in _loaded_game.rooms[room_id]:
-			prd[p] = _loaded_game.rooms[room_id][p]
-		
-		rooms_states[room_id] = prd
+	# Load main object states
+	for type in ['rooms', 'characters', 'inventory_items']:
+		_load_state(type)
 	
 	goto_room(
 		_loaded_game.player.room,
@@ -571,3 +564,14 @@ func _load_player() -> void:
 #	default_language = value
 #	TranslationServer.set_locale(languages[value])
 #	emit_signal('language_changed')
+
+
+func _load_state(type: String) -> void:
+	for id in _loaded_game[type]:
+		var data := load(PopochiuResources.get_data_value(type, id, ''))
+		
+		for p in _loaded_game[type][id]:
+			data[p] = _loaded_game[type][id][p]
+		
+		if type == 'rooms':
+			rooms_states[id] = data

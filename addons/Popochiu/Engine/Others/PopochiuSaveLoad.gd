@@ -36,28 +36,15 @@ func save_game() -> bool:
 			},
 			inventory = I.items,
 		},
-		rooms = {}, # Stores the state of each room
-		items = {}, # Stores the state of each inventory item
+		rooms = {}, # Stores the state of each PopochiuRoomData
+		characters = {}, # Stores the state of each PopochiuCharacterData
+		inventory_items = {}, # Stores the state of each PopochiuInventoryItemData
+		dialogs = {}, # Stores the state of each PopochiuDialog
 	}
 	
-	# Go over each Room to save its current state ------------------------------
-	for rp in PopochiuResources.get_section('rooms'):
-		var prd: PopochiuRoomData = load(rp)
-	
-		data.rooms[prd.script_name] = {}
-		
-		for p in prd.get_script().get_script_property_list():
-			# p = {class_name, hint, hint_string, name, type, usage}
-			if p.name == 'script_name' or p.name == 'scene'\
-			or not p.type in VALID_TYPES:
-				continue
-			
-			# Check if the property is a script variable (8192)
-			# or a export variable (8199)
-			if p.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or p.usage == (
-				PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
-			):
-				data.rooms[prd.script_name][p.name] = prd[p.name]
+	# Go over each Popochiu type to save its current state ---------------------
+	for type in ['rooms', 'characters', 'inventory_items', 'dialogs']:
+		_store_data(type, data)
 	
 	var json_string := JSON.print(data)
 	_file.store_string(json_string)
@@ -79,3 +66,23 @@ func load_game() -> Dictionary:
 	_file.close()
 
 	return JSON.parse(content).result
+
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
+func _store_data(type: String, save: Dictionary) -> void:
+	for path in PopochiuResources.get_section(type):
+		var data := load(path)
+		
+		save[type][data.script_name] = {}
+		
+		for prop in data.get_script().get_script_property_list():
+			# prop = {class_name, hint, hint_string, name, type, usage}
+			if prop.name == 'script_name' or prop.name == 'scene'\
+			or not prop.type in VALID_TYPES:
+				continue
+			
+			# Check if the property is a script variable (8192)
+			# or a export variable (8199)
+			if prop.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or prop.usage == (
+				PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
+			):
+				save[type][data.script_name][prop.name] = data[prop.name]

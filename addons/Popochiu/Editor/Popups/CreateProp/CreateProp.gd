@@ -69,7 +69,7 @@ func create() -> void:
 		var prop_template := load(PROP_SCRIPT_TEMPLATE)
 		if ResourceSaver.save(script_path, prop_template) != OK:
 			push_error('[Popochiu] Could not create script: %s.gd' % _new_prop_name)
-			# TODO: Mostrar retroalimentación en el mismo popup
+			# TODO: Show feedback in the popup
 			return
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

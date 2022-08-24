@@ -1,5 +1,7 @@
 extends PopochiuInventoryItem
 
+var state: PopochiuInventoryItemData = preload('InventoryToyCar.tres')
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 # TODO: Overwrite Godot's methods as needed

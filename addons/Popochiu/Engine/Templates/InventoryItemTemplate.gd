@@ -1,5 +1,7 @@
 extends PopochiuInventoryItem
 
+var state: PopochiuInventoryItemData = null
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 # TODO: Overwrite Godot's methods as needed
