@@ -6,7 +6,7 @@ extends Node
 # TODO: This could be in PopochiuSettings for devs to change the path
 const SAVE_GAME_PATH := 'user://save.json'
 const VALID_TYPES := [
-	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING, TYPE_ARRAY, TYPE_DICTIONARY
+	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING
 ]
 
 var _file := File.new()
@@ -64,8 +64,19 @@ func load_game() -> Dictionary:
 
 	var content := _file.get_as_text()
 	_file.close()
+	
+	var loaded_data: Dictionary = JSON.parse(content).result
+	
+	# Load inventory items
+	for item in loaded_data.player.inventory:
+		I.add_item(item, false, false)
+	
+	# Load main object states
+	for type in ['rooms', 'characters', 'inventory_items', 'dialogs']:
+		_load_state(type, loaded_data)
 
-	return JSON.parse(content).result
+	return loaded_data
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _store_data(type: String, save: Dictionary) -> void:
@@ -74,15 +85,64 @@ func _store_data(type: String, save: Dictionary) -> void:
 		
 		save[type][data.script_name] = {}
 		
-		for prop in data.get_script().get_script_property_list():
-			# prop = {class_name, hint, hint_string, name, type, usage}
-			if prop.name == 'script_name' or prop.name == 'scene'\
-			or not prop.type in VALID_TYPES:
-				continue
+		_check_and_store_properties(save[type][data.script_name], data)
+		
+		if type == 'dialogs':
+			save[type][data.script_name].options = {}
 			
-			# Check if the property is a script variable (8192)
-			# or a export variable (8199)
-			if prop.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or prop.usage == (
-				PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
-			):
-				save[type][data.script_name][prop.name] = data[prop.name]
+			for opt in (data as PopochiuDialog).options:
+				save[type][data.script_name].options[opt.id] = {}
+				_check_and_store_properties(
+					save[type][data.script_name].options[opt.id],
+					opt,
+					['id']
+				)
+		
+		if not save[type][data.script_name]:
+			save[type].erase(data.script_name)
+
+
+func _check_and_store_properties(
+target: Dictionary, source: Object, ignore_too := []
+) -> void:
+	var props_to_ignore := ['script_name', 'scene']
+	
+	if not ignore_too.empty():
+		props_to_ignore.append_array(ignore_too)
+	
+	# prop = {class_name, hint, hint_string, name, type, usage}
+	for prop in source.get_script().get_script_property_list():
+		if prop.name in props_to_ignore: continue
+		if not prop.type in VALID_TYPES: continue
+		
+		# Check if the property is a script variable (8192)
+		# or a export variable (8199)
+		if prop.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or prop.usage == (
+			PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
+		):
+			target[prop.name] = source[prop.name]
+
+
+func _load_state(type: String, loaded_game: Dictionary) -> void:
+	for id in loaded_game[type]:
+		var data := load(PopochiuResources.get_data_value(type, id, ''))
+		
+		for p in loaded_game[type][id]:
+			if type == 'dialogs' and p == 'options': continue
+			
+			data[p] = loaded_game[type][id][p]
+		
+		if type == 'rooms':
+			E.rooms_states[id] = data
+		elif type == 'dialogs':
+			D.trees[id] = data
+			_load_dialog_options(data, loaded_game[type][id].options)
+
+
+func _load_dialog_options(dialog: PopochiuDialog, loaded_options: Dictionary) -> void:
+	for opt in dialog.options:
+		if not loaded_options.has(opt.id): continue
+		
+		for prop in opt.get_script().get_script_property_list():
+			if loaded_options[opt.id].has(prop.name):
+				opt[prop.name] = loaded_options[opt.id][prop.name]

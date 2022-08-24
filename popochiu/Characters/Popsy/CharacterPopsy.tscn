@@ -9,6 +9,7 @@ __meta__ = {
 "_edit_group_": true
 }
 description = "Popsy"
+walk_to_point = Vector2( -34, -10 )
 cursor = 8
 script_name = "Popsy"
 text_color = Color( 0.768627, 0.423529, 0.443137, 1 )
@@ -21,6 +22,7 @@ points = PoolVector2Array( -10000, 0, 10000, 0 )
 width = 1.0
 
 [node name="WalkToHelper" type="Position2D" parent="."]
+position = Vector2( -34, -10 )
 __meta__ = {
 "_edit_group_": true
 }

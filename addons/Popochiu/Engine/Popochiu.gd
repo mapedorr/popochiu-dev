@@ -19,6 +19,7 @@ var current_room: PopochiuRoom = null
 var clicked: Node = null
 var cutscene_skipped := false
 var rooms_states := {}
+var dialog_states := {}
 var history := []
 var width := 0.0 setget ,get_width
 var height := 0.0 setget ,get_height
@@ -251,7 +252,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	current_room.is_current = true
 	
 	if _loaded_game:
-		_load_player()
+		C.set_player(C.get_character(_loaded_game.player.id))
 	
 	# Add the PopochiuCharacter instances to the room
 	for c in current_room.characters_cfg:
@@ -387,7 +388,7 @@ func add_history(data: Dictionary) -> void:
 # can be passed with params, and yield_signal is the signal that will notify the
 # function has been completed (so run can continue with the next command in the queue)
 func runnable(
-	node: Node, method: String, params := [], yield_signal := ''
+	node: Object, method: String, params := [], yield_signal := ''
 ) -> void:
 	yield()
 	
@@ -474,14 +475,6 @@ func load_game() -> void:
 	
 	if not _loaded_game: return
 	
-	# Load inventory items
-	for item in _loaded_game.player.inventory:
-		I.add_item(item, false, false)
-	
-	# Load main object states
-	for type in ['rooms', 'characters', 'inventory_items']:
-		_load_state(type)
-	
 	goto_room(
 		_loaded_game.player.room,
 		true,
@@ -552,26 +545,7 @@ func _set_in_room(value: bool) -> void:
 	Cursor.toggle_visibility(in_room)
 
 
-func _load_player() -> void:
-	C.set_player(C.get_character(_loaded_game.player.id))
-	C.player.global_position = Vector2(
-		_loaded_game.player.position.x,
-		_loaded_game.player.position.y
-	)
-
-
 #func _set_language_idx(value: int) -> void:
 #	default_language = value
 #	TranslationServer.set_locale(languages[value])
 #	emit_signal('language_changed')
-
-
-func _load_state(type: String) -> void:
-	for id in _loaded_game[type]:
-		var data := load(PopochiuResources.get_data_value(type, id, ''))
-		
-		for p in _loaded_game[type][id]:
-			data[p] = _loaded_game[type][id][p]
-		
-		if type == 'rooms':
-			rooms_states[id] = data

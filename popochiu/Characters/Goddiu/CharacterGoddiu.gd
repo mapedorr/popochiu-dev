@@ -8,14 +8,14 @@ extends PopochiuCharacter
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	C.player = self
+	pass
 
 
 # When the node is right clicked
 func on_look() -> void:
 	# Replace the call to .on_look() to implement your code. This only makes
 	# the default behavior to happen.
-	.on_look()
+	C.player = self
 
 
 # When the node is clicked and there is an inventory item selected
