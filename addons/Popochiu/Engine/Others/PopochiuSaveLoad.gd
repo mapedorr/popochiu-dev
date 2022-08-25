@@ -4,7 +4,7 @@ extends Node
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # TODO: This could be in PopochiuSettings for devs to change the path
-const SAVE_GAME_PATH := 'user://save.json'
+const SAVE_GAME_PATH := 'user://save_%d.json'
 const VALID_TYPES := [
 	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING
 ]
@@ -13,20 +13,49 @@ var _file := File.new()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func save_exists() -> bool:
-	return _file.file_exists(SAVE_GAME_PATH)
+func count_saves() -> int:
+	var saves := 0
+	
+	for i in range(1, 5):
+		if _file.file_exists(SAVE_GAME_PATH % i):
+			saves += 1
+	
+	return saves
+
+
+func get_saves_descriptions() -> Dictionary:
+	var saves := {}
+	
+	for i in range(1, 5):
+		if _file.file_exists(SAVE_GAME_PATH % i):
+			var error := _file.open(SAVE_GAME_PATH % i, File.READ)
+			if error != OK:
+				printerr(\
+				'[Popochiu] Could not open the file %s. Error code: %s'\
+				% [SAVE_GAME_PATH % i, error])
+				return {}
+
+			var content := _file.get_as_text()
+			_file.close()
+			
+			var loaded_data: Dictionary = JSON.parse(content).result
+			
+			saves[i] = loaded_data.description
+	
+	return saves
 
 
 # TODO: receive a parameter that indicates the slot to use for saving the game
-func save_game() -> bool:
-	var error := _file.open(SAVE_GAME_PATH, File.WRITE)
+func save_game(slot := 1, description := '') -> bool:
+	var error := _file.open(SAVE_GAME_PATH % slot, File.WRITE)
 	if error != OK:
 		printerr(\
 		'[Popochiu] Could not open the file %s. Error code: %s'\
-		% [SAVE_GAME_PATH, error])
+		% [SAVE_GAME_PATH % slot, error])
 		return false
 	
 	var data := {
+		description = description,
 		player = {
 			id = C.player.script_name,
 			room = E.current_room.script_name,
@@ -54,12 +83,12 @@ func save_game() -> bool:
 
 
 # TODO: receive a parameter that indicates the slot to use for loading the game
-func load_game() -> Dictionary:
-	var error := _file.open(SAVE_GAME_PATH, File.READ)
+func load_game(slot := 1) -> Dictionary:
+	var error := _file.open(SAVE_GAME_PATH % slot, File.READ)
 	if error != OK:
 		printerr(\
 		'[Popochiu] Could not open the file %s. Error code: %s'\
-		% [SAVE_GAME_PATH, error])
+		% [SAVE_GAME_PATH % slot, error])
 		return {}
 
 	var content := _file.get_as_text()

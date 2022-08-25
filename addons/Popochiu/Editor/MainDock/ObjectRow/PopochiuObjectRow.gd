@@ -230,13 +230,28 @@ func _menu_item_pressed(id: int) -> void:
 			
 			# Assign the created Script to the Prop, save the scene, and select
 			# the node in the tree and the created file in the FileSystem dock
-			prop.set_script(load(script_path))
+			var script := load(script_path)
+			
+			script.script_name = prop.script_name
+			script.description = prop.description
+			script.clickable = prop.clickable
+			script.baseline = prop.baseline
+			script.walk_to_point = prop.walk_to_point
+			script.look_at_point = prop.look_at_point
+			script.cursor = prop.cursor
+			script.always_on_top = prop.always_on_top
+			script.texture = prop.texture
+			
+			prop.set_script(script)
+			
 			main_dock.ei.save_scene()
 			main_dock.ei.edit_node(prop)
 			main_dock.ei.select_file(script_path)
 			
 			# Update this row properties and state
 			path = script_path
+			
+			_btn_script.show()
 			_menu_popup.set_item_disabled(0, true)
 		MenuOptions.DELETE:
 			_remove_object()

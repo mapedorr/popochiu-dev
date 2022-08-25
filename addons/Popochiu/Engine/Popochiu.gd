@@ -460,18 +460,26 @@ func change_text_speed() -> void:
 
 
 func has_save() -> bool:
-	return _saveload.save_exists()
+	return _saveload.count_saves() > 0
 
 
-func save_game() -> void:
-	if _saveload.save_game():
+func saves_count() -> int:
+	return _saveload.count_saves()
+
+
+func get_saves_descriptions() -> Dictionary:
+	return _saveload.get_saves_descriptions()
+
+
+func save_game(slot := 1, description := '') -> void:
+	if _saveload.save_game(slot, description):
 		emit_signal('game_saved')
 		
 		E.run([G.display('Game saved')])
 
 
-func load_game() -> void:
-	_loaded_game = _saveload.load_game()
+func load_game(slot := 1) -> void:
+	_loaded_game = _saveload.load_game(slot)
 	
 	if not _loaded_game: return
 	

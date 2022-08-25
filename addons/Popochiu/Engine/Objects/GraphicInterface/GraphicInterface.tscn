@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/GraphicInterface.gd" type="Script" id=1]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Resources/PopochiuTheme.tres" type="Theme" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogMenu/DialogMenu.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Toolbar/Toolbar.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/History/History.tscn" type="PackedScene" id=7]
+[ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/SaveLoad/SaveLoad.tscn" type="PackedScene" id=8]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/InfoBar/InfoBar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DisplayBox/DisplayBox.tscn" type="PackedScene" id=11]
 
@@ -39,6 +40,7 @@ margin_top = 107.0
 margin_right = 224.0
 margin_bottom = 120.0
 theme = ExtResource( 2 )
+text = "[wave]Los diálogos[/wave]"
 
 [node name="DisplayBox" parent="MainContainer" instance=ExtResource( 11 )]
 anchor_left = 0.0
@@ -72,3 +74,7 @@ custom_styles/disabled = SubResource( 4 )
 custom_styles/normal = SubResource( 5 )
 
 [node name="History" parent="." instance=ExtResource( 7 )]
+visible = false
+
+[node name="SaveLoad" parent="." instance=ExtResource( 8 )]
+visible = false

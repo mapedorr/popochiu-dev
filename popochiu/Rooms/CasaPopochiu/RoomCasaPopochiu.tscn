@@ -53,7 +53,9 @@ texture = ExtResource( 9 )
 [node name="Toy" parent="Props/Blanket" instance=ExtResource( 3 )]
 position = Vector2( 0, -3 )
 script = ExtResource( 11 )
+description = "Toy"
 baseline = 4
+script_name = "Toy"
 
 [node name="BaselineHelper" parent="Props/Blanket/Toy" index="0"]
 position = Vector2( 0, 4 )
