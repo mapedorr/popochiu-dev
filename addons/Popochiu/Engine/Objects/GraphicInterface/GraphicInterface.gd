@@ -1,6 +1,7 @@
 extends CanvasLayer
 # Handles the Graphic Interface (a.k.a. UI)
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+# warning-ignore-all:return_value_discarded
 
 const DialogText := preload('DialogText/DialogText.gd')
 const DisplayBox := preload('DisplayBox/DisplayBox.gd')

@@ -1,4 +1,5 @@
 extends PanelContainer
+# warning-ignore-all:return_value_discarded
 
 const SELECTION_COLOR := Color('edf171')
 const OVERWRITE_COLOR := Color('c46c71')
@@ -24,7 +25,7 @@ func _ready() -> void:
 	_dialog.connect('popup_hide', self, '_close')
 	_ok.connect('pressed', self, '_confirmed')
 	
-	var saves := E.get_saves_descriptions()
+	var saves: Dictionary = E.get_saves_descriptions()
 	for btn in _slots.get_children():
 		(btn as Button).set_meta('has_save', false)
 		
@@ -67,6 +68,14 @@ func _show_load() -> void:
 
 func _show() -> void:
 	_ok.disabled = true
+	_slot = 0
+	
+	if _current_slot:
+		_current_slot.text = _prev_text
+		_current_slot.pressed = false
+		
+		_current_slot = null
+		_prev_text = ''
 	
 	_dialog.popup_centered(Vector2(240.0, 120.0))
 	_cancel.grab_focus()
@@ -79,13 +88,6 @@ func _show() -> void:
 
 
 func _close() -> void:
-	if _current_slot:
-		_current_slot.text = _prev_text
-		_current_slot.pressed = false
-		_current_slot = null
-	
-	yield(get_tree(), 'idle_frame')
-	
 	G.done()
 	Cursor.unlock()
 	

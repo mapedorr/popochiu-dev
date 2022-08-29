@@ -224,7 +224,9 @@ func _update_navigation_path(
 	# same time. Or maybe each character should handle its own movement? (;￢＿￢)
 	_path = _nav_path.get_simple_path(start_position, end_position, true)
 	
-	if _path.empty(): return
+	if _path.empty():
+		prints('_update_navigation_path')
+		return
 	
 	_path.remove(0)
 	_moving_character = character
@@ -233,7 +235,11 @@ func _update_navigation_path(
 
 
 func _clear_navigation_path() -> void:
-	_path.clear()
+	# FIX: 'function signature missmatch in Web export' error thrown when clearing
+	# an empty Array.
+	if not _path.empty():
+		_path.clear()
+	
 	_moving_character.idle(false)
 	C.emit_signal('character_move_ended', _moving_character)
 	_moving_character = null

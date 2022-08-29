@@ -6,7 +6,8 @@ extends Node
 # TODO: This could be in PopochiuSettings for devs to change the path
 const SAVE_GAME_PATH := 'user://save_%d.json'
 const VALID_TYPES := [
-	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING
+	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING,
+	TYPE_ARRAY, TYPE_STRING_ARRAY, TYPE_RAW_ARRAY, TYPE_INT_ARRAY
 ]
 
 var _file := File.new()
@@ -45,7 +46,6 @@ func get_saves_descriptions() -> Dictionary:
 	return saves
 
 
-# TODO: receive a parameter that indicates the slot to use for saving the game
 func save_game(slot := 1, description := '') -> bool:
 	var error := _file.open(SAVE_GAME_PATH % slot, File.WRITE)
 	if error != OK:
@@ -57,24 +57,45 @@ func save_game(slot := 1, description := '') -> bool:
 	var data := {
 		description = description,
 		player = {
-			id = C.player.script_name,
 			room = E.current_room.script_name,
-			position = {
-				x = C.player.global_position.x,
-				y = C.player.global_position.y
-			},
 			inventory = I.items,
 		},
 		rooms = {}, # Stores the state of each PopochiuRoomData
 		characters = {}, # Stores the state of each PopochiuCharacterData
 		inventory_items = {}, # Stores the state of each PopochiuInventoryItemData
 		dialogs = {}, # Stores the state of each PopochiuDialog
+		globals = {}, # Stores the state of Globals
 	}
+	
+	if C.player:
+		data.player.id = C.player.script_name
+		data.player.position = {
+			x = C.player.global_position.x,
+			y = C.player.global_position.y
+		}
 	
 	# Go over each Popochiu type to save its current state ---------------------
 	for type in ['rooms', 'characters', 'inventory_items', 'dialogs']:
 		_store_data(type, data)
 	
+	# Save PopochiuGlobals.gd (Globals) ----------------------------------------
+	# prop = {class_name, hint, hint_string, name, type, usage}
+	for prop in Globals.get_script().get_script_property_list():
+		if not prop.type in VALID_TYPES: continue
+		
+		# Check if the property is a script variable (8192)
+		# or a export variable (8199)
+		if prop.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or prop.usage == (
+			PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
+		):
+			data.globals[prop.name] = Globals[prop.name]
+	
+	if Globals.has_method('on_save'):
+		data.globals.custom_data = Globals.on_save()
+	
+	if not data.globals: data.erase('globals')
+	
+	# Write the JSON -----------------------------------------------------------
 	var json_string := JSON.print(data)
 	_file.store_string(json_string)
 	_file.close()
@@ -82,7 +103,6 @@ func save_game(slot := 1, description := '') -> bool:
 	return true
 
 
-# TODO: receive a parameter that indicates the slot to use for loading the game
 func load_game(slot := 1) -> Dictionary:
 	var error := _file.open(SAVE_GAME_PATH % slot, File.READ)
 	if error != OK:
@@ -103,6 +123,17 @@ func load_game(slot := 1) -> Dictionary:
 	# Load main object states
 	for type in ['rooms', 'characters', 'inventory_items', 'dialogs']:
 		_load_state(type, loaded_data)
+	
+	# Load globals
+	if loaded_data.has('globals'):
+		for prop in loaded_data.globals:
+			if typeof(Globals.get(prop)) == TYPE_NIL: continue
+			
+			Globals[prop] = loaded_data.globals[prop]
+		
+		if loaded_data.globals.has('custom_data')\
+		and Globals.has_method('on_load'):
+			Globals.on_load(loaded_data.globals.custom_data)
 
 	return loaded_data
 
@@ -129,6 +160,9 @@ func _store_data(type: String, save: Dictionary) -> void:
 		
 		if not save[type][data.script_name]:
 			save[type].erase(data.script_name)
+	
+	if not save[type]:
+		save.erase(type)
 
 
 func _check_and_store_properties(
@@ -139,6 +173,7 @@ target: Dictionary, source: Object, ignore_too := []
 	if not ignore_too.empty():
 		props_to_ignore.append_array(ignore_too)
 	
+	# ---- Store basic type properties -----------------------------------------
 	# prop = {class_name, hint, hint_string, name, type, usage}
 	for prop in source.get_script().get_script_property_list():
 		if prop.name in props_to_ignore: continue
@@ -150,22 +185,32 @@ target: Dictionary, source: Object, ignore_too := []
 			PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
 		):
 			target[prop.name] = source[prop.name]
+	
+	# ---- Call custom function to store extra data ----------------------------
+	if source.has_method('on_save'):
+		target.custom_data = source.on_save()
+		if not target.custom_data: target.erase('custom_data')
 
 
 func _load_state(type: String, loaded_game: Dictionary) -> void:
 	for id in loaded_game[type]:
-		var data := load(PopochiuResources.get_data_value(type, id, ''))
+		var state := load(PopochiuResources.get_data_value(type, id, ''))
 		
 		for p in loaded_game[type][id]:
+			if p == 'custom_data': continue
 			if type == 'dialogs' and p == 'options': continue
 			
-			data[p] = loaded_game[type][id][p]
+			state[p] = loaded_game[type][id][p]
 		
 		if type == 'rooms':
-			E.rooms_states[id] = data
+			E.rooms_states[id] = state
 		elif type == 'dialogs':
-			D.trees[id] = data
-			_load_dialog_options(data, loaded_game[type][id].options)
+			D.trees[id] = state
+			_load_dialog_options(state, loaded_game[type][id].options)
+		
+		if loaded_game[type][id].has('custom_data')\
+		and state.has_method('on_load'):
+			state.on_load(loaded_game[type][id].custom_data)
 
 
 func _load_dialog_options(dialog: PopochiuDialog, loaded_options: Dictionary) -> void:

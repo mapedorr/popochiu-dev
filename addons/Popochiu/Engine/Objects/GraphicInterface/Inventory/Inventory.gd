@@ -1,4 +1,5 @@
 extends Control
+# warning-ignore-all:return_value_discarded
 
 var is_disabled := false
 

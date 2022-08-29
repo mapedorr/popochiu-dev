@@ -108,6 +108,7 @@ config/windows_native_icon="res://popochiu.ico"
 
 U="*res://addons/Popochiu/Engine/Others/PopochiuUtils.gd"
 Cursor="*res://addons/Popochiu/Engine/Cursor/Cursor.tscn"
+Globals="*res://popochiu/PopochiuGlobals.gd"
 E="*res://addons/Popochiu/Engine/Popochiu.tscn"
 C="*res://addons/Popochiu/Engine/Interfaces/ICharacter.gd"
 I="*res://addons/Popochiu/Engine/Interfaces/IInventory.gd"

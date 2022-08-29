@@ -5,3 +5,17 @@ extends PopochiuRoomData
 # own.
 # script_name and scene variables from the inherited class will not be saved.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
+# Use this to save custom data for this PopochiuRoom when saving the game.
+# The Dictionary must contain only JSON supported types: bool, int, float, String.
+func on_save() -> Dictionary:
+	return {}
+
+
+# Called when the game is loaded.
+# This Dictionary should has the same structure you defined for the returned
+# one in on_save().
+func on_load(data: Dictionary) -> void:
+	prints(data)

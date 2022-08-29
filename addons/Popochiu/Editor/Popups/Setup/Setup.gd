@@ -4,6 +4,7 @@ extends AcceptDialog
 const ImporterDefaults :=\
 preload('res://addons/Popochiu/Engine/Others/ImporterDefaults.gd')
 
+onready var _welcome: Label = find_node('Welcome')
 onready var _game_width: SpinBox = find_node('GameWidth')
 onready var _game_height: SpinBox = find_node('GameHeight')
 onready var _test_width: SpinBox = find_node('TestWidth')
@@ -23,7 +24,12 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func appear() -> void:
+func appear(show_welcome := false) -> void:
+	_welcome.hide()
+
+	if show_welcome:
+		_welcome.show()
+	
 	# Set initial values for fields
 	_game_width.value = ProjectSettings.get_setting(PopochiuResources.DISPLAY_WIDTH)
 	_game_height.value = ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
@@ -39,8 +45,7 @@ func appear() -> void:
 		== ImporterDefaults.PIXEL_TEXTURES.values():
 			_game_type.selected = 2
 	
-	set_as_minsize()
-	popup_centered()
+	popup_centered_minsize(Vector2(480.0, 180.0))
 	get_ok().text = 'Close'
 
 

@@ -2,6 +2,7 @@ extends RichTextLabel
 # Show dialogue texts char by char using a RichTextLabel.
 # An invisibla Label is used to calculate the width of the RichTextLabel node.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+# warning-ignore-all:return_value_discarded
 
 signal animation_finished
 
