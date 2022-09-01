@@ -16,7 +16,14 @@ var _is_first_install := false
 var _input_actions :=\
 preload('res://addons/Popochiu/Engine/Others/InputActions.gd')
 var _shown_helpers := []
-var _export_plugin: EditorExportPlugin = null
+var _export_plugin: EditorExportPlugin =\
+preload('PopochiuExportPlugin.gd').new()
+var _inspector_plugin: EditorInspectorPlugin =\
+preload('PopochiuInspectorPlugin.gd').new()
+var _selected_node: Node = null
+var _vsep := VSeparator.new()
+var _btn_baseline := Button.new()
+var _btn_walk_to := Button.new()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -44,8 +51,8 @@ func _enter_tree() -> void:
 	
 	_editor_file_system.scan_sources()
 	
-	_export_plugin = load('res://addons/Popochiu/ExportPlugin.gd').new()
 	add_export_plugin(_export_plugin)
+	add_inspector_plugin(_inspector_plugin)
 	
 	main_dock = load(Constants.MAIN_DOCK_PATH).instance()
 	main_dock.ei = _editor_interface
@@ -55,12 +62,15 @@ func _enter_tree() -> void:
 	main_dock.connect('room_row_clicked', self, 'update_overlays')
 	add_control_to_dock(DOCK_SLOT_RIGHT_BL, main_dock)
 	
+	_create_container_buttons()
+	
 	yield(get_tree().create_timer(0.5), 'timeout')
 	
 	# Fill the dock with Rooms, Characters, Inventory items, Dialogs and Audio cues
 	main_dock.fill_data()
 	main_dock.grab_focus()
 	
+	# ==== Connect to signals ==================================================
 	_editor_interface.get_selection().connect(
 		'selection_changed', self, '_check_nodes'
 	)
@@ -76,6 +86,7 @@ func _enter_tree() -> void:
 	
 	connect('scene_changed', main_dock, 'scene_changed')
 	connect('scene_closed', main_dock, 'scene_closed')
+	# ================================================== Connect to signals ====
 	
 	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
 	
@@ -88,8 +99,13 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	remove_control_from_docks(main_dock)
+	remove_control_from_container(
+		EditorPlugin.CONTAINER_CANVAS_EDITOR_MENU,
+		_btn_baseline
+	)
 	main_dock.queue_free()
 	remove_export_plugin(_export_plugin)
+	remove_inspector_plugin(_inspector_plugin)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -274,7 +290,25 @@ func _check_nodes() -> void:
 	_shown_helpers.clear()
 	
 	if not is_instance_valid(_editor_interface.get_selection()): return
-
+	
+	if _editor_interface.get_selection().get_selected_nodes().size() == 1:
+		_selected_node = _editor_interface.get_selection().get_selected_nodes()[0]
+		
+		if _selected_node is PopochiuProp or _selected_node is PopochiuHotspot\
+		or _selected_node.get_parent() is PopochiuProp\
+		or _selected_node.get_parent() is PopochiuHotspot:
+			
+			if _selected_node is PopochiuProp\
+			or _selected_node is PopochiuHotspot:
+				_btn_baseline.set_pressed_no_signal(false)
+				_btn_walk_to.set_pressed_no_signal(false)
+			
+			_btn_baseline.show()
+			_btn_walk_to.show()
+		else:
+			_btn_baseline.hide()
+			_btn_walk_to.hide()
+	
 	for n in _editor_interface.get_selection().get_selected_nodes():
 		if n.has_method('show_helpers'):
 			n.show_helpers()
@@ -292,3 +326,55 @@ func _on_files_moved(old_file: String, new_file: String) -> void:
 
 func _on_file_removed(file: String) -> void:
 	pass
+
+
+func _create_container_buttons() -> void:
+	var panl := Panel.new()
+	var hbox := HBoxContainer.new()
+	
+	_btn_baseline.icon = main_dock.get_icon("LineShape2D", "EditorIcons")
+	_btn_baseline.hint_tooltip = 'Select node "baseline"'
+	_btn_baseline.toggle_mode = true
+	_btn_baseline.connect('pressed', self, '_select_baseline')
+	
+	_btn_walk_to.icon = main_dock.get_icon("Position2D", "EditorIcons")
+	_btn_walk_to.hint_tooltip = 'Select node "walk to point"'
+	_btn_walk_to.toggle_mode = true
+	_btn_walk_to.connect('pressed', self, '_select_walk_to')
+	
+	hbox.add_child(_vsep)
+	hbox.add_child(_btn_baseline)
+	hbox.add_child(_btn_walk_to)
+	
+	panl.add_child(hbox)
+	
+	add_control_to_container(
+		EditorPlugin.CONTAINER_CANVAS_EDITOR_MENU,
+		panl
+	)
+	
+	_vsep.hide()
+	_btn_baseline.hide()
+	_btn_walk_to.hide()
+
+
+func _select_walk_to() -> void:
+	_btn_walk_to.set_pressed_no_signal(true)
+	_btn_baseline.set_pressed_no_signal(false)
+	_vsep.hide()
+	
+	if _selected_node is PopochiuProp or _selected_node is PopochiuHotspot:
+		_editor_interface.edit_node(_selected_node.get_node('WalkToHelper'))
+	else:
+		_editor_interface.edit_node(_selected_node.get_node('../WalkToHelper'))
+
+
+func _select_baseline() -> void:
+	_btn_baseline.set_pressed_no_signal(true)
+	_btn_walk_to.set_pressed_no_signal(false)
+	_vsep.show()
+	
+	if _selected_node is PopochiuProp or _selected_node is PopochiuHotspot:
+		_editor_interface.edit_node(_selected_node.get_node('BaselineHelper'))
+	else:
+		_editor_interface.edit_node(_selected_node.get_node('../BaselineHelper'))

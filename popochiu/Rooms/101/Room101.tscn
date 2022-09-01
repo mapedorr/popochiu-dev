@@ -1,21 +1,45 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://popochiu/Rooms/101/Room101.gd" type="Script" id=1]
+[ext_resource path="res://addons/Popochiu/Engine/Objects/Prop/PopochiuProp.tscn" type="PackedScene" id=2]
+[ext_resource path="res://popochiu/Rooms/101/Props/Something/PropSomething.gd" type="Script" id=3]
+
+[sub_resource type="NavigationPolygon" id=1]
+vertices = PoolVector2Array( 193, 153, 40, 108, 87, 37, 153, 43, 243, 45, 281, 94 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 0, 3, 4, 5 ) ]
+outlines = [ PoolVector2Array( 87, 37, 40, 108, 193, 153, 281, 94, 243, 45, 153, 43 ) ]
 
 [node name="Room101" type="YSort"]
+sort_enabled = false
 script = ExtResource( 1 )
 script_name = "101"
 
+[node name="WalkableAreas" type="Node2D" parent="."]
+
+[node name="Navigation2D" type="Navigation2D" parent="WalkableAreas"]
+
+[node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="WalkableAreas/Navigation2D"]
+navpoly = SubResource( 1 )
+
 [node name="Props" type="YSort" parent="."]
+
+[node name="Something" type="Area2D" parent="Props" instance=ExtResource( 2 )]
+position = Vector2( 152, 51 )
+script = ExtResource( 3 )
+__meta__ = {
+"_editor_description_": ""
+}
+description = "Something"
+cursor = 1
+script_name = "Something"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Props/Something"]
+polygon = PoolVector2Array( -10, -23, -30, 7, 21, 29, 46, -12 )
 
 [node name="Hotspots" type="Node2D" parent="."]
 
 [node name="Regions" type="Node2D" parent="."]
 
 [node name="Points" type="Node2D" parent="."]
-
-[node name="WalkableAreas" type="Node2D" parent="."]
-
-[node name="Navigation2D" type="Navigation2D" parent="WalkableAreas"]
 
 [node name="Characters" type="YSort" parent="."]

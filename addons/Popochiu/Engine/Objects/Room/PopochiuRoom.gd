@@ -26,7 +26,11 @@ onready var _nav_path: Navigation2D = $WalkableAreas.get_child(0)
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _enter_tree() -> void:
-	if Engine.editor_hint: return
+	if Engine.editor_hint:
+		sort_enabled = false
+		return
+	else:
+		sort_enabled = true
 	
 	for c in $Characters.get_children():
 		if c is PopochiuCharacter:

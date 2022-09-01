@@ -10,4 +10,3 @@ scene = "res://popochiu/Rooms/101/Room101.tscn"
 visited = false
 visited_first_time = false
 visited_times = 0
-toy_grabbed = false

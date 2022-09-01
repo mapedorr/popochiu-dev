@@ -129,6 +129,8 @@ func scene_changed(scene_root: Node) -> void:
 		_no_room_info.hide()
 
 		get_parent().current_tab = 1
+	else:
+		get_parent().current_tab = 0
 
 
 func scene_closed(filepath: String) -> void:

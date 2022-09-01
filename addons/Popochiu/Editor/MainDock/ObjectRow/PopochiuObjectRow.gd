@@ -344,9 +344,7 @@ func _remove_object() -> void:
 	var location := 'Popochiu'
 	
 	# Verify if the object to delete is a Prop, a Hotspot or a Region.
-	if type == Constants.Types.PROP\
-	or type == Constants.Types.HOTSPOT\
-	or type == Constants.Types.REGION:
+	if type in Constants.ROOM_TYPES:
 		# res://popochiu/Rooms/???/Props/??/ > [res:, popochiu, Rooms, ???, Props, ??]
 		location = "%s's room" % path.split('/', false)[3]
 	
@@ -365,10 +363,14 @@ func _remove_object() -> void:
 		' This action cannot be reversed. Continue?',
 		# Additional confirmation
 		'Delete [b]%s[/b] folder/file too?' % path.get_base_dir() +\
-		(' ([b]%d[/b] audio files will be deleted' % audio_files.size()\
-		if audio_files.size() > 0\
-		else '') +\
-		' (cannot be reversed))'
+		(
+			' ([b]%d[/b] audio files will be deleted' % audio_files.size()\
+			if audio_files.size() > 0\
+			else ''
+		) +\
+		' (cannot be reversed))'\
+		if path.get_extension()
+		else ''
 	)
 	
 	_delete_dialog.connect('confirmed', self, '_remove_from_core')
@@ -427,8 +429,10 @@ func _remove_from_core() -> void:
 	
 	if _delete_all_checkbox.pressed:
 		_delete_from_file_system()
-	else:
+	elif type in Constants.MAIN_TYPES:
 		show_add_to_core()
+	elif not path.get_extension():
+		queue_free()
 	
 	_disconnect_popup()
 	main_dock.ei.save_scene()

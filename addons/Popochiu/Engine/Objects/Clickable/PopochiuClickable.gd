@@ -24,6 +24,13 @@ onready var _description_code := description
 func _ready():
 	add_to_group('PopochiuClickable')
 	
+	if Engine.editor_hint:
+		hide_helpers()
+		return
+	else:
+		remove_child($BaselineHelper)
+		remove_child($WalkToHelper)
+	
 	connect('visibility_changed', self, '_toggle_input')
 
 	if clickable:
@@ -33,12 +40,6 @@ func _ready():
 		
 		# Connect to singleton signals
 		E.connect('language_changed', self, '_translate')
-	
-	if not Engine.editor_hint:
-		remove_child($BaselineHelper)
-		remove_child($WalkToHelper)
-	else:
-		hide_helpers()
 	
 	set_process_unhandled_input(false)
 	_translate()
