@@ -213,6 +213,10 @@ func get_points() -> Array:
 	return $Points.get_children()
 
 
+func get_walk_areas() -> Array:
+	return $WalkableAreas.get_children()
+
+
 func get_characters_count() -> int:
 	return $Characters.get_child_count()
 

@@ -10,7 +10,8 @@ enum Types {
 	PROP,
 	HOTSPOT,
 	REGION,
-	POINT
+	POINT,
+	WALK_AREA
 }
 enum CursorType {
 	NONE,
