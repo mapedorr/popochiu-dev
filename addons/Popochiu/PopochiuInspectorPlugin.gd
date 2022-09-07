@@ -9,7 +9,6 @@ func can_handle(object: Object) -> bool:
 
 
 func parse_begin(object: Object) -> void:
-#	if not object is PopochiuCharacter: return
 	if not object.get_parent() is YSort: return
 	
 	var panel := PanelContainer.new()

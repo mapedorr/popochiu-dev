@@ -16,14 +16,13 @@ var _is_first_install := false
 var _input_actions :=\
 preload('res://addons/Popochiu/Engine/Others/InputActions.gd')
 var _shown_helpers := []
-var _export_plugin: EditorExportPlugin =\
-preload('PopochiuExportPlugin.gd').new()
-var _inspector_plugin: EditorInspectorPlugin =\
-preload('PopochiuInspectorPlugin.gd').new()
+var _export_plugin: EditorExportPlugin = null
+var _inspector_plugin: EditorInspectorPlugin = null
 var _selected_node: Node = null
 var _vsep := VSeparator.new()
 var _btn_baseline := Button.new()
 var _btn_walk_to := Button.new()
+var _types_helper: Resource = null
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -45,14 +44,23 @@ func _init() -> void:
 
 
 func _enter_tree() -> void:
+	if _is_first_install: return
+	
 	prints('[es] Estás usando Popochiu, un plugin para crear juegos point n\' click')
 	prints('[en] You\'re using Popochiu, a plugin for making point n\' click games')
 	prints('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ \\( o )3(o)/ ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒')
 	
 	_editor_file_system.scan_sources()
 	
+	_export_plugin = preload('PopochiuExportPlugin.gd').new()
 	add_export_plugin(_export_plugin)
+	
+	_inspector_plugin =\
+	load('res://addons/Popochiu/PopochiuInspectorPlugin.gd').new()
 	add_inspector_plugin(_inspector_plugin)
+	
+	_types_helper =\
+	load('res://addons/Popochiu/Editor/Helpers/PopochiuTypesHelper.gd')
 	
 	main_dock = load(Constants.MAIN_DOCK_PATH).instance()
 	main_dock.ei = _editor_interface
@@ -104,8 +112,12 @@ func _exit_tree() -> void:
 		_btn_baseline
 	)
 	main_dock.queue_free()
-	remove_export_plugin(_export_plugin)
-	remove_inspector_plugin(_inspector_plugin)
+	
+	if is_instance_valid(_export_plugin):
+		remove_export_plugin(_export_plugin)
+	
+	if is_instance_valid(_inspector_plugin):
+		remove_inspector_plugin(_inspector_plugin)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -291,15 +303,25 @@ func _check_nodes() -> void:
 	
 	if not is_instance_valid(_editor_interface.get_selection()): return
 	
+	for n in _editor_interface.get_selection().get_selected_nodes():
+		if n.has_method('show_helpers'):
+			n.show_helpers()
+			_shown_helpers.append(n)
+		elif n.get_parent().has_method('show_helpers'):
+			n.get_parent().show_helpers()
+			_shown_helpers.append(n.get_parent())
+	
+	if not is_instance_valid(_types_helper): return
+	
 	if _editor_interface.get_selection().get_selected_nodes().size() == 1:
 		_selected_node = _editor_interface.get_selection().get_selected_nodes()[0]
 		
-		if _selected_node is PopochiuProp or _selected_node is PopochiuHotspot\
-		or _selected_node.get_parent() is PopochiuProp\
-		or _selected_node.get_parent() is PopochiuHotspot:
-			
-			if _selected_node is PopochiuProp\
-			or _selected_node is PopochiuHotspot:
+		if _types_helper.is_prop(_selected_node)\
+		or _types_helper.is_hotspot(_selected_node)\
+		or _types_helper.is_prop(_selected_node.get_parent())\
+		or _types_helper.is_hotspot(_selected_node.get_parent()):
+			if _types_helper.is_prop(_selected_node)\
+			or _types_helper.is_hotspot(_selected_node):
 				_btn_baseline.set_pressed_no_signal(false)
 				_btn_walk_to.set_pressed_no_signal(false)
 			
@@ -308,14 +330,6 @@ func _check_nodes() -> void:
 		else:
 			_btn_baseline.hide()
 			_btn_walk_to.hide()
-	
-	for n in _editor_interface.get_selection().get_selected_nodes():
-		if n.has_method('show_helpers'):
-			n.show_helpers()
-			_shown_helpers.append(n)
-		elif n.get_parent().has_method('show_helpers'):
-			n.get_parent().show_helpers()
-			_shown_helpers.append(n.get_parent())
 
 
 func _on_files_moved(old_file: String, new_file: String) -> void:
@@ -363,7 +377,8 @@ func _select_walk_to() -> void:
 	_btn_baseline.set_pressed_no_signal(false)
 	_vsep.hide()
 	
-	if _selected_node is PopochiuProp or _selected_node is PopochiuHotspot:
+	if _types_helper.is_prop(_selected_node)\
+	or _types_helper.is_hotspot(_selected_node):
 		_editor_interface.edit_node(_selected_node.get_node('WalkToHelper'))
 	else:
 		_editor_interface.edit_node(_selected_node.get_node('../WalkToHelper'))
@@ -374,7 +389,8 @@ func _select_baseline() -> void:
 	_btn_walk_to.set_pressed_no_signal(false)
 	_vsep.show()
 	
-	if _selected_node is PopochiuProp or _selected_node is PopochiuHotspot:
+	if _types_helper.is_prop(_selected_node)\
+	or _types_helper.is_hotspot(_selected_node):
 		_editor_interface.edit_node(_selected_node.get_node('BaselineHelper'))
 	else:
 		_editor_interface.edit_node(_selected_node.get_node('../BaselineHelper'))
