@@ -8,7 +8,12 @@ extends PopochiuHotspot
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	.on_interact()
+	yield(E.run([
+		G.display('Holaaaaaa'),
+		G.display(\
+		'cacaskcj alskcj [shake]alsckj[/shake] alskcjas lckja [wave]lcascasdadsa[/wave] askdjf aslkdjf laskdjf alsdkfj yyyyyyy alskdjf xxxxxx '),
+		G.display('Ouch'),
+	]), 'completed')
 
 
 # When the node is right clicked

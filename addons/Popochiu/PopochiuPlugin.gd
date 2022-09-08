@@ -52,15 +52,15 @@ func _enter_tree() -> void:
 	
 	_editor_file_system.scan_sources()
 	
+	_types_helper =\
+	load('res://addons/Popochiu/Editor/Helpers/PopochiuTypesHelper.gd')
+	
 	_export_plugin = preload('PopochiuExportPlugin.gd').new()
 	add_export_plugin(_export_plugin)
 	
 	_inspector_plugin =\
 	load('res://addons/Popochiu/PopochiuInspectorPlugin.gd').new()
 	add_inspector_plugin(_inspector_plugin)
-	
-	_types_helper =\
-	load('res://addons/Popochiu/Editor/Helpers/PopochiuTypesHelper.gd')
 	
 	main_dock = load(Constants.MAIN_DOCK_PATH).instance()
 	main_dock.ei = _editor_interface

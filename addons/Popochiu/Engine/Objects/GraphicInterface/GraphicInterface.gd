@@ -64,7 +64,7 @@ func _enable_panels() -> void:
 	# TODO: Add juice with a Tween \ ( ;) )/
 	_click_handler.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
-	_display_box.hide()
+	_display_box.close()
 	_dialog_text.hide()
 
 	_info_bar.show()
@@ -78,7 +78,7 @@ func _enable_panels() -> void:
 func _continue() -> void:
 	if _dialog_text.percent_visible == 1.0:
 		_dialog_text.hide()
-		_display_box.hide()
+		_display_box.close()
 		
 		G.emit_signal('continue_clicked')
 	else:
