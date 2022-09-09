@@ -34,6 +34,7 @@ func close() -> void:
 func _show_box(msg := '') -> void:
 	rect_size = get_meta(DFLT_SIZE)
 	
+	# ==== Calculate the width of the node =====================================
 	var rt := RichTextLabel.new()
 	var lbl := Label.new()
 	rt.append_bbcode(msg)
@@ -44,6 +45,7 @@ func _show_box(msg := '') -> void:
 		size.x = get_meta(DFLT_SIZE).x - 16.0
 	lbl.free()
 	rt.free()
+	# ===================================== Calculate the width of the node ====
 	
 	append_bbcode('[center]%s[/center]' % msg)
 	rect_size = Vector2(size.x + 16.0, get_meta(DFLT_SIZE).y)

@@ -6,7 +6,7 @@
 script = ExtResource( 1 )
 skip_cutscene_time = 0.2
 text_speeds = [ 0.1, 0.01, 0.0 ]
-default_text_speed = 0
+default_text_speed = 2
 auto_continue_text = false
 languages = [ "en", "es", "es_CO" ]
 default_language = 0
