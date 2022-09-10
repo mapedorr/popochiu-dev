@@ -35,6 +35,9 @@ func _ready():
 	G.connect('freed', self, '_enable_panels')
 	G.connect('interface_hidden', self, '_hide_panels')
 	G.connect('interface_shown', self, '_show_panels')
+	
+	if E.settings.scale_gui:
+		$MainContainer.rect_scale = E.scale
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

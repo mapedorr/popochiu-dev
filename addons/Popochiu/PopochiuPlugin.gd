@@ -128,10 +128,35 @@ func enable_plugin() -> void:
 		# Mostrar la ventana de diálogo para pedirle a la desarrolladora que reinicie
 		# el motor.
 		var ad := AcceptDialog.new()
+		
 		# TODO: Localize
 		ad.window_title = 'Popochiu'
-		ad.dialog_text = '[es] Reinicia el motor para completar la instalación (Proyecto > Volver a Cargar el Proyecto Actual).\n' + \
-		'[en] Restart Godot to complete the instalation (Project > Reload Current Project).'
+		ad.dialog_text =\
+		'[es] Reinicia el motor para completar la instalación:\n' +\
+		'Proyecto > Volver a Cargar el Proyecto Actual\n\n' + \
+		'[en] Restart Godot to complete the instalation:\n' +\
+		'Project > Reload Current Project'
+#		var rtl := RichTextLabel.new()
+		
+#		rtl.rect_min_size = Vector2(640.0, 128.0)
+#		rtl.margin_left = 0.0
+#		rtl.margin_top = 0.0
+#		rtl.margin_right = 0.0
+#		rtl.margin_bottom = 0.0
+#		rtl.bbcode_enabled = true
+#		rtl.fit_content_height = true
+#		rtl.add_stylebox_override('normal', rtl.get_stylebox("Content", "EditorStyles"))
+#		rtl.append_bbcode(\
+#		'[es] Reinicia el motor para completar la instalación ([b]Proyecto > Volver a Cargar el Proyecto Actual[/b]).\n' + \
+#		'[en] Restart Godot to complete the instalation ([b]Project > Reload Current Project[/b]).'
+#		)
+#
+#		ad.add_child(rtl)
+#		prints('>>>', rtl.get_font('main', 'EditorFonts'))
+#		rtl.add_font_override('normal_font', rtl.get_font('main', 'EditorFonts'))
+#		rtl.add_font_override('bold_font', rtl.get_font("doc_source", 'EditorFonts'))
+#		ad.set_as_minsize()
+		
 		_editor_interface.get_base_control().add_child(ad)
 		ad.popup_centered()
 

@@ -7,6 +7,7 @@ signal text_speed_changed
 signal language_changed
 signal game_saved
 signal game_loaded(data)
+signal redied
 
 const SaveLoad := preload('res://addons/Popochiu/Engine/Others/PopochiuSaveLoad.gd')
 
@@ -30,6 +31,7 @@ var current_text_speed_idx := settings.default_text_speed
 var current_text_speed: float = settings.text_speeds[current_text_speed_idx]
 var current_language := 0
 var auto_continue_after := -1.0
+var scale := Vector2.ONE
 
 # TODO: This could be in the camera's own script
 var _is_camera_shaking := false
@@ -48,9 +50,9 @@ onready var main_camera: Camera2D = find_node('MainCamera')
 onready var _defaults := {
 	camera_limits = {
 		left = main_camera.limit_left,
-		right = main_camera.limit_right,
+		right = E.width,
 		top = main_camera.limit_top,
-		bottom = main_camera.limit_bottom
+		bottom = E.height
 	}
 }
 onready var _saveload := SaveLoad.new()
@@ -75,6 +77,9 @@ func _ready() -> void:
 	else:
 		tl = load(PopochiuResources.TRANSITION_LAYER_ADDON).instance()
 	
+	# Scale GI and TL
+	scale = Vector2(E.width, E.height) / Vector2(320.0, 180.0)
+	
 	add_child(gi)
 	add_child(tl)
 	
@@ -92,6 +97,11 @@ func _ready() -> void:
 		I.add_item(key, false, false)
 	
 	set_process_input(false)
+	
+	if settings.scale_gui:
+		Cursor.scale_cursor(scale)
+	
+	emit_signal('redied')
 
 
 func _process(delta: float) -> void:
@@ -242,6 +252,15 @@ script_name := '', use_transition := true, store_state := true
 # Called once the loaded room is _ready
 func room_readied(room: PopochiuRoom) -> void:
 	current_room = room
+	
+	# When running from the Editor the first time, use goto_room
+	if Engine.get_idle_frames() == 0:
+		yield(get_tree(), 'idle_frame')
+		
+		in_room = true
+		goto_room(room.script_name, false)
+		
+		return
 	
 	# Update the core state
 	if not _loaded_game:

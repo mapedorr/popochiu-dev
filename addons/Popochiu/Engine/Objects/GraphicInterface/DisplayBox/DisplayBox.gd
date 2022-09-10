@@ -1,4 +1,9 @@
 extends RichTextLabel
+# Show a text in the form of GUI. Can be used to show game (or narrator)
+# messages.
+# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+# warning-ignore-all:unused_signal
+# warning-ignore-all:return_value_discarded
 
 signal shown
 signal hidden

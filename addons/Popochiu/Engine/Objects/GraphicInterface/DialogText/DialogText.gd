@@ -2,6 +2,7 @@ extends RichTextLabel
 # Show dialogue texts char by char using a RichTextLabel.
 # An invisibla Label is used to calculate the width of the RichTextLabel node.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+# warning-ignore-all:unused_signal
 # warning-ignore-all:return_value_discarded
 
 signal animation_finished
@@ -9,11 +10,14 @@ signal animation_finished
 const DFLT_SIZE := 'dflt_size'
 
 export var wrap_width := 200.0
+export var limit_margin := 4.0
 
 var _secs_per_character := 1.0
 var _is_waiting_input := false
 var _auto_continue := false
 var _dialog_pos := Vector2.ZERO
+var _x_limit := 0.0
+var _y_limit := 0.0
 
 onready var _tween: Tween = $Tween
 onready var _continue_icon: TextureProgress = find_node('ContinueIcon')
@@ -29,6 +33,8 @@ func _ready() -> void:
 	
 	modulate.a = 0.0
 	_secs_per_character = E.current_text_speed
+	_x_limit = E.width / (E.scale.x if E.settings.scale_gui else 1.0)
+	_y_limit = E.height / (E.scale.y if E.settings.scale_gui else 1.0)
 	
 	_continue_icon.hide()
 	
@@ -72,9 +78,9 @@ func play_text(props: Dictionary) -> void:
 	
 	# Calculate overflow and reposition
 	if rect_position.x < 0.0:
-		rect_position.x = 0.0
-	elif rect_position.x + rect_size.x > E.width:
-		rect_position.x = E.width - rect_size.x
+		rect_position.x = limit_margin
+	elif rect_position.x + rect_size.x > _x_limit:
+		rect_position.x = _x_limit - limit_margin - rect_size.x
 	
 	# Assign text and align mode (based on overflow)
 	push_color(props.color)
@@ -142,7 +148,9 @@ func _show_dialogue(chr: PopochiuCharacter, msg := '') -> void:
 	play_text({
 		text = msg,
 		color = chr.text_color,
-		position = U.get_screen_coords_for(chr.dialog_pos).floor(),
+		position = U.get_screen_coords_for(chr.dialog_pos).floor() / (
+			E.scale if E.settings.scale_gui else Vector2.ONE
+		),
 	})
 
 
