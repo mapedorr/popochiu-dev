@@ -64,3 +64,8 @@ func block() -> void:
 
 func unlock() -> void:
 	is_blocked = false
+
+
+func scale_cursor(factor: Vector2) -> void:
+	$Sprite.scale = Vector2.ONE * factor
+	$AnimatedSprite.scale = Vector2.ONE * factor

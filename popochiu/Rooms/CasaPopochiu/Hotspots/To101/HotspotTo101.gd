@@ -8,14 +8,21 @@ extends PopochiuHotspot
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	.on_interact()
+	yield(E.run([
+		G.display('Holaaaaaa'),
+		G.display(\
+		'cacaskcj alskcj [shake]alsckj[/shake] alskcjas lckja [wave]lcascasdadsa[/wave] askdjf aslkdjf laskdjf alsdkfj yyyyyyy alskdjf xxxxxx '),
+		G.display('Ouch'),
+	]), 'completed')
 
 
 # When the node is right clicked
 func on_look() -> void:
-	# Replace the call to .on_look() to implement your code. This only makes
-	# the default behavior to happen.
-	.on_look()
+	E.run([
+		'Player: Esta foto de los popochius es muuuuuuy bonia',
+		'Player: iiiiiiiiii',
+		'Player: [wave]Qué chistosiu[/wave]'
+	])
 
 
 # When the node is clicked and there is an inventory item selected

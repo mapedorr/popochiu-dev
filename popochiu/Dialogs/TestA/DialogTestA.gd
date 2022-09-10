@@ -30,7 +30,7 @@ func option_selected(opt: PopochiuDialogOption) -> void:
 			else:
 				yield(E.run([
 					'Popsy: ...',
-					'Popsy: You already asked...',
+					'Popsy: You already asked that......',
 				]), 'completed')
 			
 			turn_on_options(['Opt1'])

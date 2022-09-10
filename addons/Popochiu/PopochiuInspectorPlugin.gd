@@ -40,7 +40,7 @@ path: String,
 hint: int,
 hint_text: String,
 usage: int) -> bool:
-#	if not object is PopochiuCharacter: return
-	if object.get_parent() is YSort: return true
+	if object.get_parent() is YSort and path != 'position':
+		return true
 	
 	return false
