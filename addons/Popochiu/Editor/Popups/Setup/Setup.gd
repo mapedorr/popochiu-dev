@@ -3,10 +3,18 @@ extends AcceptDialog
 
 const ImporterDefaults :=\
 preload('res://addons/Popochiu/Engine/Others/ImporterDefaults.gd')
+const SCALE_MESSAGE :=\
+'[center]▶ Base size = 320x180 | [b]scale = ( %.2f, %.2f )[/b] ◀[/center]\n' +\
+'By default the GUI will scale to match your game size. ' +\
+'You can change this in [img]%s[/img] [b]Settings[/b] with the' +\
+' [code]"Scale Gui"[/code] checkbox.'
+
+var es: EditorSettings = null
 
 onready var _welcome: Label = find_node('Welcome')
 onready var _welcome_separator: HSeparator = find_node('WelcomeSeparator')
 onready var _game_width: SpinBox = find_node('GameWidth')
+onready var _scale_msg: RichTextLabel = find_node('ScaleMessage')
 onready var _game_height: SpinBox = find_node('GameHeight')
 onready var _test_width: SpinBox = find_node('TestWidth')
 onready var _test_height: SpinBox = find_node('TestHeight')
@@ -18,6 +26,8 @@ onready var _btn_update_imports: Button = find_node('BtnUpdateFiles')
 func _ready() -> void:
 	# Connect to signals
 	connect('popup_hide', self, '_update_project_settings')
+	_game_width.connect('value_changed', self, '_update_scale')
+	_game_height.connect('value_changed', self, '_update_scale')
 	_btn_update_imports.connect('pressed', self, '_update_imports')
 	
 	# Set default state
@@ -28,6 +38,13 @@ func _ready() -> void:
 func appear(show_welcome := false) -> void:
 	_welcome.hide()
 	_welcome_separator.hide()
+	_scale_msg.add_font_override('normal_font', get_font('main', 'EditorFonts'))
+	_scale_msg.add_font_override('bold_font', get_font('bold', 'EditorFonts'))
+	_scale_msg.add_font_override('mono_font', get_font('doc_source', 'EditorFonts'))
+	_scale_msg.modulate.a = 0.8
+#	_scale_msg.add_stylebox_override(
+#		'normal', get_stylebox("sub_inspector_bg0", "Editor")
+#	)
 
 	if show_welcome:
 		_welcome.show()
@@ -38,6 +55,7 @@ func appear(show_welcome := false) -> void:
 	_game_height.value = ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
 	_test_width.value = ProjectSettings.get_setting(PopochiuResources.TEST_WIDTH)
 	_test_height.value = ProjectSettings.get_setting(PopochiuResources.TEST_HEIGHT)
+	_scale_msg.bbcode_text = _get_scale_msg()
 	
 	_game_type.selected = 0
 	if ProjectSettings.get_setting(PopochiuResources.STRETCH_MODE) == '2d'\
@@ -86,6 +104,20 @@ func _update_project_settings() -> void:
 		ProjectSettings.save() == OK,
 		'[Popochiu] Could not save Project settings'
 	)
+
+
+func _update_scale(_value: float) -> void:
+	_scale_msg.bbcode_text = _get_scale_msg()
+
+
+func _get_scale_msg() -> String:
+	var scale :=\
+	Vector2(_game_width.value, _game_height.value) / Vector2(320.0, 180.0)
+	return SCALE_MESSAGE % [
+		scale.x, scale.y,
+		'res://addons/Popochiu/Editor/Popups/Setup/godot_tools_%s.png' %\
+		('light' if es.get_setting('interface/theme/preset').find('Light') > -1 else 'dark'),
+	]
 
 
 func _update_imports() -> void:

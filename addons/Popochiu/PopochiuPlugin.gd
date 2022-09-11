@@ -97,6 +97,7 @@ func _enter_tree() -> void:
 	# ================================================== Connect to signals ====
 	
 	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
+	main_dock.setup_dialog.es = _editor_interface.get_editor_settings()
 	
 	if PopochiuResources.get_section('setup').empty():
 		main_dock.setup_dialog.appear(true)
