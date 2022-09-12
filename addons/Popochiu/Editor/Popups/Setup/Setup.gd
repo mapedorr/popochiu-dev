@@ -11,7 +11,7 @@ const SCALE_MESSAGE :=\
 
 var es: EditorSettings = null
 
-onready var _welcome: Label = find_node('Welcome')
+onready var _welcome: RichTextLabel = find_node('Welcome')
 onready var _welcome_separator: HSeparator = find_node('WelcomeSeparator')
 onready var _game_width: SpinBox = find_node('GameWidth')
 onready var _scale_msg: RichTextLabel = find_node('ScaleMessage')
@@ -38,13 +38,14 @@ func _ready() -> void:
 func appear(show_welcome := false) -> void:
 	_welcome.hide()
 	_welcome_separator.hide()
+	_welcome.add_font_override('bold_font', get_font('bold', 'EditorFonts'))
 	_scale_msg.add_font_override('normal_font', get_font('main', 'EditorFonts'))
 	_scale_msg.add_font_override('bold_font', get_font('bold', 'EditorFonts'))
 	_scale_msg.add_font_override('mono_font', get_font('doc_source', 'EditorFonts'))
+	_scale_msg.modulate = Color(\
+	'#000' if es.get_setting('interface/theme/preset').find('Light') > -1\
+	else '#fff')
 	_scale_msg.modulate.a = 0.8
-#	_scale_msg.add_stylebox_override(
-#		'normal', get_stylebox("sub_inspector_bg0", "Editor")
-#	)
 
 	if show_welcome:
 		_welcome.show()
@@ -116,7 +117,8 @@ func _get_scale_msg() -> String:
 	return SCALE_MESSAGE % [
 		scale.x, scale.y,
 		'res://addons/Popochiu/Editor/Popups/Setup/godot_tools_%s.png' %\
-		('light' if es.get_setting('interface/theme/preset').find('Light') > -1 else 'dark'),
+		('light' if es.get_setting('interface/theme/preset').find('Light') > -1\
+		else 'dark'),
 	]
 
 
