@@ -220,28 +220,28 @@ func _remove_input_actions() -> void:
 
 func _move_addon_folders() -> void:
 	# Move files and folders so developer can overwrite them
-	_directory.rename(
-		Constants.GRAPHIC_INTERFACE_ADDON.get_base_dir(),
-		Constants.GRAPHIC_INTERFACE_POPOCHIU.get_base_dir()
-	)
-	_directory.rename(
-		Constants.TRANSITION_LAYER_ADDON.get_base_dir(),
-		Constants.TRANSITION_LAYER_POPOCHIU.get_base_dir()
-	)
+#	_directory.rename(
+#		Constants.GRAPHIC_INTERFACE_ADDON.get_base_dir(),
+#		Constants.GRAPHIC_INTERFACE_POPOCHIU.get_base_dir()
+#	)
+#	_directory.rename(
+#		Constants.TRANSITION_LAYER_ADDON.get_base_dir(),
+#		Constants.TRANSITION_LAYER_POPOCHIU.get_base_dir()
+#	)
 	
 	# Refresh FileSystem
-	_editor_file_system.scan()
+#	_editor_file_system.scan()
 
 	# Fix dependencies
-	yield(_editor_file_system, 'filesystem_changed')
-	yield(_check_popochiu_dependencies(), 'completed')
+#	yield(_editor_file_system, 'filesystem_changed')
+#	yield(_check_popochiu_dependencies(), 'completed')
 	
 	# Save settings
-	var settings := PopochiuResources.get_settings()
-	settings.graphic_interface = load(Constants.GRAPHIC_INTERFACE_POPOCHIU)
-	settings.transition_layer = load(Constants.TRANSITION_LAYER_POPOCHIU)
-	
-	PopochiuResources.save_settings(settings)
+#	var settings := PopochiuResources.get_settings()
+#	settings.graphic_interface = load(Constants.GRAPHIC_INTERFACE_POPOCHIU)
+#	settings.transition_layer = load(Constants.TRANSITION_LAYER_POPOCHIU)
+#
+#	PopochiuResources.save_settings(settings)
 	
 	# Mark setup as done in PopochiuData.cfg
 	PopochiuResources.set_data_value('setup', 'done', true)

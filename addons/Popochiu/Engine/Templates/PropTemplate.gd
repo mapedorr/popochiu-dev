@@ -8,15 +8,29 @@ extends PopochiuProp
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	# Replace the call to .on_interact() to implement your code. This only makes
-	# the default behavior to happen.
+#	Replace the call to .on_interact() to implement your code. This only makes
+#	the default behavior to happen.
+#	For example you can make the character walk to the Prop and then say
+#	something:
+#	E.run([
+#		C.face_clicked(),
+#		C.walk_to_clicked(),
+#		'Player: Not picking that up'
+#	])
 	.on_interact()
 
 
 # When the node is right clicked
 func on_look() -> void:
-	# Replace the call to .on_look() to implement your code. This only makes
-	# the default behavior to happen.
+#	Replace the call to .on_look() to implement your code. This only makes
+#	the default behavior to happen.
+#	For example you can make the character walk to the Prop and then say
+#	something:
+#	E.run([
+#		C.face_clicked(),
+#		C.walk_to_clicked(),
+#		'Player: A deck of cards'
+#	])
 	.on_look()
 
 

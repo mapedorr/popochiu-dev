@@ -125,6 +125,7 @@ func face_left(is_in_queue := true) -> void:
 	if is_in_queue: yield()
 	
 	_looking_dir = LOOKING.LEFT
+	
 	yield(idle(false), 'completed')
 
 
@@ -133,6 +134,21 @@ func face_right(is_in_queue := true) -> void:
 	
 	_looking_dir = LOOKING.RIGHT
 	yield(idle(false), 'completed')
+
+
+func face_clicked(is_in_queue := true) -> void:
+	if is_in_queue: yield()
+	
+	if E.clicked.global_position < global_position:
+		if has_node('Sprite'):
+			$Sprite.flip_h = flips_when == FlipsWhen.MOVING_LEFT
+		
+		yield(face_left(false), 'completed')
+	else:
+		if has_node('Sprite'):
+			$Sprite.flip_h = flips_when == FlipsWhen.MOVING_RIGHT
+		
+		yield(face_right(false), 'completed')
 
 
 func say(dialog: String, is_in_queue := true) -> void:

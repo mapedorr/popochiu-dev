@@ -8,15 +8,28 @@ extends PopochiuHotspot
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	# Replace the call to .on_interact() to implement your code. This only makes
-	# the default behavior to happen.
+#	Replace the call to .on_interact() to implement your code. This only makes
+#	the default behavior to happen.
+#	For example you can make the character walk to the Hotspot and then say
+#	something:
+#	E.run([
+#		C.face_clicked(),
+#		C.walk_to_clicked(),
+#		"Player: Can't open it"
+#	])
 	.on_interact()
 
 
 # When the node is right clicked
 func on_look() -> void:
-	# Replace the call to .on_look() to implement your code. This only makes
-	# the default behavior to happen.
+#	Replace the call to .on_look() to implement your code. This only makes
+#	the default behavior to happen.
+#	For example you can make the character walk to the Hotspot and then say
+#	something:
+#	E.run([
+#		C.face_clicked(),
+#		'Player: A closed door'
+#	])
 	.on_look()
 
 
