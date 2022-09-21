@@ -405,7 +405,7 @@ func _remove_from_core() -> void:
 			PopochiuResources.erase_data_value('inventory_items', name)
 		Constants.Types.DIALOG:
 			PopochiuResources.erase_data_value('dialogs', name)
-		Constants.Types.PROP, Constants.Types.HOTSPOT, Constants.Types.REGION:
+		Constants.Types.PROP, Constants.Types.HOTSPOT, Constants.Types.REGION, Constants.Types.WALK_AREA:
 			var opened_room: PopochiuRoom = main_dock.get_opened_room()
 			if opened_room:
 				match type:
@@ -415,6 +415,8 @@ func _remove_from_core() -> void:
 						opened_room.get_hotspot(name).queue_free()
 					Constants.Types.REGION:
 						opened_room.get_region(name).queue_free()
+					Constants.Types.WALK_AREA:
+						opened_room.get_walk_area(name).queue_free()
 				
 				main_dock.ei.save_scene()
 			else:
@@ -423,7 +425,7 @@ func _remove_from_core() -> void:
 			
 			# TODO: If it is a non-interactable Object, just delete the node from the
 			# scene, and maybe its sprite?
-			if not path:
+			if not path and type != Constants.Types.WALK_AREA:
 				_disconnect_popup()
 				return
 	

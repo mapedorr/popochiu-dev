@@ -205,6 +205,11 @@ func _select_in_tree(por: PopochiuObjectRow) -> void:
 		var node := opened_room.get_node('%s/%s'\
 		% [_types[por.type].parent, por.node_path])
 		main_dock.ei.edit_node(node)
+		if node.script != null\
+		and node.script.resource_path.count('addons/Popochiu') == 0:
+			main_dock.ei.edit_resource(load(node.script.resource_path))
+		
+		emit_signal('row_clicked')
 	
 	_last_selected = por
 
