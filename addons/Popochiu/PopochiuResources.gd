@@ -11,7 +11,7 @@ enum Types {
 	HOTSPOT,
 	REGION,
 	POINT,
-	WALK_AREA
+	WALKABLE_AREA
 }
 enum CursorType {
 	NONE,

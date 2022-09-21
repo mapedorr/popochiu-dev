@@ -42,9 +42,10 @@ onready var _types := {
 		type_class = Position2D,
 		parent = 'Points'
 	},
-	Constants.Types.WALK_AREA: {
-		group = find_node('WalkAreasGroup'),
-		method = 'get_walk_areas',
+	Constants.Types.WALKABLE_AREA: {
+		group = find_node('WalkableAreasGroup'),
+		popup = 'CreateWalkableArea',
+		method = 'get_walkable_areas',
 		type_class = Navigation2D,
 		parent = 'WalkableAreas'
 	}

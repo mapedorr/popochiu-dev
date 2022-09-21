@@ -196,12 +196,12 @@ func get_region(region_name: String) -> PopochiuRegion:
 	[script_name, region_name])
 	return null
 
-func get_walk_area(walk_area_name: String) -> Navigation2D:
+func get_walkable_area(walkable_area_name: String) -> Navigation2D:
 	for wa in $WalkableAreas.get_children():
-		if wa.name == walk_area_name:
+		if wa.name == walkable_area_name:
 			return wa
-	printerr('PopochiuRoom[%s].get_walk_area: Walking area %s not found' %\
-	[script_name, walk_area_name])
+	printerr('PopochiuRoom[%s].get_walkable_area: Walking area %s not found' %\
+	[script_name, walkable_area_name])
 	return null
 
 func get_props() -> Array:
@@ -220,7 +220,7 @@ func get_points() -> Array:
 	return $Points.get_children()
 
 
-func get_walk_areas() -> Array:
+func get_walkable_areas() -> Array:
 	return $WalkableAreas.get_children()
 
 
