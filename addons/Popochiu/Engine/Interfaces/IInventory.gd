@@ -60,16 +60,18 @@ item_name: String, is_in_queue := true, animate := true) -> void:
 	)
 	
 	if is_instance_valid(item):
-		set_active_item(item)
+		set_active_item(item, is_in_queue)
 	
 	return item
 
 
 # Makes the cursor use the texture of an item in the inventory.
-func set_active_item(item: PopochiuInventoryItem = null) -> void:
+func set_active_item(\
+item: PopochiuInventoryItem = null,
+ignore_block := false) -> void:
 	if item:
 		active = item
-		Cursor.set_cursor_texture((item as TextureRect).texture)
+		Cursor.set_cursor_texture((item as TextureRect).texture, ignore_block)
 	else:
 		active = null
 		Cursor.remove_cursor_texture()

@@ -40,7 +40,7 @@ path: String,
 hint: int,
 hint_text: String,
 usage: int) -> bool:
-	if object.get_parent() is YSort and path != 'position':
+	if object and object.get_parent() is YSort and path != 'position':
 		return true
 	
 	return false

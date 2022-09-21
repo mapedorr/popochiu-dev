@@ -39,8 +39,8 @@ func set_cursor(type := Type.IDLE) -> void:
 	$AnimatedSprite.play(anim_name.to_lower())
 
 
-func set_cursor_texture(texture: Texture) -> void:
-	if is_blocked: return
+func set_cursor_texture(texture: Texture, ignore_block: bool) -> void:
+	if not ignore_block and is_blocked: return
 	
 	$AnimatedSprite.hide()
 	$Sprite.texture = texture

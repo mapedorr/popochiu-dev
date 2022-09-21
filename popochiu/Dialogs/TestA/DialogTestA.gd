@@ -10,9 +10,7 @@ func on_start() -> void:
 func option_selected(opt: PopochiuDialogOption) -> void:
 	# Use match to check which option was selected and excecute something for
 	# each one
-	yield(E.run([
-		'Player:' + opt.text
-	]), 'completed')
+	yield(D.say_selected(), 'completed')
 	
 	match opt.id:
 		'Opt1':
