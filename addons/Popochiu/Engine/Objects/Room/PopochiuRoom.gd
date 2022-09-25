@@ -159,10 +159,6 @@ func setup_camera() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
-func get_walkable_area() -> Navigation2D:
-	return $WalkableAreas.get_child(0) as Navigation2D
-
-
 func get_point(point_name: String) -> Vector2:
 	var point: Position2D = get_node_or_null('Points/' + point_name)
 	if point:
@@ -196,13 +192,15 @@ func get_region(region_name: String) -> PopochiuRegion:
 	[script_name, region_name])
 	return null
 
-func get_walkable_area(walkable_area_name: String) -> Navigation2D:
+
+func get_walkable_area(walkable_area_name: String) -> PopochiuWalkableArea:
 	for wa in $WalkableAreas.get_children():
 		if wa.name == walkable_area_name:
 			return wa
-	printerr('PopochiuRoom[%s].get_walkable_area: Walking area %s not found' %\
+	printerr('PopochiuRoom[%s].get_walkable_area: Walkable area %s not found' %\
 	[script_name, walkable_area_name])
 	return null
+
 
 func get_props() -> Array:
 	return get_tree().get_nodes_in_group('props')

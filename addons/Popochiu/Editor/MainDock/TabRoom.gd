@@ -46,7 +46,7 @@ onready var _types := {
 		group = find_node('WalkableAreasGroup'),
 		popup = 'CreateWalkableArea',
 		method = 'get_walkable_areas',
-		type_class = Navigation2D,
+		type_class = PopochiuWalkableArea,
 		parent = 'WalkableAreas'
 	}
 }
@@ -100,13 +100,11 @@ func scene_changed(scene_root: Node) -> void:
 			for c in opened_room.call(_types[t].method):
 				var row_path := ''
 				
-				if c is Position2D or c is Navigation2D:
+				if c is Position2D:
 					var row: PopochiuObjectRow = _create_object_row(t, c.name)
 					_types[t].group.add(row)
-					
 					continue
 
-				
 				if c.script.resource_path.find('addons') == -1:
 					row_path = c.script.resource_path
 				else:

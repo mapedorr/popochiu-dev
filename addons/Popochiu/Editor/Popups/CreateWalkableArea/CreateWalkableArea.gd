@@ -2,7 +2,7 @@ tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
 # Creates a new walkable area in a room
 
-#const SCRIPT_TEMPLATE := 'res://addons/Popochiu/Engine/Templates/WalkableAreaTemplate.gd'
+const SCRIPT_TEMPLATE := 'res://addons/Popochiu/Engine/Templates/WalkableAreaTemplate.gd'
 const WALKABLE_AREA_SCENE := 'res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.tscn'
 const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
 
@@ -10,6 +10,8 @@ var room_tab: VBoxContainer = null
 
 var _room: Node2D = null
 var _new_walkable_area_name := ''
+var _new_walkable_area_path := ''
+var _walkable_area_path_template: String
 var _room_path: String
 var _room_dir: String
 
@@ -28,19 +30,37 @@ func room_opened(r: Node2D) -> void:
 	_room = r
 	_room_path = _room.filename
 	_room_dir = _room_path.get_base_dir()
+	_walkable_area_path_template = _room_dir + '/WalkableAreas/%s/WalkableArea%s'
 
 
 func create() -> void:
 	if not _new_walkable_area_name:
 		_error_feedback.show()
 		return
-	
-	# TODO: Stop if another WalkableArea with the same name exists.
+
+	# TODO: Check if another WalkableArea was created in the same PATH.
+	# TODO: Remove created files if the creation process failed.
+	var script_path := _new_walkable_area_path + '.gd'
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+	# Create the folder for the WalkableArea
+	assert(
+		_main_dock.dir.make_dir_recursive(_new_walkable_area_path.get_base_dir()) == OK,
+		'[Popochiu] Could not create WalkableArea folder for ' + _new_walkable_area_name
+	)
+	
+	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+	# Create the script for the WalkableArea
+	var walkable_area_template := load(SCRIPT_TEMPLATE)
+	if ResourceSaver.save(script_path, walkable_area_template) != OK:
+		push_error('[Popochiu] Could not create script: %s.gd' % _new_walkable_area_name)
+		# TODO: Show feedback in the popup
+		return
 
+	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the new WalkableArea and add it to the room
 	var walkable_area: PopochiuWalkableArea = ResourceLoader.load(WALKABLE_AREA_SCENE).instance()
+	walkable_area.set_script(ResourceLoader.load(script_path))
 	walkable_area.name = _new_walkable_area_name
 	walkable_area.script_name = _new_walkable_area_name
 	walkable_area.description = _new_walkable_area_name
@@ -54,9 +74,11 @@ func create() -> void:
 		ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
 	) / 2.0
 	
-	var polygon := NavigationPolygonInstance.new()
-	walkable_area.add_child(polygon)
+	# TEST - Make the polygon accessible from the room scene - TEST
+	var polygon := walkable_area.get_node("Polygon");
+	# walkable_area.add_child(polygon)
 	polygon.owner = _room
+	polygon.modulate = Color.green
 	
 	_main_dock.ei.save_scene()
 	
@@ -78,6 +100,25 @@ func create() -> void:
 	hide()
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
+func _update_name(new_text: String) -> void:
+	._update_name(new_text)
+
+	if _name:
+		_new_walkable_area_name = _name
+		_new_walkable_area_path = _walkable_area_path_template %\
+		[_new_walkable_area_name, _new_walkable_area_name]
+
+		_info.bbcode_text = (
+			'In [b]%s[/b] the following files will be created: [code]%s[/code]' \
+			% [
+				_room_dir + '/WalkableAreas',
+				'WalkableArea' + _new_walkable_area_name + '.gd'
+			]
+		)
+	else:
+		_info.clear()
+
+		
 func _clear_fields() -> void:
 	._clear_fields()
 	
