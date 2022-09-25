@@ -34,7 +34,7 @@ const MAIN_DOCK_PATH := 'res://addons/Popochiu/Editor/MainDock/PopochiuDock.tscn
 const MAIN_TYPES := [
 	Types.ROOM, Types.CHARACTER, Types.INVENTORY_ITEM, Types.DIALOG
 ]
-const ROOM_TYPES := [Types.PROP, Types.HOTSPOT, Types.REGION, Types.POINT]
+const ROOM_TYPES := [Types.PROP, Types.HOTSPOT, Types.REGION, Types.POINT, Types.WALKABLE_AREA]
 const WIKI := 'https://github.com/mapedorr/popochiu/wiki/'
 # ════ SINGLETONS ══════════════════════════════════════════════════════════════
 const GLOBALS_SNGL := 'res://popochiu/PopochiuGlobals.gd'

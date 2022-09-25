@@ -426,7 +426,7 @@ func _remove_from_core() -> void:
 			# TODO: If it is a non-interactable Object, just delete the node from the
 			# scene, and maybe its sprite?
 			# TODO: Remove explicit exclusion, it's ugly
-			if not path and type != Constants.Types.WALKABLE_AREA:
+			if not path:
 				_disconnect_popup()
 				return
 	

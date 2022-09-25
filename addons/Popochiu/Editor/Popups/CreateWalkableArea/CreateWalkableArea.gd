@@ -74,11 +74,17 @@ func create() -> void:
 		ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
 	) / 2.0
 	
-	# TEST - Make the polygon accessible from the room scene - TEST
-	var polygon := walkable_area.get_node("Polygon");
-	# walkable_area.add_child(polygon)
-	polygon.owner = _room
-	polygon.modulate = Color.green
+	# Make the walking area perimeter accessible from the room scene
+	var perimeter := walkable_area.get_node("Perimeter");
+	# FIX: if you reload the project the reference to the navpoly seems lost. Poly is still visible
+	var polygon = NavigationPolygon.new()
+	polygon.add_outline(
+		PoolVector2Array([Vector2(-10, -10), Vector2(10, -10), Vector2(10, 10), Vector2(-10, 10)])
+	)
+	polygon.make_polygons_from_outlines()
+	perimeter.navpoly = polygon
+	perimeter.owner = _room
+	perimeter.modulate = Color.green
 	
 	_main_dock.ei.save_scene()
 	
