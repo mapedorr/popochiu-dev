@@ -4,7 +4,6 @@ extends Panel
 # Rooms, Characters, Inventory items, Dialog trees.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-signal room_row_clicked
 signal move_folders_pressed
 
 const POPOCHIU_SCENE := 'res://addons/Popochiu/Engine/Popochiu.tscn'
@@ -88,7 +87,6 @@ func _ready() -> void:
 	_tab_audio.main_dock = self
 	
 	_tab_container.connect('tab_changed', self, '_on_tab_changed')
-	_tab_room.connect('row_clicked', self, 'emit_signal', ['room_row_clicked'])
 	
 	_btn_docs.connect('pressed', OS, 'shell_open', [Constants.WIKI])
 	_btn_settings.connect('pressed', self, '_open_settings')

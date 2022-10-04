@@ -33,6 +33,10 @@ func on_room_transition_finished() -> void:
 	pass
 
 
+func on_room_exited() -> void:
+	prints('Ayyyyy!')
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 # You could put public functions here
 

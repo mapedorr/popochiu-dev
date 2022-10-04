@@ -162,7 +162,7 @@ func say(dialog: String, is_in_queue := true) -> void:
 	
 	var vo_name := _get_vo_cue(emotion)
 	if vo_name:
-		A.play(vo_name, false, false, global_position)
+		A.play_no_block(vo_name, false, global_position)
 	
 	C.emit_signal('character_spoke', self, dialog)
 	

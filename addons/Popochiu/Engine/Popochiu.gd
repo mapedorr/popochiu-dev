@@ -113,8 +113,7 @@ func _process(delta: float) -> void:
 		)
 		
 		if _shake_timer <= 0.0:
-			_is_camera_shaking = false
-			main_camera.offset = Vector2.ZERO
+			stop_camera_shake()
 	elif not Engine.editor_hint\
 	and is_instance_valid(C.camera_owner)\
 	and C.camera_owner.is_inside_tree():
@@ -186,6 +185,9 @@ func run(instructions: Array, show_gi := true) -> void:
 	if not D.active and show_gi:
 		G.done()
 	
+	if _is_camera_shaking:
+		stop_camera_shake()
+	
 	if instructions.empty():
 		yield(get_tree(), 'idle_frame')
 	
@@ -224,7 +226,7 @@ script_name := '', use_transition := true, store_state := true
 		$TransitionLayer.play_transition($TransitionLayer.FADE_IN)
 		yield($TransitionLayer, 'transition_finished')
 	
-	if is_instance_valid(C.player):
+	if is_instance_valid(C.player) and Engine.get_idle_frames() > 0:
 		C.player.last_room = current_room.script_name
 	
 	# Store the room state
@@ -232,7 +234,8 @@ script_name := '', use_transition := true, store_state := true
 		rooms_states[current_room.script_name] = current_room.state
 	
 	# Remove PopochiuCharacter nodes from the room so they are not deleted
-	current_room.on_room_exited()
+	if Engine.get_idle_frames() > 0:
+		current_room.exit_room()
 	
 	# Reset camera config
 	# TODO: This could be in the Camera's own script... along with shaking
@@ -246,6 +249,9 @@ script_name := '', use_transition := true, store_state := true
 		prints('[Popochiu] No PopochiuRoom with name: %s' % script_name)
 		return
 	
+	if Engine.get_idle_frames() == 0:
+		yield(get_tree(), 'idle_frame')
+	
 	get_tree().change_scene(load(rp).scene)
 
 
@@ -257,7 +263,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	if Engine.get_idle_frames() == 0:
 		yield(get_tree(), 'idle_frame')
 		
-		in_room = true
+		self.in_room = true
 		goto_room(room.script_name, false)
 		
 		return
@@ -267,8 +273,6 @@ func room_readied(room: PopochiuRoom) -> void:
 		current_room.state.visited = true
 		current_room.state.visited_times += 1
 		current_room.state.visited_first_time = current_room.state.visited_times == 1
-	
-	current_room.is_current = true
 	
 	if _loaded_game:
 		C.set_player(C.get_character(_loaded_game.player.id))
@@ -310,14 +314,16 @@ func room_readied(room: PopochiuRoom) -> void:
 	
 	self.in_room = true
 	
-	# This enables the room to listen input events
-	current_room.on_room_transition_finished()
-	
 	if _loaded_game:
 		emit_signal('game_loaded', _loaded_game)
 		E.run([G.display('Game loaded')])
 		
 		_loaded_game = {}
+	
+	# This enables the room to listen input events
+	current_room.is_current = true
+	
+	current_room.on_room_transition_finished()
 
 
 # Changes the main camera's offset (useful when zooming the camera)
@@ -339,6 +345,19 @@ strength := 1.0, duration := 1.0, is_in_queue := true) -> void:
 	_is_camera_shaking = true
 	
 	yield(get_tree().create_timer(duration), 'timeout')
+
+
+# Makes the camera shake with strength for duration seconds without blocking
+# excecution
+func camera_shake_no_block(\
+strength := 1.0, duration := 1.0, is_in_queue := true) -> void:
+	if is_in_queue: yield()
+	
+	_camera_shake_amount = strength
+	_shake_timer = duration
+	_is_camera_shaking = true
+	
+	yield(get_tree(), 'idle_frame')
 
 
 # Changes the camera zoom. If target is larger than Vector2(1, 1) the camera
@@ -507,6 +526,12 @@ func load_game(slot := 1) -> void:
 		true,
 		false # Do not store the state of the current room
 	)
+
+
+func stop_camera_shake() -> void:
+	_is_camera_shaking = false
+	_shake_timer = 0.0
+	main_camera.offset = Vector2.ZERO
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

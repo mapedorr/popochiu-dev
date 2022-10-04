@@ -32,96 +32,81 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func play(\
-cue_name := '',
-wait_to_end := false,
-is_in_queue := true,
-position_2d := Vector2.ZERO
+func play(
+	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
 ) -> Node:
-	if is_in_queue: yield()
+	yield()
 	
-	var stream_player: Node = null
-	
-	if _all_in_one.has(cue_name.to_lower()):
-		var cue: AudioCue = _all_in_one[cue_name.to_lower()]
-		stream_player = _play(cue, position_2d)
-	else:
-		prints('[Popochiu] Sound not found:', cue_name)
-		
-		yield(get_tree(), 'idle_frame')
-		return null
-	
-	if stream_player and wait_to_end:
-		yield(stream_player, 'finished')
-	else:
-		yield(get_tree(), 'idle_frame')
-	
-	return stream_player
+	return yield(_play_sound_cue(cue_name, position_2d, wait_to_end), 'completed')
 
 
-func play_fade(\
-cue_name := '',
-wait_to_end := false,
-duration := 1.0,
-from := -80.0,
-to := 0.0,
-is_in_queue := true,
-position_2d := Vector2.ZERO
+func play_no_block(
+	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
 ) -> Node:
-	if is_in_queue: yield()
-	
-	var stream_player: Node = null
-	
-	if _all_in_one.has(cue_name.to_lower()):
-		var cue: AudioCue = _all_in_one[cue_name.to_lower()]
-		stream_player = _fade_in(
-			cue,
-			position_2d,
-			duration,
-			from,
-			to
-		)
+	if wait_to_end:
+		return yield(_play_sound_cue(cue_name, position_2d, true), 'completed')
 	else:
-		prints('[Popochiu] Sound for fade not found:', cue_name)
-		
-		yield(get_tree(), 'idle_frame')
-		return null
-	
-	if stream_player and wait_to_end:
-		yield(stream_player, 'finished')
-	else:
-		yield(get_tree(), 'idle_frame')
-	
-	return stream_player
+		return _play_sound_cue(cue_name, position_2d)
 
 
 func play_music(\
-cue_name: String,
-fade_duration := 0.0,
-music_position := 0.0,
-is_in_queue := true
-) -> Node:
+cue_name: String, fade_duration := 0.0, music_position := 0.0) -> Node:
 	# TODO: Add a position: Vector2 parameter in case one want to play music coming
 	# out from a specific source (e.g. a radio in the room).
+	yield()
 	
-	var stream_player: Node = null
-	
-	if _mx_cues.has(cue_name.to_lower()):
-		if is_in_queue: yield()
-		
-		var cue: AudioCue = _mx_cues[cue_name.to_lower()]
-		if fade_duration > 0.0:
-			stream_player = _fade_in(
-				cue, Vector2.ZERO, fade_duration, -80.0, 0.0, music_position
-			)
-		else:
-			stream_player = _play(cue, Vector2.ZERO, music_position)
-	else:
-		prints('[Popochiu] Music not found:', cue_name)
+	var stream_player: Node = _play_music_cue(
+		cue_name, fade_duration, music_position
+	)
 	
 	yield(get_tree(), 'idle_frame')
 	
 	return stream_player
+
+
+func play_music_no_block(\
+cue_name: String, fade_duration := 0.0, music_position := 0.0) -> Node:
+	# TODO: Add a position: Vector2 parameter in case one want to play music coming
+	# out from a specific source (e.g. a radio in the room).
+	
+	return _play_music_cue(cue_name, fade_duration, music_position)
+
+
+func play_fade(
+	cue_name := '',
+	duration := 1.0,
+	wait_to_end := false,
+	from := -80.0,
+	to := INF,
+	position_2d := Vector2.ZERO
+) -> Node:
+	yield()
+	
+	return yield(
+		_play_fade_cue(cue_name, duration, from, to, position_2d, wait_to_end),
+		'completed'
+	)
+
+
+func play_fade_no_block(
+	cue_name := '',
+	duration := 1.0,
+	wait_to_end := false,
+	from := -80.0,
+	to := INF,
+	position_2d := Vector2.ZERO
+) -> Node:
+	if wait_to_end:
+		return yield(_play_fade_cue(
+			cue_name, 
+			duration,
+			from,
+			to,
+			position_2d,
+			true
+		), 'completed')
+	else:
+		return _play_fade_cue(cue_name, duration, from, to, position_2d)
 
 
 func stop(\
@@ -180,6 +165,98 @@ func semitone_to_pitch(pitch: float) -> float:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
+# Looks for an AudioCue and plays it if found. It also can wait until it
+# finishes playing.
+# If wait_to_end is not null, that means the call is comming from a play
+# inside a E.run([])
+# In this method the calls to play and play_no_block converge.
+func _play_sound_cue(\
+cue_name := '', position_2d := Vector2.ZERO, wait_to_end = null) -> Node:
+	var stream_player: Node = null
+	
+	if _all_in_one.has(cue_name.to_lower()):
+		var cue: AudioCue = _all_in_one[cue_name.to_lower()]
+		stream_player = _play(cue, position_2d)
+	else:
+		prints('[Popochiu] Sound not found:', cue_name)
+		
+		if wait_to_end != null:
+			yield(get_tree(), 'idle_frame')
+		
+		return null
+	
+	if wait_to_end == true and stream_player:
+		yield(stream_player, 'finished')
+	elif wait_to_end == false:
+		yield(get_tree(), 'idle_frame')
+	
+	return stream_player
+
+
+# Looks for an AudioCue in the list of music cues and plays it.
+# In this method the calls to play_music and play_music_no_block converge.
+func _play_music_cue(\
+cue_name: String, fade_duration := 0.0, music_position := 0.0) -> Node:
+	var stream_player: Node = null
+	
+	if _active.has(cue_name):
+		return _active[cue_name].players[0]
+	
+	if _mx_cues.has(cue_name.to_lower()):
+		var cue: AudioCue = _mx_cues[cue_name.to_lower()]
+		
+		if fade_duration > 0.0:
+			stream_player = _fade_in(
+				cue, Vector2.ZERO, fade_duration, -80.0, cue.volume, music_position
+			)
+		else:
+			stream_player = _play(cue, Vector2.ZERO, music_position)
+	else:
+		prints('[Popochiu] Music not found:', cue_name)
+	
+	return stream_player
+
+
+# Looks for an AudioCue and plays it with a fade if found. It also can wait until
+# it finishes playing.
+# If wait_to_end is not null, that means the call is comming from a play
+# inside a E.run([])
+# In this method the calls to play and play_no_block converge.
+func _play_fade_cue(
+	cue_name := '',
+	duration := 1.0,
+	from := -80.0,
+	to := INF,
+	position_2d := Vector2.ZERO,
+	wait_to_end = null
+) -> Node:
+	var stream_player: Node = null
+	
+	if _all_in_one.has(cue_name.to_lower()):
+		var cue: AudioCue = _all_in_one[cue_name.to_lower()]
+		stream_player = _fade_in(
+			cue,
+			position_2d,
+			duration,
+			from,
+			to if to != INF else cue.volume
+		)
+	else:
+		prints('[Popochiu] Sound for fade not found:', cue_name)
+		
+		if wait_to_end != null:
+			yield(get_tree(), 'idle_frame')
+		
+		return null
+	
+	if wait_to_end == true and stream_player:
+		yield(stream_player, 'finished')
+	elif wait_to_end == false:
+		yield(get_tree(), 'idle_frame')
+	
+	return stream_player
+
+
 # Plays the sound and assigns it to a free AudioStreamPlayer, or creates one if
 # there are no more
 func _play(cue: AudioCue, position := Vector2.ZERO, from_position := 0.0) -> Node:
@@ -260,22 +337,6 @@ func _reparent(source: Node, target: Node, child_idx: int) -> Node:
 	return node_to_reparent
 
 
-func _fade_sound(cue_name: String, duration = 1, from = 0, to = 0) -> void:
-	var stream_player: Node = (_active[cue_name].players as Array).front()
-	$Tween.interpolate_property(
-		stream_player, 'volume_db',
-		from, to,
-		duration, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
-		)
-	$Tween.start()
-	
-	if from > to :
-		_fading_sounds[stream_player.stream.get_instance_id()] = stream_player
-		
-		if not $Tween.is_connected('tween_completed', self, '_fadeout_finished'):
-			$Tween.connect('tween_completed', self, '_fadeout_finished')
-
-
 func _fade_in(\
 cue: AudioCue,
 position: Vector2,
@@ -297,10 +358,27 @@ from_position := 0.0
 	
 	if stream_player:
 		_fade_sound(cue.resource_name, duration, from, to)
-	
-	cue.volume = to
+	else:
+		cue.volume = to
 	
 	return stream_player
+
+
+func _fade_sound(cue_name: String, duration = 1, from = 0, to = 0) -> void:
+	var stream_player: Node = (_active[cue_name].players as Array).front()
+	
+	$Tween.interpolate_property(
+		stream_player, 'volume_db',
+		from, to,
+		duration, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
+	)
+	$Tween.start()
+	
+	if from > to :
+		_fading_sounds[stream_player.stream.get_instance_id()] = stream_player
+		
+		if not $Tween.is_connected('tween_completed', self, '_fadeout_finished'):
+			$Tween.connect('tween_completed', self, '_fadeout_finished')
 
 
 func _fadeout_finished(obj: Node, _key: NodePath) -> void:
