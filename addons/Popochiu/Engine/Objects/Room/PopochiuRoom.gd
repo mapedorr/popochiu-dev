@@ -222,6 +222,14 @@ func get_walkable_areas() -> Array:
 	return $WalkableAreas.get_children()
 
 
+func get_active_walkable_area() -> PopochiuWalkableArea:
+	return _nav_path
+
+
+func get_active_walkable_area_name() -> String:
+	return _nav_path.name
+
+
 func get_characters_count() -> int:
 	return $Characters.get_child_count()
 
