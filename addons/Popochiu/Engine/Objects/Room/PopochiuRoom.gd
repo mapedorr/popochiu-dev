@@ -21,7 +21,7 @@ var characters_cfg := [] # Array of Dictionary
 var _path := []
 var _moving_character: PopochiuCharacter = null
 
-onready var _nav_path: Navigation2D = $WalkableAreas.get_child(0)
+onready var _nav_path: PopochiuWalkableArea = $WalkableAreas.get_child(0)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -229,6 +229,15 @@ func get_characters_count() -> int:
 func set_is_current(value: bool) -> void:
 	is_current = value
 	set_process_unhandled_input(is_current)
+
+
+func set_active_walkable_area(walkable_area_name: String) -> void:
+	var active_walkable_area = $WalkableAreas.get_node(walkable_area_name)
+	if active_walkable_area != null:
+		_nav_path = active_walkable_area
+	else:
+		printerr('PopochiuRoom[%s].set_active_walkable_area: Walkable area %s not found' %\
+		[script_name, walkable_area_name])
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
