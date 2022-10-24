@@ -30,8 +30,8 @@ func _process(delta):
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func set_cursor(type := Type.IDLE) -> void:
-	if is_blocked: return
+func set_cursor(type := Type.IDLE, ignore_block := false) -> void:
+	if not ignore_block and is_blocked: return
 	
 	var anim_name: String = Type.keys()[Type.IDLE]
 	if Type.values().has(type):
@@ -39,7 +39,7 @@ func set_cursor(type := Type.IDLE) -> void:
 	$AnimatedSprite.play(anim_name.to_lower())
 
 
-func set_cursor_texture(texture: Texture, ignore_block: bool) -> void:
+func set_cursor_texture(texture: Texture, ignore_block := false) -> void:
 	if not ignore_block and is_blocked: return
 	
 	$AnimatedSprite.hide()
@@ -69,3 +69,7 @@ func unlock() -> void:
 func scale_cursor(factor: Vector2) -> void:
 	$Sprite.scale = Vector2.ONE * factor
 	$AnimatedSprite.scale = Vector2.ONE * factor
+
+
+func get_position() -> Vector2:
+	return $Sprite.position

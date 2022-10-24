@@ -48,16 +48,6 @@ func _ready():
 	if Engine.editor_hint: return
 	
 	set_process_unhandled_input(false)
-	
-	if limit_left != INF:
-		E.main_camera.limit_left = limit_left
-	if limit_right != INF:
-		E.main_camera.limit_right = limit_right
-	if limit_top != INF:
-		E.main_camera.limit_top = limit_top
-	if limit_bottom != INF:
-		E.main_camera.limit_bottom = limit_bottom
-	
 	E.room_readied(self)
 
 
@@ -73,11 +63,16 @@ func _process(delta):
 
 func _unhandled_input(event):
 	if not has_player: return
-	if not event.is_action_pressed('popochiu-interact'):
-		if event.is_action_released('popochiu-look'):
-			if I.active: I.set_active_item()
+	
+	if I.active:
+		if event.is_action_released('popochiu-look')\
+		or event.is_action_pressed('popochiu-interact'):
+			I.set_active_item()
 		return
-
+	
+	if not event.is_action_pressed('popochiu-interact'):
+		return
+	
 	if is_instance_valid(C.player) and C.player.can_move:
 		C.player.walk(get_local_mouse_position(), false)
 
@@ -147,6 +142,17 @@ func has_character(character_name: String) -> bool:
 	return result
 
 
+func setup_camera() -> void:
+	if limit_left != INF:
+		E.main_camera.limit_left = limit_left
+	if limit_right != INF:
+		E.main_camera.limit_right = limit_right
+	if limit_top != INF:
+		E.main_camera.limit_top = limit_top
+	if limit_bottom != INF:
+		E.main_camera.limit_bottom = limit_bottom
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
 func get_walkable_area() -> Navigation2D:
 	return $WalkableAreas.get_child(0) as Navigation2D
@@ -161,7 +167,7 @@ func get_point(point_name: String) -> Vector2:
 
 
 func get_prop(prop_name: String) -> PopochiuProp:
-	for p in $Props.get_children():
+	for p in get_tree().get_nodes_in_group('props'):
 		if p.script_name == prop_name or p.name == prop_name:
 			return p as PopochiuProp
 	printerr('PopochiuRoom[%s].get_prop: Prop %s not found' % [script_name, prop_name])
@@ -169,7 +175,7 @@ func get_prop(prop_name: String) -> PopochiuProp:
 
 
 func get_hotspot(hotspot_name: String) -> PopochiuHotspot:
-	for h in $Hotspots.get_children():
+	for h in get_tree().get_nodes_in_group('hotspots'):
 		if h.script_name == hotspot_name or h.name == hotspot_name:
 			return h
 	printerr('PopochiuRoom[%s].get_hotspot: Hotspot %s not found' %\
@@ -178,7 +184,7 @@ func get_hotspot(hotspot_name: String) -> PopochiuHotspot:
 
 
 func get_region(region_name: String) -> PopochiuRegion:
-	for r in $Regions.get_children():
+	for r in get_tree().get_nodes_in_group('regions'):
 		if r.script_name == region_name or r.name == region_name:
 			return r
 	printerr('PopochiuRoom[%s].get_region: Region %s not found' %\
@@ -191,11 +197,11 @@ func get_props() -> Array:
 
 
 func get_hotspots() -> Array:
-	return $Hotspots.get_children()
+	return get_tree().get_nodes_in_group('hotspots')
 
 
 func get_regions() -> Array:
-	return $Regions.get_children()
+	return get_tree().get_nodes_in_group('regions')
 
 
 func get_points() -> Array:
@@ -257,9 +263,3 @@ func _clear_navigation_path() -> void:
 	_moving_character.idle(false)
 	C.emit_signal('character_move_ended', _moving_character)
 	_moving_character = null
-
-
-func _sort_by_baseline(a: Array, b: Array) -> bool:
-	if a[1] < b[1]:
-		return true
-	return false

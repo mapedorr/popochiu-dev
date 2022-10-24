@@ -16,3 +16,4 @@ inventory_limit = 0
 inventory_always_visible = false
 toolbar_always_visible = false
 fade_color = Color( 0, 0, 0, 1 )
+scale_gui = true

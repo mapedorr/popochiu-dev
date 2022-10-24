@@ -56,8 +56,11 @@ position = Vector2( 0, -3 )
 script = ExtResource( 11 )
 description = "Toy"
 baseline = 4
+walk_to_point = Vector2( -25, 11 )
+cursor = 1
 script_name = "Toy"
 texture = ExtResource( 10 )
+link_to_item = "ToyCar"
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Props/Blanket/Toy"]
 polygon = PoolVector2Array( -7, 2, 5, 3, 8, 0, 2, -4, -3, -4 )

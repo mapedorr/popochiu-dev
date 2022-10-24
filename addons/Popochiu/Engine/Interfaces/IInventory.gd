@@ -4,7 +4,7 @@ extends Node
 
 signal item_added(item, animate)
 signal item_add_done(item)
-signal item_removed(item)
+signal item_removed(item, animate)
 signal item_remove_done(item)
 signal item_discarded(item)
 signal inventory_show_requested(time)
@@ -50,8 +50,11 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 
 # Adds an item to the inventory and make it the current selected item. That is,
 # the cursor will thake the item's texture as its texture.
-func add_item_as_active(\
-item_name: String, is_in_queue := true, animate := true) -> void:
+func add_item_as_active(
+	item_name: String,
+	is_in_queue := true,
+	animate := true
+) -> void:
 	if is_in_queue: yield()
 	
 	var item: PopochiuInventoryItem = yield(
@@ -66,9 +69,10 @@ item_name: String, is_in_queue := true, animate := true) -> void:
 
 
 # Makes the cursor use the texture of an item in the inventory.
-func set_active_item(\
-item: PopochiuInventoryItem = null,
-ignore_block := false) -> void:
+func set_active_item(
+	item: PopochiuInventoryItem = null,
+	ignore_block := false
+) -> void:
 	if item:
 		active = item
 		Cursor.set_cursor_texture((item as TextureRect).texture, ignore_block)
@@ -79,7 +83,11 @@ ignore_block := false) -> void:
 
 # Removes an item from the inventory. Its instance will be kept in the
 # _item_instances array.
-func remove_item(item_name: String, is_in_queue := true) -> void:
+func remove_item(
+	item_name: String,
+	is_in_queue := true,
+	animate := true
+) -> void:
 	if is_in_queue: yield()
 	
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
@@ -89,7 +97,7 @@ func remove_item(item_name: String, is_in_queue := true) -> void:
 		items.erase(item_name)
 		
 		set_active_item(null)
-		emit_signal('item_removed', i)
+		emit_signal('item_removed', i, animate)
 		
 		yield(self, 'item_remove_done')
 

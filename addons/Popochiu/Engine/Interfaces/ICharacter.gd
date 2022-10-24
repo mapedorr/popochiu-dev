@@ -14,8 +14,8 @@ var camera_owner: PopochiuCharacter = null
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 # Makes a character (script_name) say something.
-func character_say(\
-chr_name: String, dialog: String, is_in_queue := true
+func character_say(
+	chr_name: String, dialog: String, is_in_queue := true
 ) -> void:
 	if is_in_queue: yield()
 
@@ -66,6 +66,7 @@ chr_name: String, position: Vector2, is_in_queue := true) -> void:
 # Makes the PC (player character) walk to a position in the current room.
 func player_walk_to(position: Vector2, is_in_queue := true) -> void:
 	if is_in_queue: yield()
+	
 	yield(player.walk(position, false), 'completed')
 
 
@@ -74,13 +75,8 @@ func player_walk_to(position: Vector2, is_in_queue := true) -> void:
 # PopochiuCharacter, etc.) in the room.
 func walk_to_clicked(is_in_queue := true) -> void:
 	if is_in_queue: yield()
-	yield(
-		player_walk_to(
-			(E.clicked.walk_to_point * E.clicked.scale) + E.clicked.position,
-			false
-		),
-		'completed'
-	)
+	
+	yield(player_walk_to(E.clicked.walk_to_point, false), 'completed')
 
 
 # Makes the PC (player character) look at the last clicked PopochiuClickable.

@@ -69,11 +69,11 @@ func _enable_panels() -> void:
 	
 	_display_box.close()
 	_dialog_text.hide()
-
+	
 	_info_bar.show()
 	_inventory.show()
 	_toolbar.show()
-
+	
 	_inventory.enable()
 	_toolbar.enable()
 

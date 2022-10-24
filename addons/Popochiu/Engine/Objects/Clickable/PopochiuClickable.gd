@@ -8,14 +8,14 @@ const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Ty
 
 export var description := ''
 export var clickable := true
-export var baseline := 0 setget _set_baseline
-export var walk_to_point: Vector2 setget _set_walk_to_point
+export var baseline := 0 setget set_baseline
+export var walk_to_point: Vector2 setget set_walk_to_point, get_walk_to_point
 export var look_at_point: Vector2
 export(CURSOR_TYPE) var cursor
 export var script_name := ''
 export var always_on_top := false
 
-var room: Node2D = null # It is a PopochiuRoom
+var room: Node2D = null setget set_room # It is a PopochiuRoom
 
 onready var _description_code := description
 
@@ -80,44 +80,26 @@ func _process(delta):
 # When the node is clicked
 func on_interact() -> void:
 	yield(E.run([
-		G.display('Nothing to do with it')
+		G.display("Can't INTERACT with it")
 	]), 'completed')
 
 
 # When the node is right clicked
 func on_look() -> void:
 	yield(E.run([
-		G.display('Nothing to see here')
+		G.display("Can't EXAMINE it")
 	]), 'completed')
 
 
 # When the node is clicked and there is an inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
 	yield(E.run([
-		G.display('Nothing happens when using %s here' % item.description)
+		G.display("Can't USE %s here'" % item.description)
 	]), 'completed')
 
 
-# Hides the Node and disables its interaction
-func disable(is_in_queue := true) -> void:
-	if is_in_queue: yield()
-	self.visible = false
-	yield(get_tree(), 'idle_frame')
-
-
-# Makes the Node visible and enables its interaction
-func enable(is_in_queue := true) -> void:
-	if is_in_queue: yield()
-	self.visible = true
-	yield(get_tree(), 'idle_frame')
-
-
-func get_description() -> String:
-	if Engine.editor_hint:
-		if not description:
-			description = name
-		return description
-	return E.get_text(description)
+func on_room_set() -> void:
+	pass
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -129,6 +111,30 @@ func hide_helpers() -> void:
 func show_helpers() -> void:
 	$BaselineHelper.show()
 	$WalkToHelper.show()
+
+
+# Hides the Node and disables its interaction
+func disable(is_in_queue := true) -> void:
+	if is_in_queue: yield()
+	
+	self.visible = false
+	yield(get_tree(), 'idle_frame')
+
+
+# Makes the Node visible and enables its interaction
+func enable(is_in_queue := true) -> void:
+	if is_in_queue: yield()
+	
+	self.visible = true
+	yield(get_tree(), 'idle_frame')
+
+
+func get_description() -> String:
+	if Engine.editor_hint:
+		if not description:
+			description = name
+		return description
+	return E.get_text(description)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -144,20 +150,6 @@ func _toggle_description(display: bool) -> void:
 		G.show_info()
 
 
-func _set_baseline(value: int) -> void:
-	baseline = value
-	
-	if Engine.editor_hint and get_node_or_null('BaselineHelper'):
-		get_node('BaselineHelper').position = Vector2.DOWN * value
-
-
-func _set_walk_to_point(value: Vector2) -> void:
-	walk_to_point = value
-	
-	if Engine.editor_hint and get_node_or_null('WalkToHelper'):
-		get_node('WalkToHelper').position = value
-
-
 func _toggle_input() -> void:
 	if clickable:
 		input_pickable = visible
@@ -171,3 +163,32 @@ func _translate() -> void:
 	description = E.get_text(
 		'%s-%s' % [get_tree().current_scene.name, _description_code]
 	)
+
+
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
+func set_baseline(value: int) -> void:
+	baseline = value
+	
+	if Engine.editor_hint and get_node_or_null('BaselineHelper'):
+		get_node('BaselineHelper').position = Vector2.DOWN * value
+
+
+func set_walk_to_point(value: Vector2) -> void:
+	walk_to_point = value
+	
+	if Engine.editor_hint and get_node_or_null('WalkToHelper'):
+		get_node('WalkToHelper').position = value
+
+
+func get_walk_to_point() -> Vector2:
+	if Engine.editor_hint:
+		return walk_to_point
+	elif is_inside_tree():
+		return to_global(walk_to_point)
+	return walk_to_point
+
+
+func set_room(value: Node2D) -> void:
+	room = value
+	
+	on_room_set()

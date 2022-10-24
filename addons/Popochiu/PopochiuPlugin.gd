@@ -5,8 +5,6 @@ extends EditorPlugin
 #	godot\editor\editor_themes.cpp
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
-
 var main_dock: Panel
 
 var _editor_interface := get_editor_interface()
@@ -32,15 +30,15 @@ func _init() -> void:
 		_is_first_install = PopochiuResources.init_file_structure()
 	
 	# Load Popochiu singletons
-	add_autoload_singleton('Globals', Constants.GLOBALS_SNGL)
-	add_autoload_singleton('U', Constants.UTILS_SNGL)
-	add_autoload_singleton('Cursor', Constants.CURSOR_SNGL)
-	add_autoload_singleton('E', Constants.POPOCHIU_SNGL)
-	add_autoload_singleton('C', Constants.ICHARACTER_SNGL)
-	add_autoload_singleton('I', Constants.IINVENTORY_SNGL)
-	add_autoload_singleton('D', Constants.IDIALOG_SNGL)
-	add_autoload_singleton('G', Constants.IGRAPHIC_INTERFACE_SNGL)
-	add_autoload_singleton('A', Constants.IAUDIO_MANAGER_SNGL)
+	add_autoload_singleton('Globals', PopochiuResources.GLOBALS_SNGL)
+	add_autoload_singleton('U', PopochiuResources.UTILS_SNGL)
+	add_autoload_singleton('Cursor', PopochiuResources.CURSOR_SNGL)
+	add_autoload_singleton('E', PopochiuResources.POPOCHIU_SNGL)
+	add_autoload_singleton('C', PopochiuResources.ICHARACTER_SNGL)
+	add_autoload_singleton('I', PopochiuResources.IINVENTORY_SNGL)
+	add_autoload_singleton('D', PopochiuResources.IDIALOG_SNGL)
+	add_autoload_singleton('G', PopochiuResources.IGRAPHIC_INTERFACE_SNGL)
+	add_autoload_singleton('A', PopochiuResources.IAUDIO_MANAGER_SNGL)
 
 
 func _enter_tree() -> void:
@@ -62,7 +60,7 @@ func _enter_tree() -> void:
 	load('res://addons/Popochiu/PopochiuInspectorPlugin.gd').new()
 	add_inspector_plugin(_inspector_plugin)
 	
-	main_dock = load(Constants.MAIN_DOCK_PATH).instance()
+	main_dock = load(PopochiuResources.MAIN_DOCK_PATH).instance()
 	main_dock.ei = _editor_interface
 	main_dock.fs = _editor_file_system
 	main_dock.focus_mode = Control.FOCUS_ALL
@@ -220,12 +218,12 @@ func _remove_input_actions() -> void:
 func _move_addon_folders() -> void:
 	# Move files and folders so developer can overwrite them
 #	_directory.rename(
-#		Constants.GRAPHIC_INTERFACE_ADDON.get_base_dir(),
-#		Constants.GRAPHIC_INTERFACE_POPOCHIU.get_base_dir()
+#		PopochiuResources.GRAPHIC_INTERFACE_ADDON.get_base_dir(),
+#		PopochiuResources.GRAPHIC_INTERFACE_POPOCHIU.get_base_dir()
 #	)
 #	_directory.rename(
-#		Constants.TRANSITION_LAYER_ADDON.get_base_dir(),
-#		Constants.TRANSITION_LAYER_POPOCHIU.get_base_dir()
+#		PopochiuResources.TRANSITION_LAYER_ADDON.get_base_dir(),
+#		PopochiuResources.TRANSITION_LAYER_POPOCHIU.get_base_dir()
 #	)
 	
 	# Refresh FileSystem
@@ -237,8 +235,8 @@ func _move_addon_folders() -> void:
 	
 	# Save settings
 #	var settings := PopochiuResources.get_settings()
-#	settings.graphic_interface = load(Constants.GRAPHIC_INTERFACE_POPOCHIU)
-#	settings.transition_layer = load(Constants.TRANSITION_LAYER_POPOCHIU)
+#	settings.graphic_interface = load(PopochiuResources.GRAPHIC_INTERFACE_POPOCHIU)
+#	settings.transition_layer = load(PopochiuResources.TRANSITION_LAYER_POPOCHIU)
 #
 #	PopochiuResources.save_settings(settings)
 	
@@ -249,7 +247,7 @@ func _move_addon_folders() -> void:
 func _check_popochiu_dependencies() -> void:
 	_fix_dependencies(
 		_editor_file_system.get_filesystem_path(
-			Constants.GRAPHIC_INTERFACE_POPOCHIU.get_base_dir()
+			PopochiuResources.GRAPHIC_INTERFACE_POPOCHIU.get_base_dir()
 		)
 	)
 	
@@ -257,7 +255,7 @@ func _check_popochiu_dependencies() -> void:
 	
 	_fix_dependencies(
 		_editor_file_system.get_filesystem_path(
-			Constants.TRANSITION_LAYER_POPOCHIU.get_base_dir()
+			PopochiuResources.TRANSITION_LAYER_POPOCHIU.get_base_dir()
 		)
 	)
 	

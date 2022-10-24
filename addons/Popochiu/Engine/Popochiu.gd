@@ -212,8 +212,11 @@ func run_cutscene(instructions: Array) -> void:
 
 # Loads the room with script_name. use_transition can be used to trigger a fade
 # out animation before loading the room, and a fade in animation once it is ready
-func goto_room(\
-script_name := '', use_transition := true, store_state := true
+func goto_room(
+	script_name := '',
+	use_transition := true,
+	store_state := true,
+	ignore_change := false
 ) -> void:
 	if not in_room: return
 	
@@ -244,6 +247,8 @@ script_name := '', use_transition := true, store_state := true
 	main_camera.limit_top = _defaults.camera_limits.top
 	main_camera.limit_bottom = _defaults.camera_limits.bottom
 	
+	if ignore_change: return
+	
 	var rp: String = PopochiuResources.get_data_value('rooms', script_name, null)
 	if not rp:
 		prints('[Popochiu] No PopochiuRoom with name: %s' % script_name)
@@ -262,11 +267,16 @@ func room_readied(room: PopochiuRoom) -> void:
 	# When running from the Editor the first time, use goto_room
 	if Engine.get_idle_frames() == 0:
 		yield(get_tree(), 'idle_frame')
-		
+
 		self.in_room = true
-		goto_room(room.script_name, false)
 		
-		return
+		# Calling this will make the camera be set to its default values and will
+		# store the state of the main room (the last parameter will prevent
+		# Popochiu from changing the scene to the same that is already loaded
+		goto_room(room.script_name, false, true, true)
+	
+	# Make the camera be ready for the room
+	current_room.setup_camera()
 	
 	# Update the core state
 	if not _loaded_game:

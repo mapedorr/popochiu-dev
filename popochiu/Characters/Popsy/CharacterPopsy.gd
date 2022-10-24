@@ -33,10 +33,16 @@ func on_look() -> void:
 
 
 # When the node is clicked and there is an inventory item selected
-func on_item_used(item: PopochiuInventoryItem) -> void:
-	# Replace the call to .on_item_used(item) to implement your code. This only
-	# makes the default behavior to happen.
-	.on_item_used(item)
+func on_item_used(_item: PopochiuInventoryItem) -> void:
+	E.run([
+		C.walk_to_clicked(),
+		C.face_clicked(),
+		'Player: Take this',
+		I.remove_item('ToyCar', true, false),
+		'Popsy[2]: Oh...',
+		'...',
+		'Popsy: Thanks',
+	])
 
 
 # Use it to play the idle animation for the character

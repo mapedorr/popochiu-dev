@@ -13,8 +13,8 @@ func on_interact() -> void:
 #	For example you can make the character walk to the Prop and then say
 #	something:
 #	E.run([
-#		C.face_clicked(),
 #		C.walk_to_clicked(),
+#		C.face_clicked(),
 #		'Player: Not picking that up'
 #	])
 	.on_interact()
@@ -28,7 +28,6 @@ func on_look() -> void:
 #	something:
 #	E.run([
 #		C.face_clicked(),
-#		C.walk_to_clicked(),
 #		'Player: A deck of cards'
 #	])
 	.on_look()
@@ -39,3 +38,15 @@ func on_item_used(item: PopochiuInventoryItem) -> void:
 	# Replace the call to .on_item_used(item) to implement your code. This only
 	# makes the default behavior to happen.
 	.on_item_used(item)
+
+
+# When an inventory item linked to this Prop (link_to_item) is removed from
+# the inventory (i.e. when it is used in something that makes use of the object).
+func on_linked_item_removed() -> void:
+	pass
+
+
+# When an inventory item linked to this Prop (link_to_item) is discarded from
+# the inventory (i.e. when the player throws the object out of the inventory).
+func on_linked_item_discarded() -> void:
+	pass

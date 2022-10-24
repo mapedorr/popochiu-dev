@@ -13,8 +13,8 @@ func on_interact() -> void:
 #	For example you can make the character walk to the Hotspot and then say
 #	something:
 #	E.run([
-#		C.face_clicked(),
 #		C.walk_to_clicked(),
+#		C.face_clicked(),
 #		"Player: Can't open it"
 #	])
 	.on_interact()

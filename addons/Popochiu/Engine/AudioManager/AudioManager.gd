@@ -6,7 +6,7 @@ extends Node
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 # warning-ignore-all:return_value_discarded
 
-const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd')
+const AudioCue := preload('AudioCue.gd')
 
 var twelfth_root_of_two := pow(2, (1.0 / 12))
 
@@ -109,30 +109,16 @@ func play_fade_no_block(
 		return _play_fade_cue(cue_name, duration, from, to, position_2d)
 
 
-func stop(\
-cue_name: String,
-fade_duration := 0.0,
-is_in_queue := true
-) -> void:
-	if is_in_queue: yield()
+func stop(cue_name: String, fade_duration := 0.0) -> void:
+	yield()
 	
-	if _active.has(cue_name):
-		var stream_player: Node = (_active[cue_name].players as Array).front()
-		
-		if is_instance_valid(stream_player):
-			if fade_duration > 0.0:
-				_fade_sound(cue_name, fade_duration, stream_player.volume_db, -80)
-			else:
-				stream_player.stop()
-			
-			if stream_player is AudioStreamPlayer2D and _active[cue_name].loop:
-				# When stopped (.stop()) an audio in loop, for some reason
-				# 'finished' is not emitted.
-				stream_player.emit_signal('finished')
-		else:
-			_active.erase(cue_name)
+	_stop(cue_name, fade_duration)
 	
 	yield(get_tree(), 'idle_frame')
+
+
+func stop_no_block(cue_name: String, fade_duration := 0.0) -> void:
+	_stop(cue_name, fade_duration)
 
 
 func get_cue_playback_position(cue_name: String) -> float:
@@ -388,6 +374,25 @@ func _fadeout_finished(obj: Node, _key: NodePath) -> void:
 		
 		if _fading_sounds.empty():
 			$Tween.disconnect('tween_completed', self, '_fadeout_finished')
+
+
+func _stop(cue_name: String, fade_duration := 0.0) -> void:
+	if _active.has(cue_name):
+		var stream_player: Node = (_active[cue_name].players as Array).front()
+		
+		if is_instance_valid(stream_player):
+			if fade_duration > 0.0:
+				_fade_sound(cue_name, fade_duration, stream_player.volume_db, -80.0)
+			else:
+				stream_player.stop()
+			
+			if stream_player is AudioStreamPlayer2D and _active[cue_name].loop:
+				# When stopped (.stop()) an audio in loop, for some reason
+				# 'finished' is not emitted.
+				stream_player.emit_signal('finished')
+		else:
+			_active.erase(cue_name)
+
 
 
 func _sort_cues(a: AudioCue, b: AudioCue) -> bool:

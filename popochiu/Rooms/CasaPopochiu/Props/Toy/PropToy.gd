@@ -8,9 +8,11 @@ extends PopochiuProp
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	# Replace the call to .on_interact() to implement your code. This only makes
-	# the default behavior to happen.
-	.on_interact()
+	E.run([
+		C.walk_to_clicked(),
+		C.face_clicked(),
+		I.add_item('ToyCar')
+	])
 
 
 # When the node is right clicked
