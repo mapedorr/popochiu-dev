@@ -14,33 +14,31 @@ var camera_owner: PopochiuCharacter = null
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 # Makes a character (script_name) say something.
-func character_say(
-	chr_name: String, dialog: String, is_in_queue := true
-) -> void:
-	if is_in_queue: yield()
+func character_say(chr_name: String, dialog: String) -> void:
+	yield()
+	yield(_character_say(chr_name, dialog), 'completed')
 
-	var talking_character: PopochiuCharacter = get_character(chr_name)
+
+func character_say_no_block(
+	chr_name: String, dialog: String, call_done := true
+) -> void:
+	yield(_character_say(chr_name, dialog), 'completed')
 	
-	if talking_character:
-		yield(talking_character.say(dialog, false), 'completed')
-	else:
-		printerr(
-			'[Popochiu] ICharacter.character_say:',
-			'character %s not found' % chr_name
-		)
-		yield(get_tree(), 'idle_frame')
-	
-	if not is_in_queue:
+	if call_done:
 		G.done()
 
 
-# Makes the PC (player character) say something.
-func player_say(dialog: String, is_in_queue := true) -> void:
-	if is_in_queue:
-		yield()
-		yield(player.say(dialog, false), 'completed')
-	else:
-		yield(player.say(dialog, false), 'completed')
+# Makes the PC (player character) say something inside an E.run([])
+func player_say(dialog: String) -> void:
+	yield()
+	yield(player.say(dialog, false), 'completed')
+
+
+# Makes the PC (player character) say something outside an E.run([])
+func player_say_no_block(dialog: String, call_done := true) -> void:
+	yield(player.say(dialog, false), 'completed')
+	
+	if call_done:
 		G.done()
 
 
@@ -141,3 +139,17 @@ chr_name: String, emotion: String, is_in_queue := true) -> void:
 func set_player(value: PopochiuCharacter) -> void:
 	player = value
 	camera_owner = value
+
+
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
+func _character_say(chr_name: String, dialog: String) -> void:
+	var talking_character: PopochiuCharacter = get_character(chr_name)
+	
+	if talking_character:
+		yield(talking_character.say(dialog, false), 'completed')
+	else:
+		printerr(
+			'[Popochiu] ICharacter.character_say:',
+			'character %s not found' % chr_name
+		)
+		yield(get_tree(), 'idle_frame')

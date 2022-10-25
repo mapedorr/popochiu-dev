@@ -113,6 +113,7 @@ func _add_item(item: PopochiuInventoryItem, animate := true) -> void:
 		_open()
 		yield(get_tree().create_timer(2.0), 'timeout')
 		_close()
+		yield(get_tree().create_timer(0.5), 'timeout')
 	else:
 		yield(get_tree(), 'idle_frame')
 

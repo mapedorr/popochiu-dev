@@ -17,7 +17,6 @@ var active: PopochiuInventoryItem
 var items := []
 
 var _item_instances := []
-var _items_count := 0
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -27,7 +26,7 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 	if is_in_queue: yield()
 	
 	if E.settings.inventory_limit > 0\
-	and _items_count == E.settings.inventory_limit:
+	and items.size() == E.settings.inventory_limit:
 		prints(
 			'[Popochiu] Could not add %s to the inventory because it is full.' %\
 			item_name
@@ -37,15 +36,14 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 	
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 	if is_instance_valid(i) and not i.in_inventory:
-		i.in_inventory = true
-		_items_count += 1
 		items.append(item_name)
 		
 		emit_signal('item_added', i, animate)
+		i.in_inventory = true
 		
-		return yield(self, 'item_add_done')
+		yield(self, 'item_add_done')
 	
-	return yield(get_tree(), 'idle_frame')
+	yield(get_tree(), 'idle_frame')
 
 
 # Adds an item to the inventory and make it the current selected item. That is,
@@ -93,7 +91,6 @@ func remove_item(
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 	if is_instance_valid(i):
 		i.in_inventory = false
-		_items_count -= 1
 		items.erase(item_name)
 		
 		set_active_item(null)
@@ -109,7 +106,7 @@ func is_item_in_inventory(item_name: String) -> bool:
 
 func is_full() -> bool:
 	return E.settings.inventory_limit > 0\
-	and E.settings.inventory_limit == _items_count
+	and E.settings.inventory_limit == items.size()
 
 
 func discard_item(item_name: String, is_in_queue := true) -> void:

@@ -584,16 +584,12 @@ func _eval_string(text: String) -> void:
 				
 				if character_name == 'player'\
 				or C.player.script_name.to_lower() == character_name:
-					yield(C.player_say(dialogue, false), 'completed')
-
-					G.block()
+					yield(C.player_say_no_block(dialogue, false), 'completed')
 				elif C.is_valid_character(character_name):
 					yield(
-						C.character_say(character_name, dialogue, false),
+						C.character_say_no_block(character_name, dialogue, false),
 						'completed'
 					)
-
-					G.block()
 				else:
 					yield(get_tree(), 'idle_frame')
 			else:
