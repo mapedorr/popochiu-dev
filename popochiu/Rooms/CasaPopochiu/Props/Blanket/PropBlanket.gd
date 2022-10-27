@@ -15,9 +15,9 @@ func on_interact() -> void:
 
 # When the node is right clicked
 func on_look() -> void:
-	# Replace the call to .on_look() to implement your code. This only makes
-	# the default behavior to happen.
-	.on_look()
+	E.run([
+		'Player: A yellow blanket'
+	])
 
 
 # When the node is clicked and there is an inventory item selected

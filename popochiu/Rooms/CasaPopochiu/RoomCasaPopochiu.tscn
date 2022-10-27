@@ -33,6 +33,7 @@ position = Vector2( 160, 91 )
 navpoly = SubResource( 1 )
 
 [node name="Props" type="YSort" parent="."]
+sort_enabled = false
 
 [node name="Bg" parent="Props" instance=ExtResource( 3 )]
 position = Vector2( 160, 90 )
@@ -47,9 +48,14 @@ texture = ExtResource( 4 )
 [node name="Blanket" parent="Props" instance=ExtResource( 3 )]
 position = Vector2( 212, 126 )
 script = ExtResource( 12 )
+description = "Blanket"
 baseline = 6
 walk_to_point = Vector2( 16, -10 )
+cursor = 1
 texture = ExtResource( 13 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Props/Blanket"]
+polygon = PoolVector2Array( -10, -1, -10, 4, -4, 5, 9, 4, 9, -3, 4, -5, -8, -5 )
 
 [node name="Toy" parent="Props/Blanket" instance=ExtResource( 3 )]
 position = Vector2( 0, -3 )
@@ -92,6 +98,7 @@ polygon = PoolVector2Array( -20, -13, -18, 12, 17, 11, 17, -12 )
 [node name="Points" type="Node2D" parent="."]
 
 [node name="Characters" type="YSort" parent="."]
+sort_enabled = false
 
 [node name="CharacterGoddiu *" parent="Characters" instance=ExtResource( 6 )]
 position = Vector2( 30, 153 )

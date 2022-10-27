@@ -101,6 +101,7 @@ func create() -> void:
 	
 	if _interaction_checkbox.pressed:
 		var collision := CollisionPolygon2D.new()
+		collision.name = 'InteractionPolygon'
 		prop.add_child(collision)
 		collision.owner = _room
 	

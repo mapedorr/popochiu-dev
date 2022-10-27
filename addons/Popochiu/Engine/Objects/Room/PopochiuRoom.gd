@@ -28,9 +28,14 @@ onready var _nav_path: Navigation2D = $WalkableAreas.get_child(0)
 func _enter_tree() -> void:
 	if Engine.editor_hint:
 		sort_enabled = false
+		$Props.sort_enabled = false
+		$Characters.sort_enabled = false
+		
 		return
 	else:
 		sort_enabled = true
+		$Props.sort_enabled = true
+		$Characters.sort_enabled = true
 	
 	for c in $Characters.get_children():
 		if c is PopochiuCharacter:

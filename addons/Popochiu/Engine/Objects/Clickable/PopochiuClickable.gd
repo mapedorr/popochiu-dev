@@ -1,4 +1,5 @@
 tool
+class_name PopochiuClickable
 extends Area2D
 # Allows to handle an Area2D that reacts to click events, and mouse entering,
 # and exiting.
@@ -48,6 +49,8 @@ func _ready():
 func _unhandled_input(event):
 	var mouse_event: = event as InputEventMouseButton 
 	if mouse_event and mouse_event.pressed:
+		if not E.hovered or E.hovered != self: return
+		
 		E.clicked = self
 		if event.is_action_pressed('popochiu-interact'):
 			get_tree().set_input_as_handled()
@@ -140,14 +143,25 @@ func get_description() -> String:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _toggle_description(display: bool) -> void:
 	set_process_unhandled_input(display)
-	Cursor.set_cursor(cursor if display else null)
+	
 	if display:
+		if E.hovered and (
+			E.hovered.get_parent() == self or get_index() < E.hovered.get_index()
+		):
+			E.add_hovered(self, true)
+			return
+		
+		E.add_hovered(self)
+		Cursor.set_cursor(cursor)
+		
 		if not I.active:
 			G.show_info(description)
 		else:
 			G.show_info('Use %s with %s' % [I.active.description, description])
 	else:
-		G.show_info()
+		if E.remove_hovered(self):
+			Cursor.set_cursor()
+			G.show_info()
 
 
 func _toggle_input() -> void:

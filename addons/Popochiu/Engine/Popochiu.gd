@@ -18,6 +18,7 @@ var current_room: PopochiuRoom = null
 # Stores the las PopochiuClickable node clicked to ease access to it from
 # any other class
 var clicked: Node = null
+var hovered: PopochiuClickable = null setget , get_hovered
 var cutscene_skipped := false
 var rooms_states := {}
 var dialog_states := {}
@@ -45,6 +46,7 @@ var _running := false
 var _use_transition_on_room_change := true
 var _config: ConfigFile = null
 var _loaded_game := {}
+var _hovered_queue := []
 
 onready var main_camera: Camera2D = find_node('MainCamera')
 onready var _defaults := {
@@ -479,23 +481,6 @@ func play_transition(type: int, duration: float, is_in_queue := true) -> void:
 	yield($TransitionLayer, 'transition_finished')
 
 
-# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
-func get_width() -> float:
-	return get_viewport().get_visible_rect().end.x
-
-
-func get_height() -> float:
-	return get_viewport().get_visible_rect().end.y
-
-
-func get_half_width() -> float:
-	return get_viewport().get_visible_rect().end.x / 2.0
-
-
-func get_half_height() -> float:
-	return get_viewport().get_visible_rect().end.y / 2.0
-
-
 func change_text_speed() -> void:
 	current_text_speed_idx = wrapi(
 		current_text_speed_idx + 1,
@@ -544,9 +529,51 @@ func stop_camera_shake() -> void:
 	main_camera.offset = Vector2.ZERO
 
 
+func add_hovered(node: PopochiuClickable, prepend := false) -> void:
+	if prepend:
+		_hovered_queue.push_front(node)
+	else:
+		_hovered_queue.append(node)
+
+
+func remove_hovered(node: PopochiuClickable) -> bool:
+	_hovered_queue.erase(node)
+	
+	if not _hovered_queue.empty():
+		var pc: PopochiuClickable = _hovered_queue[-1]
+		G.show_info(pc.description)
+		Cursor.set_cursor(pc.cursor)
+		return false
+	
+	return true
+
+
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
+func get_width() -> float:
+	return get_viewport().get_visible_rect().end.x
+
+
+func get_height() -> float:
+	return get_viewport().get_visible_rect().end.y
+
+
+func get_half_width() -> float:
+	return get_viewport().get_visible_rect().end.x / 2.0
+
+
+func get_half_height() -> float:
+	return get_viewport().get_visible_rect().end.y / 2.0
+
+
+func get_hovered() -> PopochiuClickable:
+	return null if _hovered_queue.empty() else _hovered_queue[-1]
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _eval_string(text: String) -> void:
 	match text:
+		'.':
+			yield(wait(0.25, false), 'completed')
 		'..':
 			yield(wait(0.5, false), 'completed')
 		'...':

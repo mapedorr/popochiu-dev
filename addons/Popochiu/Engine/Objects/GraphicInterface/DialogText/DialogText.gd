@@ -81,6 +81,10 @@ func play_text(props: Dictionary) -> void:
 		rect_position.x = limit_margin
 	elif rect_position.x + rect_size.x > _x_limit:
 		rect_position.x = _x_limit - limit_margin - rect_size.x
+	if rect_position.y < 0.0:
+		rect_position.y = limit_margin
+	elif rect_position.y + rect_size.y > _y_limit:
+		rect_position.y = _y_limit - limit_margin - rect_size.y
 	
 	# Assign text and align mode (based on overflow)
 	push_color(props.color)

@@ -76,6 +76,7 @@ func create() -> void:
 	) / 2.0
 	
 	var collision := CollisionPolygon2D.new()
+	collision.name = 'InteractionPolygon'
 	hotspot.add_child(collision)
 	collision.owner = _room
 	collision.modulate = Color.blue

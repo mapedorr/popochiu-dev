@@ -20,8 +20,11 @@ onready var _sprite: Sprite = $Sprite
 func _ready() -> void:
 	add_to_group('props')
 	
-	if not clickable and get_node_or_null('CollisionPolygon2D'):
-		$CollisionPolygon2D.hide()
+	if not clickable:
+		if get_node_or_null('InteractionPolygon'):
+			$InteractionPolygon.hide()
+		elif get_node_or_null('CollisionPolygon2D'):
+			$CollisionPolygon2D.hide()
 	
 	if Engine.editor_hint: return
 	
