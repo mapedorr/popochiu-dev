@@ -41,7 +41,7 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 		emit_signal('item_added', i, animate)
 		i.in_inventory = true
 		
-		yield(self, 'item_add_done')
+		return yield(self, 'item_add_done')
 	
 	yield(get_tree(), 'idle_frame')
 
