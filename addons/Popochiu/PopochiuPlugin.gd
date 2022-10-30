@@ -58,6 +58,7 @@ func _enter_tree() -> void:
 	
 	_inspector_plugin =\
 	load('res://addons/Popochiu/PopochiuInspectorPlugin.gd').new()
+	_inspector_plugin.ei = _editor_interface
 	add_inspector_plugin(_inspector_plugin)
 	
 	main_dock = load(PopochiuResources.MAIN_DOCK_PATH).instance()

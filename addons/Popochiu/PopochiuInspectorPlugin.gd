@@ -1,5 +1,7 @@
 extends EditorInspectorPlugin
 
+var ei: EditorInterface
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func can_handle(object: Object) -> bool:
 	if object is PopochiuCharacter:
@@ -39,7 +41,7 @@ func _parse_navigation_polygon_instance(object: Object) -> void:
 	button.text = "Editing done"
 	button.size_flags_stretch_ratio = Button.SIZE_EXPAND
 	button.align = Button.ALIGN_CENTER
-	button.connect("pressed", self, "_back_to_walkable_area", [object])
+	button.connect("pressed", self, "_back_to_walkable_area", [object], CONNECT_DEFERRED)
 	
 	hbox.add_child(button)
 	panel.add_child(hbox)
@@ -63,7 +65,7 @@ func _parse_walkable_area(object: Object) -> void:
 	button.text = "Edit Polygon"
 	button.size_flags_stretch_ratio = Button.SIZE_EXPAND
 	button.align = Button.ALIGN_CENTER
-	button.connect("pressed", self, "_find_polygon_instance", [object])
+	button.connect("pressed", self, "_find_polygon_instance", [object], CONNECT_DEFERRED)
 	
 	hbox.add_child(button)
 	panel.add_child(hbox)
@@ -97,15 +99,13 @@ func _parse_character(object: Object) -> void:
 
 func _back_to_walkable_area(object: Object) -> void:
 	if not object.get_parent() is PopochiuWalkableArea: return
-	# HERE I WANT AN EDITOR-INTERFACE.edit_node(object)
-	# Can't find my way to EditorInterace
+	ei.edit_node(object.get_parent())
 
 
 func _find_polygon_instance(object: Object) -> void:
 	if not object is PopochiuWalkableArea: return
 	var children = object.get_children()
-	# HERE I WANT AN EDITOR-INTERFACE.edit_node(children[0])
-	# Can't find my way to EditorInterace
+	ei.edit_node(children[0])
 
 
 func parse_property(\
