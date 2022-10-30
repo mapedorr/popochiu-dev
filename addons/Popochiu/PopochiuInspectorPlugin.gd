@@ -97,11 +97,15 @@ func _parse_character(object: Object) -> void:
 
 func _back_to_walkable_area(object: Object) -> void:
 	if not object.get_parent() is PopochiuWalkableArea: return
+	# HERE I WANT AN EDITOR-INTERFACE.edit_node(object)
+	# Can't find my way to EditorInterace
 
 
 func _find_polygon_instance(object: Object) -> void:
 	if not object is PopochiuWalkableArea: return
 	var children = object.get_children()
+	# HERE I WANT AN EDITOR-INTERFACE.edit_node(children[0])
+	# Can't find my way to EditorInterace
 
 
 func parse_property(\
