@@ -273,7 +273,12 @@ func _update_navigation_path(
 ):
 	# TODO: Use a Dictionary so more than one character can move around at the
 	# same time. Or maybe each character should handle its own movement? (;￢＿￢)
-	_path = _nav_path.get_simple_path(start_position, end_position, true)
+	if character.ignore_walkable_areas:
+		# if the character can glide between WAs, just move over a straight line
+		_path = PoolVector2Array([start_position, end_position])
+	else:
+		# if the character is forced into WAs, delegate pathfinding to the active WA
+		_path = _nav_path.get_simple_path(start_position, end_position, true)
 	
 	if _path.empty():
 		prints('_update_navigation_path')
