@@ -18,7 +18,7 @@ export(Array, Dictionary) var voices := [] setget set_voices
 export var follow_player := false
 export var walk_speed := 200.0
 export var can_move := true
-export var ignore_walkable_areas := false  setget set_ignore_walkable_areas, get_ignore_walkable_areas
+export(bool) var ignore_walkable_areas := false
 
 var last_room := ''
 var anim_suffix := ''
@@ -215,12 +215,6 @@ func set_voices(value: Array) -> void:
 			}
 			property_list_changed_notify()
 
-
-func set_ignore_walkable_areas(value: bool) -> void:
-	ignore_walkable_areas = value
-
-func get_ignore_walkable_areas() -> bool:
-	return ignore_walkable_areas
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _translate() -> void:

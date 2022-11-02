@@ -194,7 +194,7 @@ func get_region(region_name: String) -> PopochiuRegion:
 
 
 func get_walkable_area(walkable_area_name: String) -> PopochiuWalkableArea:
-	for wa in $WalkableAreas.get_children():
+	for wa in get_tree().get_nodes_in_group('walkable_areas'):
 		if wa.name == walkable_area_name:
 			return wa
 	printerr('PopochiuRoom[%s].get_walkable_area: Walkable area %s not found' %\
@@ -219,7 +219,7 @@ func get_points() -> Array:
 
 
 func get_walkable_areas() -> Array:
-	return $WalkableAreas.get_children()
+	return get_tree().get_nodes_in_group('walkable_areas')
 
 
 func get_active_walkable_area() -> PopochiuWalkableArea:
@@ -274,7 +274,7 @@ func _update_navigation_path(
 	# TODO: Use a Dictionary so more than one character can move around at the
 	# same time. Or maybe each character should handle its own movement? (;￢＿￢)
 	if character.ignore_walkable_areas:
-		# if the character can glide between WAs, just move over a straight line
+		# if the character can ignore WAs, just move over a straight line
 		_path = PoolVector2Array([start_position, end_position])
 	else:
 		# if the character is forced into WAs, delegate pathfinding to the active WA

@@ -135,12 +135,12 @@ chr_name: String, emotion: String, is_in_queue := true) -> void:
 	yield(get_tree(), 'idle_frame')
 
 
-func set_character_can_glide(chr_name: String, value: bool) -> void:
+func set_character_ignore_walkable_areas(chr_name: String, value: bool) -> void:
 	if get_character(chr_name):
 		get_character(chr_name).ignore_walkable_areas = value
 
 
-func get_character_can_glide(chr_name: String) -> bool:
+func get_character_ignore_walkable_areas(chr_name: String) -> bool:
 	return get_character(chr_name).ignore_walkable_areas
 
 
