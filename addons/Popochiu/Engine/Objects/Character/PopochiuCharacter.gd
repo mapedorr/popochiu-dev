@@ -18,6 +18,7 @@ export(Array, Dictionary) var voices := [] setget set_voices
 export var follow_player := false
 export var walk_speed := 200.0
 export var can_move := true
+export(bool) var ignore_walkable_areas := false
 
 var last_room := ''
 var anim_suffix := ''

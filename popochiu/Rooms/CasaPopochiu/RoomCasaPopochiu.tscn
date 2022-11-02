@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/RoomCasaPopochiu.gd" type="Script" id=1]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn" type="PackedScene" id=2]
@@ -13,11 +13,8 @@
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/Toy/PropToy.gd" type="Script" id=11]
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/Blanket/PropBlanket.gd" type="Script" id=12]
 [ext_resource path="res://popochiu/Rooms/CasaPopochiu/Props/blanket.png" type="Texture" id=13]
-
-[sub_resource type="NavigationPolygon" id=1]
-vertices = PoolVector2Array( 28, 16, 301, 16, 325, 79, 92, 83, -169, 81, -400, 11, -389, 64 )
-polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ), PoolIntArray( 5, 0, 4, 6 ) ]
-outlines = [ PoolVector2Array( -389, 64, -400, 11, 28, 16, 301, 16, 325, 79, 92, 83, -169, 81 ) ]
+[ext_resource path="res://popochiu/Rooms/CasaPopochiu/WalkableAreas/Floor/WalkableAreaFloor.gd" type="Script" id=14]
+[ext_resource path="res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.tscn" type="PackedScene" id=15]
 
 [node name="RoomCasaPopochiu" type="YSort"]
 sort_enabled = false
@@ -26,11 +23,14 @@ script_name = "CasaPopochiu"
 
 [node name="WalkableAreas" type="Node2D" parent="."]
 
-[node name="Navigation2D" type="Navigation2D" parent="WalkableAreas"]
+[node name="Floor" type="Navigation2D" parent="WalkableAreas" instance=ExtResource( 15 )]
+position = Vector2( 160, 90 )
+script = ExtResource( 14 )
+script_name = "Floor"
+description = "Floor"
 
-[node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="WalkableAreas/Navigation2D"]
-position = Vector2( 160, 91 )
-navpoly = SubResource( 1 )
+[node name="Polygon" type="NavigationPolygonInstance" parent="WalkableAreas/Floor"]
+modulate = Color( 0, 1, 0, 1 )
 
 [node name="Props" type="YSort" parent="."]
 sort_enabled = false

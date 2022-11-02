@@ -41,6 +41,13 @@ onready var _types := {
 		method = 'get_points',
 		type_class = Position2D,
 		parent = 'Points'
+	},
+	Constants.Types.WALKABLE_AREA: {
+		group = find_node('WalkableAreasGroup'),
+		popup = 'CreateWalkableArea',
+		method = 'get_walkable_areas',
+		type_class = PopochiuWalkableArea,
+		parent = 'WalkableAreas'
 	}
 }
 onready var _room_name: Button = find_node('RoomName')
@@ -96,9 +103,8 @@ func scene_changed(scene_root: Node) -> void:
 				if c is Position2D:
 					var row: PopochiuObjectRow = _create_object_row(t, c.name)
 					_types[t].group.add(row)
-					
 					continue
-				
+
 				if c.script.resource_path.find('addons') == -1:
 					row_path = c.script.resource_path
 				else:
@@ -198,6 +204,11 @@ func _select_in_tree(por: PopochiuObjectRow) -> void:
 		var node := opened_room.get_node('%s/%s'\
 		% [_types[por.type].parent, por.node_path])
 		main_dock.ei.edit_node(node)
+		if node.script != null\
+		and node.script.resource_path.count('addons/Popochiu') == 0:
+			main_dock.ei.edit_resource(load(node.script.resource_path))
+		
+		emit_signal('row_clicked')
 	
 	_last_selected = por
 

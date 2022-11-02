@@ -21,7 +21,7 @@ var characters_cfg := [] # Array of Dictionary
 var _path := []
 var _moving_character: PopochiuCharacter = null
 
-onready var _nav_path: Navigation2D = $WalkableAreas.get_child(0)
+onready var _nav_path: PopochiuWalkableArea = $WalkableAreas.get_child(0)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -159,10 +159,6 @@ func setup_camera() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
-func get_walkable_area() -> Navigation2D:
-	return $WalkableAreas.get_child(0) as Navigation2D
-
-
 func get_point(point_name: String) -> Vector2:
 	var point: Position2D = get_node_or_null('Points/' + point_name)
 	if point:
@@ -197,6 +193,15 @@ func get_region(region_name: String) -> PopochiuRegion:
 	return null
 
 
+func get_walkable_area(walkable_area_name: String) -> PopochiuWalkableArea:
+	for wa in get_tree().get_nodes_in_group('walkable_areas'):
+		if wa.name == walkable_area_name:
+			return wa
+	printerr('PopochiuRoom[%s].get_walkable_area: Walkable area %s not found' %\
+	[script_name, walkable_area_name])
+	return null
+
+
 func get_props() -> Array:
 	return get_tree().get_nodes_in_group('props')
 
@@ -213,6 +218,18 @@ func get_points() -> Array:
 	return $Points.get_children()
 
 
+func get_walkable_areas() -> Array:
+	return get_tree().get_nodes_in_group('walkable_areas')
+
+
+func get_active_walkable_area() -> PopochiuWalkableArea:
+	return _nav_path
+
+
+func get_active_walkable_area_name() -> String:
+	return _nav_path.name
+
+
 func get_characters_count() -> int:
 	return $Characters.get_child_count()
 
@@ -220,6 +237,15 @@ func get_characters_count() -> int:
 func set_is_current(value: bool) -> void:
 	is_current = value
 	set_process_unhandled_input(is_current)
+
+
+func set_active_walkable_area(walkable_area_name: String) -> void:
+	var active_walkable_area = $WalkableAreas.get_node(walkable_area_name)
+	if active_walkable_area != null:
+		_nav_path = active_walkable_area
+	else:
+		printerr('PopochiuRoom[%s].set_active_walkable_area: Walkable area %s not found' %\
+		[script_name, walkable_area_name])
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -247,7 +273,12 @@ func _update_navigation_path(
 ):
 	# TODO: Use a Dictionary so more than one character can move around at the
 	# same time. Or maybe each character should handle its own movement? (;￢＿￢)
-	_path = _nav_path.get_simple_path(start_position, end_position, true)
+	if character.ignore_walkable_areas:
+		# if the character can ignore WAs, just move over a straight line
+		_path = PoolVector2Array([start_position, end_position])
+	else:
+		# if the character is forced into WAs, delegate pathfinding to the active WA
+		_path = _nav_path.get_simple_path(start_position, end_position, true)
 	
 	if _path.empty():
 		prints('_update_navigation_path')
