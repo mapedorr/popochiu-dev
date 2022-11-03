@@ -18,7 +18,7 @@ var current_room: PopochiuRoom = null
 # Stores the las PopochiuClickable node clicked to ease access to it from
 # any other class
 var clicked: Node = null
-var hovered: PopochiuClickable = null setget , get_hovered
+var hovered: PopochiuClickable = null setget set_hovered, get_hovered
 var cutscene_skipped := false
 var rooms_states := {}
 var dialog_states := {}
@@ -223,7 +223,9 @@ func goto_room(
 	if not in_room: return
 	
 	self.in_room = false
+	self.hovered = null
 	
+	_hovered_queue.clear()
 	G.block()
 	
 	_use_transition_on_room_change = use_transition
@@ -563,6 +565,13 @@ func get_half_width() -> float:
 
 func get_half_height() -> float:
 	return get_viewport().get_visible_rect().end.y / 2.0
+
+
+func set_hovered(value: PopochiuClickable) -> void:
+	hovered = value
+	
+	if not hovered:
+		G.show_info()
 
 
 func get_hovered() -> PopochiuClickable:

@@ -8,10 +8,10 @@ extends 'res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd'
 signal linked_item_removed(node)
 signal linked_item_discarded(node)
 
-export var texture: Texture setget _set_texture
+export var texture: Texture setget set_texture
+export(int, 1, 100) var frames := 1 setget set_frames
+export(int, 0, 99) var current_frame := 0 setget set_current_frame
 export var link_to_item := ''
-#export var parallax_depth := 1.0 setget _set_parallax_depth
-#export var parallax_alignment := Vector2.ZERO
 
 onready var _sprite: Sprite = $Sprite
 
@@ -59,17 +59,6 @@ func on_linked_item_discarded() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
-func _set_texture(value: Texture) -> void:
-	texture = value
-	$Sprite.texture = value
-
-
-#func _set_parallax_depth(value: float) -> void:
-#	parallax_depth = value
-##	$ParallaxLayer.motion_scale = Vector2.ONE * value
-#	property_list_changed_notify()
-
-
 func _on_item_added(item: PopochiuInventoryItem, _animate: bool) -> void:
 	if item.script_name == link_to_item:
 		disable(false)
@@ -87,3 +76,23 @@ func _on_item_discarded(item: PopochiuInventoryItem) -> void:
 		
 		on_linked_item_discarded()
 		emit_signal('linked_item_discarded', self)
+
+
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
+func set_texture(value: Texture) -> void:
+	texture = value
+	$Sprite.texture = value
+
+
+func set_frames(value: int) -> void:
+	frames = value
+	$Sprite.hframes = value
+
+
+func set_current_frame(value: int) -> void:
+	current_frame = value
+	
+	if current_frame >= $Sprite.hframes:
+		current_frame = $Sprite.hframes - 1
+	
+	$Sprite.frame = current_frame

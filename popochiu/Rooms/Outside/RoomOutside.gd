@@ -1,7 +1,7 @@
 tool
 extends PopochiuRoom
 
-var state: PopochiuRoomData = preload('Room101.tres')
+var state: PopochiuRoomData = preload('RoomOutside.tres')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░

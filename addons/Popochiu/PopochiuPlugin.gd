@@ -21,6 +21,8 @@ var _vsep := VSeparator.new()
 var _btn_baseline := Button.new()
 var _btn_walk_to := Button.new()
 var _types_helper: Resource = null
+var _tool_btn_stylebox :=\
+_editor_interface.get_base_control().get_stylebox("normal", "ToolButton")
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -369,14 +371,18 @@ func _create_container_buttons() -> void:
 	var panl := Panel.new()
 	var hbox := HBoxContainer.new()
 	
-	_btn_baseline.icon = main_dock.get_icon("LineShape2D", "EditorIcons")
-	_btn_baseline.hint_tooltip = 'Select node "baseline"'
+	_btn_baseline.icon = preload('res://addons/Popochiu/icons/baseline.png')
+	_btn_baseline.hint_tooltip = 'Baseline'
 	_btn_baseline.toggle_mode = true
+	_btn_baseline.add_stylebox_override('normal', _tool_btn_stylebox)
+	_btn_baseline.add_stylebox_override('hover', _tool_btn_stylebox)
 	_btn_baseline.connect('pressed', self, '_select_baseline')
 	
-	_btn_walk_to.icon = main_dock.get_icon("Position2D", "EditorIcons")
-	_btn_walk_to.hint_tooltip = 'Select node "walk to point"'
+	_btn_walk_to.icon = preload('res://addons/Popochiu/icons/walk_to_point.png')
+	_btn_walk_to.hint_tooltip = 'Walk to point'
 	_btn_walk_to.toggle_mode = true
+	_btn_walk_to.add_stylebox_override('normal', _tool_btn_stylebox)
+	_btn_walk_to.add_stylebox_override('hover', _tool_btn_stylebox)
 	_btn_walk_to.connect('pressed', self, '_select_walk_to')
 	
 	hbox.add_child(_vsep)

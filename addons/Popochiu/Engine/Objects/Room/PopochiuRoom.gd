@@ -20,8 +20,7 @@ var characters_cfg := [] # Array of Dictionary
 
 var _path := []
 var _moving_character: PopochiuCharacter = null
-
-onready var _nav_path: PopochiuWalkableArea = $WalkableAreas.get_child(0)
+var _nav_path: PopochiuWalkableArea = null
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -51,6 +50,9 @@ func _enter_tree() -> void:
 
 func _ready():
 	if Engine.editor_hint: return
+	
+	if not get_tree().get_nodes_in_group('walkable_areas').empty():
+		_nav_path = get_tree().get_nodes_in_group('walkable_areas')[0]
 	
 	set_process_unhandled_input(false)
 	E.room_readied(self)
@@ -271,6 +273,10 @@ func _move_along_path(distance):
 func _update_navigation_path(
 	character: PopochiuCharacter, start_position: Vector2, end_position: Vector2
 ):
+	if not _nav_path:
+		prints('[Popochiu] No walkable areas in this room')
+		return
+	
 	# TODO: Use a Dictionary so more than one character can move around at the
 	# same time. Or maybe each character should handle its own movement? (;￢＿￢)
 	if character.ignore_walkable_areas:
@@ -281,7 +287,6 @@ func _update_navigation_path(
 		_path = _nav_path.get_simple_path(start_position, end_position, true)
 	
 	if _path.empty():
-		prints('_update_navigation_path')
 		return
 	
 	_path.remove(0)

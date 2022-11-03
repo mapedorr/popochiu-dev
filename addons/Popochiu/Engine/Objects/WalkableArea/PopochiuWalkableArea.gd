@@ -16,6 +16,7 @@ export var tint := Color.white
 #export var scale_top := 1.0
 #export var scale_bottom := 1.0
 
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	add_to_group('walkable_areas')

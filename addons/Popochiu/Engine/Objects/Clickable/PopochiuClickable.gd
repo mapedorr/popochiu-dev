@@ -7,13 +7,12 @@ extends Area2D
 
 const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
 
+export var script_name := ''
 export var description := ''
 export var clickable := true
 export var baseline := 0 setget set_baseline
 export var walk_to_point: Vector2 setget set_walk_to_point, get_walk_to_point
-export var look_at_point: Vector2
 export(CURSOR_TYPE) var cursor
-export var script_name := ''
 export var always_on_top := false
 
 var room: Node2D = null setget set_room # It is a PopochiuRoom

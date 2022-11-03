@@ -33,9 +33,11 @@ onready var setup_dialog: Popup = find_node('Setup')
 onready var _tab_container: TabContainer = find_node('TabContainer')
 onready var _tab_room: VBoxContainer = _tab_container.get_node('Room')
 onready var _tab_audio: VBoxContainer = _tab_container.get_node('Audio')
+# ▨▨▨▨ FOOTER ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨
 onready var _btn_docs: Button = find_node('BtnDocs')
 onready var _btn_settings: Button = find_node('BtnSettings')
 onready var _btn_setup: Button = find_node('BtnSetup')
+onready var _version: Label = find_node('Version')
 onready var _types := {
 	Constants.Types.ROOM: {
 		path = ROOMS_PATH,
@@ -71,6 +73,7 @@ func _ready() -> void:
 	_btn_setup.icon = get_icon("Edit", "EditorIcons")
 	_btn_settings.icon = get_icon('Tools', 'EditorIcons')
 	_btn_docs.icon = get_icon('HelpSearch', 'EditorIcons')
+	_version.text = 'v' + PopochiuResources.get_version()
 	
 	# Set the Main tab selected by default
 	_tab_container.current_tab = 0

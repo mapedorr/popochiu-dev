@@ -1,2 +1,5 @@
 # popochiu-dev
-Development branch for Popochiu.
+
+![cover](./hero.jpg "Popochiu")
+
+### Development branch for Popochiu.

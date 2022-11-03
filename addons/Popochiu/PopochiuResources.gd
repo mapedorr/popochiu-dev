@@ -36,6 +36,7 @@ const MAIN_TYPES := [
 ]
 const ROOM_TYPES := [Types.PROP, Types.HOTSPOT, Types.REGION, Types.POINT, Types.WALKABLE_AREA]
 const WIKI := 'https://github.com/mapedorr/popochiu/wiki/'
+const CFG := 'res://addons/Popochiu/plugin.cfg'
 # ════ SINGLETONS ══════════════════════════════════════════════════════════════
 const GLOBALS_SNGL := 'res://popochiu/PopochiuGlobals.gd'
 const UTILS_SNGL := 'res://addons/Popochiu/Engine/Others/PopochiuUtils.gd'
@@ -175,6 +176,22 @@ static func save_settings(new_settings: PopochiuSettings) -> bool:
 		return false
 	
 	return true
+
+
+# ▨▨▨▨ PLUGIN ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨
+static func get_plugin_cfg() -> ConfigFile:
+	var config := ConfigFile.new()
+	var err: int = config.load(CFG)
+	
+	if err == OK:
+		return config
+	
+	prints("[Popochiu] Couldn't load plugin config.")
+	return null
+
+
+static func get_version() -> String:
+	return get_plugin_cfg().get_value('plugin', 'version')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

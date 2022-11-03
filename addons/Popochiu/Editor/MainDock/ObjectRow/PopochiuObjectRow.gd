@@ -237,7 +237,6 @@ func _menu_item_pressed(id: int) -> void:
 			script.clickable = prop.clickable
 			script.baseline = prop.baseline
 			script.walk_to_point = prop.walk_to_point
-			script.look_at_point = prop.look_at_point
 			script.cursor = prop.cursor
 			script.always_on_top = prop.always_on_top
 			script.texture = prop.texture
