@@ -8,19 +8,21 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
+script_name = "Goddiu"
 description = "Goddiu"
 clickable = false
 cursor = 8
-script_name = "Goddiu"
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PoolVector2Array( -9, -45, -1, -47, 17, -39, 22, -34, 23, -26, 19, -18, 10, -13, -4, -12, -17, -14, -22, -20, -22, -28 )
 
 [node name="BaselineHelper" type="Line2D" parent="."]
+visible = false
 points = PoolVector2Array( -10000, 0, 10000, 0 )
 width = 1.0
 
 [node name="WalkToHelper" type="Position2D" parent="."]
+visible = false
 __meta__ = {
 "_edit_group_": true
 }
@@ -30,10 +32,7 @@ margin_left = -2.5
 margin_top = -2.5
 margin_right = 2.5
 margin_bottom = 2.5
-color = Color( 0, 1, 0, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+color = Color( 0, 1, 1, 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 0, -27 )
@@ -41,4 +40,5 @@ texture = ExtResource( 2 )
 hframes = 6
 
 [node name="DialogPos" type="Position2D" parent="."]
+visible = false
 position = Vector2( -3, -48 )
