@@ -66,25 +66,33 @@ func create() -> void:
 	walkable_area.description = _new_walkable_area_name
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+	# Create the NavigationPolygonInstance (instead of using the one that
+	# was part of the original scene)
+	var perimeter := NavigationPolygonInstance.new()
+	walkable_area.add_child(perimeter)
+	perimeter.name = 'Perimeter'
+	
+	var polygon := NavigationPolygon.new()
+	polygon.add_outline(PoolVector2Array([
+		Vector2(-10, -10), Vector2(10, -10), Vector2(10, 10), Vector2(-10, 10)
+	]))
+	polygon.make_polygons_from_outlines()
+	
+	perimeter.navpoly = polygon
+	perimeter.modulate = Color.green
+	
 	# Attach the walkable area to the room
 	_room.get_node('WalkableAreas').add_child(walkable_area)
+	
+	# FIX: Make the room the owner of both the Navigation2D and its
+	# NavigationPolygonInstance
 	walkable_area.owner = _room
+	perimeter.owner = _room
+	
 	walkable_area.position = Vector2(
 		ProjectSettings.get_setting(PopochiuResources.DISPLAY_WIDTH),
 		ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
 	) / 2.0
-	
-	# Make the walking area perimeter accessible from the room scene
-	var perimeter := walkable_area.get_node("Perimeter");
-	# FIX: if you reload the project the reference to the navpoly seems lost. Poly is still visible
-	var polygon = NavigationPolygon.new()
-	polygon.add_outline(
-		PoolVector2Array([Vector2(-10, -10), Vector2(10, -10), Vector2(10, 10), Vector2(-10, 10)])
-	)
-	polygon.make_polygons_from_outlines()
-	perimeter.navpoly = polygon
-	perimeter.owner = _room
-	perimeter.modulate = Color.green
 	
 	_main_dock.ei.save_scene()
 	
