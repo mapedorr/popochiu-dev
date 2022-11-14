@@ -96,7 +96,7 @@ func on_look() -> void:
 # When the node is clicked and there is an inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
 	yield(E.run([
-		G.display("Can't USE %s here'" % item.description)
+		G.display("Can't USE %s here" % item.description)
 	]), 'completed')
 
 

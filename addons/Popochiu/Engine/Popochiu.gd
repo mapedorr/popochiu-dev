@@ -223,9 +223,8 @@ func goto_room(
 	if not in_room: return
 	
 	self.in_room = false
-	self.hovered = null
+	clear_hovered()
 	
-	_hovered_queue.clear()
 	G.block()
 	
 	_use_transition_on_room_change = use_transition
@@ -296,6 +295,13 @@ func room_readied(room: PopochiuRoom) -> void:
 		var chr: PopochiuCharacter = C.get_character(c.script_name)
 		
 		if chr:
+			# ░▒░▒ FIX ░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░
+			# Temporary fix to make the character with is_player == true to
+			# be the PC
+			if chr.is_player:
+				C.set_player(chr)
+			# ░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░░▒░▒ FIX ░▒░▒
+			
 			chr.position = c.position
 			current_room.add_character(chr)
 	
@@ -576,6 +582,11 @@ func set_hovered(value: PopochiuClickable) -> void:
 
 func get_hovered() -> PopochiuClickable:
 	return null if _hovered_queue.empty() else _hovered_queue[-1]
+
+
+func clear_hovered() -> void:
+	_hovered_queue.clear()
+	self.hovered = null
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
