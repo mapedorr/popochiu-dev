@@ -1,21 +1,22 @@
-tool
-class_name PopochiuRoom, 'res://addons/Popochiu/icons/room.png'
-extends YSort
+@tool
+class_name PopochiuRoom
+extends Node2D
+@icon('res://addons/Popochiu/icons/room.png')
 # The scenes used by Popochiu. Can have: Props, Hotspots, Regions, Points and
 # Walkable areas. Characters can move through this and interact with its Props
 # and Hotspots. Regions can be used to trigger methods when a character enters
 # or leaves.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-export var script_name := ''
-export var has_player := true
-export var hide_gi := false
-export var limit_left := INF
-export var limit_right := INF
-export var limit_top := INF
-export var limit_bottom := INF
+@export var script_name := ''
+@export var has_player := true
+@export var hide_gi := false
+@export var limit_left := INF
+@export var limit_right := INF
+@export var limit_top := INF
+@export var limit_bottom := INF
 
-var is_current := false setget set_is_current
+var is_current := false : set = set_is_current
 var characters_cfg := [] # Array of Dictionary
 
 var _path := []
@@ -25,7 +26,7 @@ var _nav_path: PopochiuWalkableArea = null
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _enter_tree() -> void:
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		sort_enabled = false
 		$Props.sort_enabled = false
 		$Characters.sort_enabled = false
@@ -49,9 +50,9 @@ func _enter_tree() -> void:
 
 
 func _ready():
-	if Engine.editor_hint: return
+	if Engine.is_editor_hint(): return
 	
-	if not get_tree().get_nodes_in_group('walkable_areas').empty():
+	if not get_tree().get_nodes_in_group('walkable_areas').is_empty():
 		_nav_path = get_tree().get_nodes_in_group('walkable_areas')[0]
 	
 	set_process_unhandled_input(false)
@@ -59,10 +60,10 @@ func _ready():
 
 
 func _process(delta):
-	if Engine.editor_hint or not is_instance_valid(C.player) or not has_player:
+	if Engine.is_editor_hint() or not is_instance_valid(C.player) or not has_player:
 		return
 	
-	if _path.empty(): return
+	if _path.is_empty(): return
 	
 	var walk_distance = _moving_character.walk_speed * delta
 	_move_along_path(walk_distance)
@@ -125,8 +126,8 @@ func exit_room() -> void:
 func add_character(chr: PopochiuCharacter) -> void:
 	$Characters.add_child(chr)
 	#warning-ignore:return_value_discarded
-	chr.connect('started_walk_to', self, '_update_navigation_path')
-	chr.connect('stoped_walk', self, '_clear_navigation_path')
+	chr.connect('started_walk_to',Callable(self,'_update_navigation_path'))
+	chr.connect('stoped_walk',Callable(self,'_clear_navigation_path'))
 
 
 func remove_character(chr: PopochiuCharacter) -> void:
@@ -162,7 +163,7 @@ func setup_camera() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
 func get_point(point_name: String) -> Vector2:
-	var point: Position2D = get_node_or_null('Points/' + point_name)
+	var point: Marker2D = get_node_or_null('Points/' + point_name)
 	if point:
 		return point.global_position
 	printerr('PopochiuRoom[%s].get_point: No se encontró el punto %s' % [script_name, point_name])
@@ -257,14 +258,14 @@ func _move_along_path(distance):
 	while _path.size():
 		var distance_between_points = last_point.distance_to(_path[0])
 		if distance <= distance_between_points:
-			_moving_character.position = last_point.linear_interpolate(
+			_moving_character.position = last_point.lerp(
 				_path[0], distance / distance_between_points
 			)
 			return
 
 		distance -= distance_between_points
 		last_point = _path[0]
-		_path.remove(0)
+		_path.remove_at(0)
 
 	_moving_character.position = last_point
 	_clear_navigation_path()
@@ -281,15 +282,15 @@ func _update_navigation_path(
 	# same time. Or maybe each character should handle its own movement? (;￢＿￢)
 	if character.ignore_walkable_areas:
 		# if the character can ignore WAs, just move over a straight line
-		_path = PoolVector2Array([start_position, end_position])
+		_path = PackedVector2Array([start_position, end_position])
 	else:
 		# if the character is forced into WAs, delegate pathfinding to the active WA
 		_path = _nav_path.get_simple_path(start_position, end_position, true)
 	
-	if _path.empty():
+	if _path.is_empty():
 		return
 	
-	_path.remove(0)
+	_path.remove_at(0)
 	_moving_character = character
 	
 	set_process(true)
@@ -298,7 +299,7 @@ func _update_navigation_path(
 func _clear_navigation_path() -> void:
 	# FIX: 'function signature missmatch in Web export' error thrown when clearing
 	# an empty Array.
-	if not _path.empty():
+	if not _path.is_empty():
 		_path.clear()
 	
 	_moving_character.idle(false)

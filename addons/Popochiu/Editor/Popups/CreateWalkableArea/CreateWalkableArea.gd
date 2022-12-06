@@ -1,4 +1,4 @@
-tool
+@tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
 # Creates a new walkable area in a room
 
@@ -23,7 +23,7 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: PopochiuDock) -> void:
-	.set_main_dock(node)
+	super.set_main_dock(node)
 
 
 func room_opened(r: Node2D) -> void:
@@ -59,33 +59,33 @@ func create() -> void:
 
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the new WalkableArea and add it to the room
-	var walkable_area: PopochiuWalkableArea = ResourceLoader.load(WALKABLE_AREA_SCENE).instance()
+	var walkable_area: PopochiuWalkableArea = ResourceLoader.load(WALKABLE_AREA_SCENE).instantiate()
 	walkable_area.set_script(ResourceLoader.load(script_path))
 	walkable_area.name = _new_walkable_area_name
 	walkable_area.script_name = _new_walkable_area_name
 	walkable_area.description = _new_walkable_area_name
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Create the NavigationPolygonInstance (instead of using the one that
+	# Create the NavigationRegion2D (instead of using the one that
 	# was part of the original scene)
-	var perimeter := NavigationPolygonInstance.new()
+	var perimeter := NavigationRegion2D.new()
 	walkable_area.add_child(perimeter)
 	perimeter.name = 'Perimeter'
 	
 	var polygon := NavigationPolygon.new()
-	polygon.add_outline(PoolVector2Array([
+	polygon.add_outline(PackedVector2Array([
 		Vector2(-10, -10), Vector2(10, -10), Vector2(10, 10), Vector2(-10, 10)
 	]))
 	polygon.make_polygons_from_outlines()
 	
 	perimeter.navpoly = polygon
-	perimeter.modulate = Color.green
+	perimeter.modulate = Color.GREEN
 	
 	# Attach the walkable area to the room
 	_room.get_node('WalkableAreas').add_child(walkable_area)
 	
-	# FIX: Make the room the owner of both the Navigation2D and its
-	# NavigationPolygonInstance
+	# FIX: Make the room the owner of both the Node2D and its
+	# NavigationRegion2D
 	walkable_area.owner = _room
 	perimeter.owner = _room
 	
@@ -97,7 +97,7 @@ func create() -> void:
 	_main_dock.ei.save_scene()
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Update the list of WalkableAreas in the Room tab
+	# Update the list of WalkableAreas in the Node3D tab
 	room_tab.add_to_list(
 		Constants.Types.WALKABLE_AREA,
 		_new_walkable_area_name,
@@ -106,7 +106,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Abrir las propiedades de la walkable area creada en el Inspector
-	yield(get_tree().create_timer(0.1), 'timeout')
+	await get_tree().create_timer(0.1).timeout
 	_main_dock.ei.edit_node(walkable_area)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -115,14 +115,14 @@ func create() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	._update_name(new_text)
+	super._update_name(new_text)
 
 	if _name:
 		_new_walkable_area_name = _name
 		_new_walkable_area_path = _walkable_area_path_template %\
 		[_new_walkable_area_name, _new_walkable_area_name]
 
-		_info.bbcode_text = (
+		_info.text = (
 			'In [b]%s[/b] the following files will be created: [code]%s[/code]' \
 			% [
 				_room_dir + '/WalkableAreas',
@@ -134,7 +134,7 @@ func _update_name(new_text: String) -> void:
 
 		
 func _clear_fields() -> void:
-	._clear_fields()
+	super._clear_fields()
 	
 	_new_walkable_area_name = ''
 	_new_walkable_area_path = ''

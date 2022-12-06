@@ -1,4 +1,4 @@
-tool
+@tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
 # Permite crear una nueva Region para una habitación.
 
@@ -23,7 +23,7 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: PopochiuDock) -> void:
-	.set_main_dock(node)
+	super.set_main_dock(node)
 
 
 func room_opened(r: Node2D) -> void:
@@ -59,7 +59,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Crear la región a agregar a la habitación
-	var region: PopochiuRegion = ResourceLoader.load(REGION_SCENE).instance()
+	var region: PopochiuRegion = ResourceLoader.load(REGION_SCENE).instantiate()
 	region.set_script(ResourceLoader.load(script_path))
 	region.name = _new_region_name
 	region.script_name = _new_region_name
@@ -78,12 +78,12 @@ func create() -> void:
 	collision.name = 'InteractionPolygon'
 	region.add_child(collision)
 	collision.owner = _room
-	collision.modulate = Color.cyan
+	collision.modulate = Color.CYAN
 	
 	_main_dock.ei.save_scene()
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Update the list of Regions in the Room tab
+	# Update the list of Regions in the Node3D tab
 	room_tab.add_to_list(
 		Constants.Types.REGION,
 		_new_region_name,
@@ -92,7 +92,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Abrir las propiedades de la región creada en el Inspector
-	yield(get_tree().create_timer(0.1), 'timeout')
+	await get_tree().create_timer(0.1).timeout
 	_main_dock.ei.edit_node(region)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -101,14 +101,14 @@ func create() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	._update_name(new_text)
+	super._update_name(new_text)
 
 	if _name:
 		_new_region_name = _name
 		_new_region_path = _region_path_template %\
 		[_new_region_name, _new_region_name]
 
-		_info.bbcode_text = (
+		_info.text = (
 			'In [b]%s[/b] the following files will be created: [code]%s[/code]' \
 			% [
 				_room_dir + '/Regions',
@@ -120,7 +120,7 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	._clear_fields()
+	super._clear_fields()
 	
 	_new_region_name = ''
 	_new_region_path = ''

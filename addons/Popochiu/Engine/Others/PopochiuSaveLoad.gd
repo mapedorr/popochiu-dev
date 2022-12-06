@@ -6,11 +6,11 @@ extends Node
 # TODO: This could be in PopochiuSettings for devs to change the path
 const SAVE_GAME_PATH := 'user://save_%d.json'
 const VALID_TYPES := [
-	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING,
-	TYPE_ARRAY, TYPE_STRING_ARRAY, TYPE_RAW_ARRAY, TYPE_INT_ARRAY
+	TYPE_BOOL, TYPE_INT, TYPE_FLOAT, TYPE_STRING,
+	TYPE_ARRAY, TYPE_PACKED_STRING_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_INT32_ARRAY
 ]
 
-var _file := File.new()
+var _file := FileAccess.new()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -29,7 +29,7 @@ func get_saves_descriptions() -> Dictionary:
 	
 	for i in range(1, 5):
 		if _file.file_exists(SAVE_GAME_PATH % i):
-			var error := _file.open(SAVE_GAME_PATH % i, File.READ)
+			var error := _file.open(SAVE_GAME_PATH % i, FileAccess.READ)
 			if error != OK:
 				printerr(\
 				'[Popochiu] Could not open the file %s. Error code: %s'\
@@ -39,7 +39,9 @@ func get_saves_descriptions() -> Dictionary:
 			var content := _file.get_as_text()
 			_file.close()
 			
-			var loaded_data: Dictionary = JSON.parse(content).result
+			var test_json_conv = JSON.new()
+			test_json_conv.parse(content).result
+			var loaded_data: Dictionary = test_json_conv.get_data()
 			
 			saves[i] = loaded_data.description
 	
@@ -47,7 +49,7 @@ func get_saves_descriptions() -> Dictionary:
 
 
 func save_game(slot := 1, description := '') -> bool:
-	var error := _file.open(SAVE_GAME_PATH % slot, File.WRITE)
+	var error := _file.open(SAVE_GAME_PATH % slot, FileAccess.WRITE)
 	if error != OK:
 		printerr(\
 		'[Popochiu] Could not open the file %s. Error code: %s'\
@@ -96,7 +98,7 @@ func save_game(slot := 1, description := '') -> bool:
 	if not data.globals: data.erase('globals')
 	
 	# Write the JSON -----------------------------------------------------------
-	var json_string := JSON.print(data)
+	var json_string := JSON.stringify(data)
 	_file.store_string(json_string)
 	_file.close()
 	
@@ -104,7 +106,7 @@ func save_game(slot := 1, description := '') -> bool:
 
 
 func load_game(slot := 1) -> Dictionary:
-	var error := _file.open(SAVE_GAME_PATH % slot, File.READ)
+	var error := _file.open(SAVE_GAME_PATH % slot, FileAccess.READ)
 	if error != OK:
 		printerr(\
 		'[Popochiu] Could not open the file %s. Error code: %s'\
@@ -114,7 +116,9 @@ func load_game(slot := 1) -> Dictionary:
 	var content := _file.get_as_text()
 	_file.close()
 	
-	var loaded_data: Dictionary = JSON.parse(content).result
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(content).result
+	var loaded_data: Dictionary = test_json_conv.get_data()
 	
 	# Load inventory items
 	for item in loaded_data.player.inventory:
@@ -170,7 +174,7 @@ target: Dictionary, source: Object, ignore_too := []
 ) -> void:
 	var props_to_ignore := ['script_name', 'scene']
 	
-	if not ignore_too.empty():
+	if not ignore_too.is_empty():
 		props_to_ignore.append_array(ignore_too)
 	
 	# ---- Store basic type properties -----------------------------------------

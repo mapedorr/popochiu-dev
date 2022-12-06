@@ -1,0 +1,5 @@
+res://popochiu/Rooms/101/Room101.tscn
+res://addons/Popochiu/Engine/Objects/Room/PopochiuRoomData.gd
+res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacterData.gd
+res://addons/Popochiu/Engine/Objects/InventoryItem/PopochiuInventoryItemData.gd
+res://addons/Popochiu/Engine/Interfaces/ICharacter.gd

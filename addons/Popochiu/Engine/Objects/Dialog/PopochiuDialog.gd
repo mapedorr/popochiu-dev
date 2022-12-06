@@ -1,13 +1,15 @@
-tool
-class_name PopochiuDialog, 'res://addons/Popochiu/icons/dialog.png'
+@tool
+class_name PopochiuDialog
 extends Resource
+@icon('res://addons/Popochiu/icons/dialog.png')
 # For branching dialog, can have dialog options that trigger a script.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 const PopochiuDialogOption := preload('PopochiuDialogOption.gd')
 
-export(Array, Resource) var options := [] setget set_options
-export var script_name := ''
+@export var options := []:
+	set = set_options # (Array, Resource)
+@export var script_name := ''
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -21,13 +23,13 @@ func option_selected(opt: PopochiuDialogOption) -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func start() -> void:
-	yield(on_start(), 'completed')
+	await on_start()
 	
 	_show_options()
 	
-	yield(D, 'dialog_finished')
+	await D.dialog_finished
 	
-	D.disconnect('option_selected', self, '_on_option_selected')
+	D.disconnect('option_selected',Callable(self,'_on_option_selected'))
 
 
 func stop() -> void:
@@ -73,7 +75,7 @@ func set_options(value: Array) -> void:
 			new_opt.text = 'Option %d' % options.size()
 			options[v] = new_opt
 			
-			property_list_changed_notify()
+			notify_property_list_changed()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -82,8 +84,8 @@ func _show_options() -> void:
 	
 	D.emit_signal('dialog_options_requested', options)
 	
-	if not D.is_connected('option_selected', self, '_on_option_selected'):
-		D.connect('option_selected', self, '_on_option_selected')
+	if not D.is_connected('option_selected',Callable(self,'_on_option_selected')):
+		D.connect('option_selected',Callable(self,'_on_option_selected'))
 
 
 func _on_option_selected(opt: PopochiuDialogOption) -> void:

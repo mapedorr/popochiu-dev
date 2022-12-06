@@ -1,5 +1,6 @@
 extends TextureRect
-class_name PopochiuInventoryItem, 'res://addons/Popochiu/icons/inventory_item.png'
+class_name PopochiuInventoryItem
+@icon('res://addons/Popochiu/icons/inventory_item.png')
 # An inventory item.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -8,20 +9,20 @@ const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Ty
 signal description_toggled(description)
 signal selected(item)
 
-export var description := '' setget ,get_description
-export var stack := false
-export var script_name := ''
-export(CURSOR_TYPE) var cursor
+@export var description := '' : get = get_description
+@export var stack := false
+@export var script_name := ''
+@export_enum(CURSOR_TYPE) var cursor := CURSOR_TYPE.USE
 
 var amount := 1
-var in_inventory := false setget set_in_inventory
+var in_inventory := false : set = set_in_inventory
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready():
-	connect('mouse_entered', self, '_toggle_description', [true])
-	connect('mouse_exited', self, '_toggle_description', [false])
-	connect('gui_input', self, '_on_action_pressed')
+	connect('mouse_entered',Callable(self,'_toggle_description').bind(true))
+	connect('mouse_exited',Callable(self,'_toggle_description').bind(false))
+	connect('gui_input',Callable(self,'_on_action_pressed'))
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -32,16 +33,14 @@ func on_interact() -> void:
 
 # When the item is right clicked in the Inventory
 func on_look() -> void:
-	yield(E.run([
-		G.display('Nothing to see in this item')
-	]), 'completed')
+	await E.run([G.display('Nothing to see in this item')])
 
 
 # When the item is clicked and there is another inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
-	yield(E.run([
+	await E.run([
 		G.display('Nothing happens when using %s in this item' % item.description)
-	]), 'completed')
+	])
 
 
 # Actions to excecute after the item is added to the Inventory
@@ -62,8 +61,8 @@ func set_in_inventory(value: bool) -> void:
 
 
 func get_description() -> String:
-	if Engine.editor_hint:
-		if not description:
+	if Engine.is_editor_hint():
+		if description.is_empty():
 			description = name
 		return description
 	return E.get_text(description)

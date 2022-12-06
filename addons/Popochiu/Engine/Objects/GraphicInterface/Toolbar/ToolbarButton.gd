@@ -4,16 +4,16 @@ extends TextureButton
 #const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
 #const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
 
-#export(Constants.CursorType) var cursor := Constants.CursorType.USE
-export var description := '' setget ,get_description
-export var script_name := ''
+#export var cursor := Constants.CursorType.USE # (Constants.CursorType)
+@export var description := '' : get = get_description
+@export var script_name := ''
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	connect('pressed', self, 'on_pressed')
-	connect('mouse_entered', self, 'on_mouse_entered')
-	connect('mouse_exited', self, 'on_mouse_exited')
+	connect('pressed',Callable(self,'on_pressed'))
+	connect('mouse_entered',Callable(self,'on_mouse_entered'))
+	connect('mouse_exited',Callable(self,'on_mouse_exited'))
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░

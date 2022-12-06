@@ -1,4 +1,4 @@
-tool
+@tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
 # Permite crear una nueva Prop para una habitación. De tener interacción, se le
 # asignará un script que quedará guardado en la carpeta Props de la carpeta de
@@ -17,19 +17,19 @@ var _prop_path_template: String
 var _room_path: String
 var _room_dir: String
 
-onready var _interaction_checkbox: CheckBox = find_node('InteractionCheckbox')
+@onready var _interaction_checkbox: CheckBox = find_child('InteractionCheckbox')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	_clear_fields()
 	
-	_interaction_checkbox.connect('toggled', self, '_interaction_toggled')
+	_interaction_checkbox.connect('toggled',Callable(self,'_interaction_toggled'))
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: PopochiuDock) -> void:
-	.set_main_dock(node)
+	super.set_main_dock(node)
 
 
 func room_opened(r: Node2D) -> void:
@@ -74,7 +74,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Crear la prop a agregar a la habitación
-	var prop: PopochiuProp = ResourceLoader.load(BASE_PROP_PATH).instance()
+	var prop: PopochiuProp = ResourceLoader.load(BASE_PROP_PATH).instantiate()
 	
 	if _interaction_checkbox.pressed:
 		prop.set_script(ResourceLoader.load(script_path))
@@ -108,7 +108,7 @@ func create() -> void:
 	_main_dock.ei.save_scene()
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Update the list of Props in the Room tab
+	# Update the list of Props in the Node3D tab
 	room_tab.add_to_list(
 		Constants.Types.PROP,
 		_new_prop_name,
@@ -118,7 +118,7 @@ func create() -> void:
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Abrir las propiedades de la prop creada en el Inspector
 	_main_dock.fs.scan()
-	yield(get_tree().create_timer(0.1), 'timeout')
+	await get_tree().create_timer(0.1).timeout
 	_main_dock.ei.edit_node(prop)
 	
 	if _interaction_checkbox.pressed:
@@ -134,7 +134,7 @@ func create() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	._update_name(new_text)
+	super._update_name(new_text)
 
 	if _name:
 		_new_prop_name = _name
@@ -147,11 +147,11 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	._clear_fields()
+	super._clear_fields()
 	
 	_new_prop_name = ''
 	_new_prop_path = ''
-	_interaction_checkbox.pressed = false
+	_interaction_checkbox.button_pressed = false
 
 
 func _interaction_toggled(is_pressed: bool) -> void:
@@ -162,7 +162,7 @@ func _interaction_toggled(is_pressed: bool) -> void:
 
 
 func _update_info() -> void:
-	_info.bbcode_text = (
+	_info.text = (
 		'In [b]%s[/b] the following file will be created: [code]%s[/code]' \
 		% [
 			_new_prop_path.get_base_dir(),

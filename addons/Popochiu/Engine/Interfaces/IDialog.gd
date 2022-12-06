@@ -25,7 +25,7 @@ func show_dialog(script_name: String) -> void:
 		active = true
 		current_dialog.start()
 		
-		yield(self, 'dialog_finished')
+		await self.dialog_finished
 		
 		trees[current_dialog.script_name] = current_dialog
 		
@@ -35,14 +35,14 @@ func show_dialog(script_name: String) -> void:
 		
 		G.done()
 	else:
-		yield(get_tree(), 'idle_frame')
+		await get_tree().idle_frame
 
 
 # Shows a list of options (like a dialog tree would do) and returns the
 # PopochiuDialogOption of the selected option
 func show_inline_dialog(opts: Array) -> PopochiuDialogOption:
 	emit_signal('inline_dialog_requested', opts)
-	return yield(self, 'option_selected')
+	return await self.option_selected
 
 
 # Finishes the dialog currently in execution.
@@ -51,4 +51,4 @@ func finish_dialog() -> void:
 
 
 func say_selected() -> void:
-	yield(E.run(['Player: ' + selected_option.text]), 'completed')
+	await E.run(['Player: ' + selected_option.text]).completed

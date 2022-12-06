@@ -1,4 +1,4 @@
-tool
+@tool
 extends HBoxContainer
 # The row that is created for Rooms, Characters, Inventory items, Dialogs,
 # Props, Hotspots, Regions and Points in the dock.
@@ -32,23 +32,23 @@ const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd
 var type := -1
 var path := ''
 var node_path := ''
-var main_dock: Panel = null setget _set_main_dock
-var is_main := false setget _set_is_main
-var is_on_start := false setget set_is_on_start
+var main_dock: Panel = null : set = _set_main_dock
+var is_main := false : set = _set_is_main
+var is_on_start := false : set = set_is_on_start
 
 var _delete_dialog: ConfirmationDialog
 var _delete_all_checkbox: CheckBox
 
-onready var _label: Label = find_node('Label')
-onready var _dflt_font_color: Color = _label.get_color('font_color')
-onready var _fav_icon: TextureRect = find_node('FavIcon')
-onready var _menu_btn: MenuButton = find_node('MenuButton')
-onready var _menu_popup: PopupMenu = _menu_btn.get_popup()
-onready var _btn_open: Button = find_node('Open')
-onready var _btn_script: Button = find_node('Script')
-onready var _btn_state: Button = find_node('State')
-onready var _btn_state_script: Button = find_node('StateScript')
-onready var _menu_cfg := [
+@onready var _label: Label = find_child('Label')
+@onready var _dflt_font_color: Color = _label.get_color('font_color')
+@onready var _fav_icon: TextureRect = find_child('FavIcon')
+@onready var _menu_btn: MenuButton = find_child('MenuButton')
+@onready var _menu_popup: PopupMenu = _menu_btn.get_popup()
+@onready var _btn_open: Button = find_child('Open')
+@onready var _btn_script: Button = find_child('Script')
+@onready var _btn_state: Button = find_child('State')
+@onready var _btn_state_script: Button = find_child('StateScript')
+@onready var _menu_cfg := [
 	{
 		id = MenuOptions.ADD_TO_CORE,
 		icon = preload(\
@@ -92,7 +92,7 @@ onready var _menu_cfg := [
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	_label.text = name
-	hint_tooltip = path
+	tooltip_text = path
 	
 	# Assign icons
 	_fav_icon.texture = get_icon('Heart', 'EditorIcons')
@@ -110,7 +110,7 @@ func _ready() -> void:
 	_btn_state.show()
 	_btn_state_script.show()
 	
-	# Create the context menu based on the type of Object this row represents
+	# Create the context menu based checked the type of Object this row represents
 	_create_menu()
 	
 	if type in Constants.MAIN_TYPES:
@@ -119,10 +119,10 @@ func _ready() -> void:
 		_menu_popup.set_item_disabled(0, true)
 		_menu_popup.set_item_disabled(1, true)
 	elif path.find('.gd') > -1:
-		# If the Room object has a script, disable the Create script button
+		# If the Node3D object has a script, disable the Create script button
 		_menu_popup.set_item_disabled(0, true)
 	
-	# Hide buttons based on the type of the Object this row represents
+	# Hide buttons based checked the type of the Object this row represents
 	_fav_icon.hide()
 	
 	if not type in Constants.MAIN_TYPES:
@@ -133,26 +133,26 @@ func _ready() -> void:
 		_btn_state_script.hide()
 	
 	if type in Constants.ROOM_TYPES:
-		# Do not show the button to open this Object' scene if it is a Room
+		# Do not show the button to open this Object' scene if it is a Node3D
 		# Object (Prop, Hotspot, Region, Point)
 		_btn_open.hide()
 	
-	connect('gui_input', self, '_check_click')
-	_menu_popup.connect('id_pressed', self, '_menu_item_pressed')
-	_btn_open.connect('pressed', self, '_open')
-	_btn_script.connect('pressed', self, '_open_script')
-	_btn_state.connect('pressed', self, '_edit_state')
-	_btn_state_script.connect('pressed', self, '_open_state_script')
+	connect('gui_input',Callable(self,'_check_click'))
+	_menu_popup.connect('id_pressed',Callable(self,'_menu_item_pressed'))
+	_btn_open.connect('pressed',Callable(self,'_open'))
+	_btn_script.connect('pressed',Callable(self,'_open_script'))
+	_btn_state.connect('pressed',Callable(self,'_edit_state'))
+	_btn_state_script.connect('pressed',Callable(self,'_open_state_script'))
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func select() -> void:
-	_label.add_color_override('font_color', SELECTED_FONT_COLOR)
+	_label.add_theme_color_override('font_color', SELECTED_FONT_COLOR)
 	emit_signal('clicked', self)
 
 
-func unselect() -> void:
-	_label.add_color_override('font_color', _dflt_font_color)
+func deselect() -> void:
+	_label.add_theme_color_override('font_color', _dflt_font_color)
 
 
 func show_add_to_core() -> void:
@@ -185,7 +185,7 @@ func _create_menu() -> void:
 func _check_click(event: InputEvent) -> void:
 	var mouse_event: = event as InputEventMouseButton
 	if mouse_event\
-	and mouse_event.button_index == BUTTON_LEFT and mouse_event.pressed:
+	and mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 		main_dock.ei.select_file(path)
 		select()
 
@@ -256,7 +256,7 @@ func _menu_item_pressed(id: int) -> void:
 			_remove_object()
 
 
-# Add this Object (Room, Character, InventoryItem, Dialog) to PopochiuData.cfg
+# Add this Object (Node3D, Character, InventoryItem, Dialog) to PopochiuData.cfg
 # so it can be used by Popochiu.
 func _add_object_to_core() -> void:
 	var target_array := ''
@@ -357,7 +357,7 @@ func _remove_object() -> void:
 		# Title
 		'Remove %s from %s' % [name, location],
 		# Body
-		'This will remove the [b]%s[/b] resource in %s.' % [name, location] +\
+		'This will remove_at the [b]%s[/b] resource in %s.' % [name, location] +\
 		' Uses of this object in scripts will not work anymore.' +\
 		' This action cannot be reversed. Continue?',
 		# Additional confirmation
@@ -372,8 +372,8 @@ func _remove_object() -> void:
 		else ''
 	)
 	
-	_delete_dialog.connect('confirmed', self, '_remove_from_core')
-	_delete_dialog.get_cancel().connect('pressed', self, '_disconnect_popup')
+	_delete_dialog.connect('confirmed',Callable(self,'_remove_from_core'))
+	_delete_dialog.get_cancel_button().connect('pressed',Callable(self,'_disconnect_popup'))
 	_delete_dialog.get_close_button().connect(
 		'pressed', self, '_disconnect_popup'
 	)
@@ -387,7 +387,7 @@ func _search_audio_files(dir: EditorFileSystemDirectory) -> Array:
 	
 	for idx in dir.get_file_count():
 		match dir.get_file_type(idx):
-			'AudioStreamOGGVorbis', 'AudioStreamMP3', 'AudioStreamSample':
+			'AudioStreamOggVorbis', 'AudioStreamMP3', 'AudioStreamWAV':
 				files.append(dir.get_file_path(idx))
 	
 	return files
@@ -419,7 +419,7 @@ func _remove_from_core() -> void:
 				
 				main_dock.ei.save_scene()
 			else:
-				# TODO: open the Room' scene, delete the node and save the Room
+				# TODO: open the Node3D' scene, delete the node and save the Node3D
 				pass
 			
 			# TODO: If it is a non-interactable Object, just delete the node from the
@@ -453,7 +453,7 @@ func _delete_from_file_system() -> void:
 	
 	# Remove the object's folder
 	assert(
-		main_dock.dir.remove(path.get_base_dir()) == OK,
+		main_dock.dir.remove_at(path.get_base_dir()) == OK,
 		'[Popochiu] Could not delete folder: %s' % path.get_base_dir()
 	)
 
@@ -478,7 +478,7 @@ func _recursive_delete(dir: EditorFileSystemDirectory) -> int:
 			_recursive_delete(subfolder)
 			
 			# Eliminar la carpeta
-			var err: int = main_dock.dir.remove(subfolder.get_path())
+			var err: int = main_dock.dir.remove_at(subfolder.get_path())
 			if err != OK:
 				push_error('[Popochiu(err_code:%d)] Could not delete subdirectory %s' %\
 				[err, subfolder.get_path()])
@@ -498,7 +498,7 @@ func _delete_files(dir: EditorFileSystemDirectory) -> int:
 	
 	for file_idx in dir.get_file_count():
 		match dir.get_file_type(file_idx):
-			'AudioStreamOGGVorbis', 'AudioStreamMP3', 'AudioStreamSample':
+			'AudioStreamOggVorbis', 'AudioStreamMP3', 'AudioStreamWAV':
 				deleted_audios.append(dir.get_file_path(file_idx))
 			'Resource':
 				var resource: Resource = load(dir.get_file_path(file_idx))
@@ -527,7 +527,7 @@ func _delete_files(dir: EditorFileSystemDirectory) -> int:
 	for fp in files_paths:
 		# Así es como se hace en el código fuente del motor para que se eliminen
 		# también los .import asociados a los archivos importados. ————————————
-		var err: int = main_dock.dir.remove(fp)
+		var err: int = main_dock.dir.remove_at(fp)
 		main_dock.fs.update_file(fp)
 		# —————————————————————————————————————————————————————————————————————
 		if err != OK:
@@ -537,7 +537,7 @@ func _delete_files(dir: EditorFileSystemDirectory) -> int:
 	
 	# Eliminar las filas en la pestaña de Audio de los archivos de audio y los
 	# AudioCue eliminados.
-	if not deleted_audios.empty():
+	if not deleted_audios.is_empty():
 		main_dock.get_audio_tab().delete_rows(deleted_audios)
 	
 	return OK
@@ -545,8 +545,8 @@ func _delete_files(dir: EditorFileSystemDirectory) -> int:
 
 # Se desconecta de las señales del popup utilizado para configurar la eliminación.
 func _disconnect_popup() -> void:
-	_delete_dialog.disconnect('confirmed', self, '_remove_from_core')
-	_delete_dialog.get_cancel().disconnect('pressed', self, '_disconnect_popup')
+	_delete_dialog.disconnect('confirmed',Callable(self,'_remove_from_core'))
+	_delete_dialog.get_cancel_button().disconnect('pressed',Callable(self,'_disconnect_popup'))
 	_delete_dialog.get_close_button().disconnect(
 		'pressed', self, '_disconnect_popup'
 	)
@@ -555,7 +555,7 @@ func _disconnect_popup() -> void:
 func _set_main_dock(value: Panel) -> void:
 	main_dock = value
 	_delete_dialog = main_dock.delete_dialog
-	_delete_all_checkbox = _delete_dialog.find_node('CheckBox')
+	_delete_all_checkbox = _delete_dialog.find_child('CheckBox')
 
 
 func _set_is_main(value: bool) -> void:

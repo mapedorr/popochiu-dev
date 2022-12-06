@@ -1,4 +1,4 @@
-tool
+@tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
 # Allows to create a new PopochiuCharacter with the files required for its
 # operation within Popochiu and to store its state:
@@ -25,7 +25,7 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: PopochiuDock) -> void:
-	.set_main_dock(node)
+	super.set_main_dock(node)
 	# res://popochiu/Characters
 	_character_path_template = _main_dock.CHARACTERS_PATH + '%s/Character%s'
 
@@ -83,7 +83,7 @@ func create() -> void:
 
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the character instance
-	var new_character: PopochiuCharacter = preload(CHARACTER_SCENE).instance()
+	var new_character: PopochiuCharacter = preload(CHARACTER_SCENE).instantiate()
 	# 	The script is assigned first so that other properties will not be
 	# 	overwritten by that assignment.
 	new_character.set_script(load(_new_character_path + '.gd'))
@@ -118,7 +118,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Open the scene in the editor
-	yield(get_tree().create_timer(0.1), 'timeout')
+	await get_tree().create_timer(0.1).timeout
 	_main_dock.ei.select_file(_new_character_path + '.tscn')
 	_main_dock.ei.open_scene_from_path(_new_character_path + '.tscn')
 	
@@ -128,14 +128,14 @@ func create() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	._update_name(new_text)
+	super._update_name(new_text)
 
 	if _name:
 		_new_character_name = _name
 		_new_character_path = _character_path_template %\
 		[_new_character_name, _new_character_name]
 
-		_info.bbcode_text = (
+		_info.text = (
 			'In [b]%s[/b] the following files will be created:\n[code]%s, %s and %s[/code]' \
 			% [
 				_main_dock.CHARACTERS_PATH + _new_character_name,
@@ -149,7 +149,7 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	._clear_fields()
+	super._clear_fields()
 	
 	_new_character_name = ''
 	_new_character_path = ''

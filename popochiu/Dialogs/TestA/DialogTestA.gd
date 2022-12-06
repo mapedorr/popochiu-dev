@@ -1,16 +1,16 @@
-tool
+@tool
 extends PopochiuDialog
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func on_start() -> void:
-	yield(E.run([]), 'completed')
+	await E.run([]).completed
 
 
 func option_selected(opt: PopochiuDialogOption) -> void:
 	# Use match to check which option was selected and excecute something for
 	# each one
-	yield(D.say_selected(), 'completed')
+	await D.say_selected().completed
 	
 	match opt.id:
 		'Opt1':

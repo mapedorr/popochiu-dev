@@ -1,4 +1,4 @@
-tool
+@tool
 class_name PopochiuGroup,\
 'res://addons/Popochiu/Editor/MainDock/PopochiuGroup/popochiu_group.svg'
 extends PanelContainer
@@ -7,30 +7,30 @@ signal create_clicked
 
 const PopochiuObjectRow := preload('res://addons/Popochiu/Editor/MainDock/ObjectRow/PopochiuObjectRow.gd')
 
-export var icon: Texture setget _set_icon
-export var is_open := true setget _set_is_open
-export var color: Color = Color('999999') setget _set_color
-export var title := 'Group' setget _set_title
-export var can_create := true
-export var create_text := ''
-export var target_list: NodePath = ''
+@export var icon: Texture2D : set = _set_icon
+@export var is_open := true : set = _set_is_open
+@export var color: Color = Color('999999') : set = _set_color
+@export var title := 'Group' : set = _set_title
+@export var can_create := true
+@export var create_text := ''
+@export var target_list: NodePath = ''
 
 var _external_list: VBoxContainer = null
 
-onready var _header: PanelContainer = find_node('Header')
-onready var _arrow: TextureRect = find_node('Arrow')
-onready var _icon: TextureRect = find_node('Icon')
-onready var _lbl_title: Label = find_node('Title')
-onready var _body: Container = find_node('Body')
-onready var _list: VBoxContainer = find_node('List')
-onready var _btn_create: Button = find_node('BtnCreate')
+@onready var _header: PanelContainer = find_child('Header')
+@onready var _arrow: TextureRect = find_child('Arrow')
+@onready var _icon: TextureRect = find_child('Icon')
+@onready var _lbl_title: Label = find_child('Title')
+@onready var _body: Container = find_child('Body')
+@onready var _list: VBoxContainer = find_child('List')
+@onready var _btn_create: Button = find_child('BtnCreate')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	# Establecer estado inicial
-	_header.add_stylebox_override('panel', _header.get_stylebox('panel').duplicate())
-	(_header.get_stylebox('panel') as StyleBoxFlat).bg_color = color
+	_header.add_theme_stylebox_override('panel', _header.get_theme_stylebox('panel').duplicate())
+	(_header.get_theme_stylebox('panel') as StyleBoxFlat).bg_color = color
 	_icon.texture = icon
 	_lbl_title.text = title
 	_btn_create.icon = get_icon('Add', 'EditorIcons')
@@ -40,9 +40,9 @@ func _ready() -> void:
 	if not can_create:
 		_btn_create.hide()
 
-	_header.connect('gui_input', self, '_on_input')
-	_list.connect('resized', self, '_update_child_count')
-	_btn_create.connect('pressed', self, 'emit_signal', ['create_clicked'])
+	_header.connect('gui_input',Callable(self,'_on_input'))
+	_list.connect('resized',Callable(self,'_update_child_count'))
+	_btn_create.connect('pressed',Callable(self,'emit_signal').bind('create_clicked'))
 	
 	if target_list:
 		_external_list = get_node(target_list) as VBoxContainer
@@ -92,7 +92,7 @@ func remove_by_name(node_name: String) -> void:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _on_input(event: InputEvent) -> void:
 	var mouse_event: = event as InputEventMouseButton
-	if mouse_event and mouse_event.button_index == BUTTON_LEFT \
+	if mouse_event and mouse_event.button_index == MOUSE_BUTTON_LEFT \
 		and mouse_event.pressed:
 			is_open = !is_open
 			_toggled(is_open)
@@ -116,7 +116,7 @@ func _set_color(value: Color) -> void:
 	color = value
 	
 	if is_instance_valid(_header):
-		(_header.get_stylebox('panel') as StyleBoxFlat).bg_color = value
+		(_header.get_theme_stylebox('panel') as StyleBoxFlat).bg_color = value
 
 
 func _set_title(value: String) -> void:
@@ -124,7 +124,7 @@ func _set_title(value: String) -> void:
 	
 	if is_instance_valid(_lbl_title):
 		_lbl_title.text = value
-		property_list_changed_notify()
+		notify_property_list_changed()
 
 
 func _set_is_open(value: bool) -> void:
@@ -133,12 +133,12 @@ func _set_is_open(value: bool) -> void:
 	_toggled(value)
 
 
-func _set_icon(value: Texture) -> void:
+func _set_icon(value: Texture2D) -> void:
 	icon = value
 	
 	if is_instance_valid(_icon):
 		_icon.texture = value
-		property_list_changed_notify()
+		notify_property_list_changed()
 
 
 func _update_child_count() -> void:

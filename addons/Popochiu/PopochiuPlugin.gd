@@ -1,4 +1,4 @@
-tool
+@tool
 extends EditorPlugin
 # Plugin setup.
 # Some icons that might be useful:
@@ -9,7 +9,7 @@ var main_dock: Panel
 
 var _editor_interface := get_editor_interface()
 var _editor_file_system := _editor_interface.get_resource_filesystem()
-var _directory := Directory.new()
+var _directory := DirAccess.new()
 var _is_first_install := false
 var _input_actions :=\
 preload('res://addons/Popochiu/Engine/Others/InputActions.gd')
@@ -22,13 +22,13 @@ var _btn_baseline := Button.new()
 var _btn_walk_to := Button.new()
 var _types_helper: Resource = null
 var _tool_btn_stylebox :=\
-_editor_interface.get_base_control().get_stylebox("normal", "ToolButton")
+_editor_interface.get_base_control().get_theme_stylebox("normal", "Button")
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
-func _init() -> void:
+func _init():
 	# Thanks Dialogic ;)
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		_is_first_install = PopochiuResources.init_file_structure()
 	
 	# Load Popochiu singletons
@@ -62,7 +62,7 @@ func _enter_tree() -> void:
 	_inspector_plugin.ei = _editor_interface
 	add_inspector_plugin(_inspector_plugin)
 	
-	main_dock = load(PopochiuResources.MAIN_DOCK_PATH).instance()
+	main_dock = load(PopochiuResources.MAIN_DOCK_PATH).instantiate()
 	main_dock.ei = _editor_interface
 	main_dock.fs = _editor_file_system
 	main_dock.focus_mode = Control.FOCUS_ALL
@@ -71,38 +71,30 @@ func _enter_tree() -> void:
 	
 	_create_container_buttons()
 	
-	yield(get_tree().create_timer(0.5), 'timeout')
+	await get_tree().create_timer(0.5).timeout
 	
 	# Fill the dock with Rooms, Characters, Inventory items, Dialogs and Audio cues
 	main_dock.fill_data()
 	main_dock.grab_focus()
 	
 	# ==== Connect to signals ==================================================
-	_editor_interface.get_selection().connect(
-		'selection_changed', self, '_check_nodes'
-	)
-	_editor_interface.get_file_system_dock().connect(
-		'file_removed', self, '_on_file_removed'
-	)
-	_editor_interface.get_file_system_dock().connect(
-		'files_moved', self, '_on_files_moved'
-	)
+	_editor_interface.get_selection().selection_changed.connect(_check_nodes)
+	_editor_interface.get_file_system_dock().file_removed.connect(_on_file_removed)
+	_editor_interface.get_file_system_dock().files_moved.connect(_on_files_moved)
 	# TODO: This connection might be needed only by TabAudio.gd, so probably
 	# would be better if it is done there
-	_editor_file_system.connect('sources_changed', self, '_on_sources_changed')
+	_editor_file_system.connect('sources_changed',Callable(self,'_on_sources_changed'))
 	
-	connect('scene_changed', main_dock, 'scene_changed')
-	connect('scene_closed', main_dock, 'scene_closed')
+	connect('scene_changed',Callable(main_dock,'scene_changed'))
+	connect('scene_closed',Callable(main_dock,'scene_closed'))
 	# ================================================== Connect to signals ====
 	
 	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
 	main_dock.setup_dialog.es = _editor_interface.get_editor_settings()
 	
-	if PopochiuResources.get_section('setup').empty():
+	if PopochiuResources.get_section('setup').is_empty():
 		main_dock.setup_dialog.appear(true)
-		(main_dock.setup_dialog as AcceptDialog).connect(
-			'popup_hide', self, '_move_addon_folders'
-		)
+		(main_dock.setup_dialog as AcceptDialog).confirmed.connect(_move_addon_folders)
 
 
 func _exit_tree() -> void:
@@ -138,14 +130,14 @@ func enable_plugin() -> void:
 		'Project > Reload Current Project'
 #		var rtl := RichTextLabel.new()
 		
-#		rtl.rect_min_size = Vector2(640.0, 128.0)
-#		rtl.margin_left = 0.0
-#		rtl.margin_top = 0.0
-#		rtl.margin_right = 0.0
-#		rtl.margin_bottom = 0.0
+#		rtl.minimum_size = Vector2(640.0, 128.0)
+#		rtl.offset_left = 0.0
+#		rtl.offset_top = 0.0
+#		rtl.offset_right = 0.0
+#		rtl.offset_bottom = 0.0
 #		rtl.bbcode_enabled = true
 #		rtl.fit_content_height = true
-#		rtl.add_stylebox_override('normal', rtl.get_stylebox("Content", "EditorStyles"))
+#		rtl.add_theme_stylebox_override('normal', rtl.get_theme_stylebox("Content", "EditorStyles"))
 #		rtl.append_bbcode(\
 #		'[es] Reinicia el motor para completar la instalación ([b]Proyecto > Volver a Cargar el Proyecto Actual[/b]).\n' + \
 #		'[en] Restart Godot to complete the instalation ([b]Project > Reload Current Project[/b]).'
@@ -153,15 +145,15 @@ func enable_plugin() -> void:
 #
 #		ad.add_child(rtl)
 #		prints('>>>', rtl.get_font('main', 'EditorFonts'))
-#		rtl.add_font_override('normal_font', rtl.get_font('main', 'EditorFonts'))
-#		rtl.add_font_override('bold_font', rtl.get_font("doc_source", 'EditorFonts'))
+#		rtl.add_theme_font_override('normal_font', rtl.get_font('main', 'EditorFonts'))
+#		rtl.add_theme_font_override('bold_font', rtl.get_font("doc_source", 'EditorFonts'))
 #		ad.set_as_minsize()
 		
 		_editor_interface.get_base_control().add_child(ad)
 		ad.popup_centered()
 
 
-func disable_plugin() -> void:
+func _disable_plugin() -> void:
 	remove_autoload_singleton('Globals')
 	remove_autoload_singleton('U')
 	remove_autoload_singleton('Cursor')
@@ -203,7 +195,7 @@ func _create_input_actions() -> void:
 			)
 
 	var result = ProjectSettings.save()
-	assert(result == OK, '[Popochiu] Failed to save project settings.')
+	assert(result == OK) #,'[Popochiu] Failed to save project settings.')
 
 
 func _remove_input_actions() -> void:
@@ -214,7 +206,7 @@ func _remove_input_actions() -> void:
 			ProjectSettings.clear(setting_name)
 	
 	var result = ProjectSettings.save()
-	assert(result == OK, '[Popochiu] Failed to save project settings.')
+	assert(result == OK) #,'[Popochiu] Failed to save project settings.')
 
 
 func _move_addon_folders() -> void:
@@ -232,8 +224,8 @@ func _move_addon_folders() -> void:
 #	_editor_file_system.scan()
 
 	# Fix dependencies
-#	yield(_editor_file_system, 'filesystem_changed')
-#	yield(_check_popochiu_dependencies(), 'completed')
+#	await _editor_file_system.filesystem_changed
+#	await _check_popochiu_dependencies().completed
 	
 	# Save settings
 #	var settings := PopochiuResources.get_settings()
@@ -253,7 +245,7 @@ func _check_popochiu_dependencies() -> void:
 		)
 	)
 	
-	yield(get_tree().create_timer(0.3), 'timeout')
+	await get_tree().create_timer(0.3).timeout
 	
 	_fix_dependencies(
 		_editor_file_system.get_filesystem_path(
@@ -261,7 +253,7 @@ func _check_popochiu_dependencies() -> void:
 		)
 	)
 	
-	yield(get_tree(), 'idle_frame')
+	await get_tree().idle_frame
 
 
 # Thanks PigDev ;)
@@ -272,7 +264,7 @@ func _fix_dependencies(dir: EditorFileSystemDirectory) -> void:
 	for f in dir.get_file_count():
 		var path = dir.get_file_path(f)
 		var dependencies = ResourceLoader.get_dependencies(path)
-		var file = File.new()
+		var file = FileAccess.new()
 
 		for d in dependencies:
 			if file.file_exists(d):
@@ -286,7 +278,7 @@ func _fix_dependencies(dir: EditorFileSystemDirectory) -> void:
 			var dependencies = ResourceLoader.get_dependencies(path)
 			if dependencies.size() < 1:
 				continue
-			var file = File.new()
+			var file = FileAccess.new()
 			for d in dependencies:
 				if file.file_exists(d):
 					continue
@@ -301,7 +293,7 @@ func _fix_dependency(dependency, directory, resource_path):
 	for f in directory.get_file_count():
 		if not directory.get_file(f) == dependency.get_file():
 			continue
-		var file = File.new()
+		var file = FileAccess.new()
 		file.open(resource_path, file.READ)
 		var text = file.get_as_text()
 		file.close()
@@ -312,7 +304,7 @@ func _fix_dependency(dependency, directory, resource_path):
 
 
 func _on_sources_changed(exist: bool) -> void:
-	if Engine.editor_hint and is_instance_valid(main_dock):
+	if Engine.is_editor_hint() and is_instance_valid(main_dock):
 		main_dock.search_audio_files()
 
 
@@ -372,18 +364,18 @@ func _create_container_buttons() -> void:
 	var hbox := HBoxContainer.new()
 	
 	_btn_baseline.icon = preload('res://addons/Popochiu/icons/baseline.png')
-	_btn_baseline.hint_tooltip = 'Baseline'
+	_btn_baseline.tooltip_text = 'Baseline'
 	_btn_baseline.toggle_mode = true
-	_btn_baseline.add_stylebox_override('normal', _tool_btn_stylebox)
-	_btn_baseline.add_stylebox_override('hover', _tool_btn_stylebox)
-	_btn_baseline.connect('pressed', self, '_select_baseline')
+	_btn_baseline.add_theme_stylebox_override('normal', _tool_btn_stylebox)
+	_btn_baseline.add_theme_stylebox_override('hover', _tool_btn_stylebox)
+	_btn_baseline.connect('pressed',Callable(self,'_select_baseline'))
 	
 	_btn_walk_to.icon = preload('res://addons/Popochiu/icons/walk_to_point.png')
-	_btn_walk_to.hint_tooltip = 'Walk to point'
+	_btn_walk_to.tooltip_text = 'Walk to point'
 	_btn_walk_to.toggle_mode = true
-	_btn_walk_to.add_stylebox_override('normal', _tool_btn_stylebox)
-	_btn_walk_to.add_stylebox_override('hover', _tool_btn_stylebox)
-	_btn_walk_to.connect('pressed', self, '_select_walk_to')
+	_btn_walk_to.add_theme_stylebox_override('normal', _tool_btn_stylebox)
+	_btn_walk_to.add_theme_stylebox_override('hover', _tool_btn_stylebox)
+	_btn_walk_to.connect('pressed',Callable(self,'_select_walk_to'))
 	
 	hbox.add_child(_vsep)
 	hbox.add_child(_btn_baseline)

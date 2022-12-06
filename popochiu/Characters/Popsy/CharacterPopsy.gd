@@ -1,7 +1,7 @@
-tool
+@tool
 extends PopochiuCharacter
 # You can use E.run([]) to trigger a sequence of events.
-# Use yield(E.run([]), 'completed') if you want to pause the excecution of
+# Use await E.run([]).completed if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
 var state: PopochiuCharacterData = preload('CharacterPopsy.tres')
@@ -27,7 +27,7 @@ func on_interact() -> void:
 
 # When the node is right clicked
 func on_look() -> void:
-	# Replace the call to .on_look() to implement your code. This only makes
+	# Replace the call to super.on_look() to implement your code. This only makes
 	# the default behavior to happen.
 	C.player = self
 
@@ -53,7 +53,7 @@ func play_idle() -> void:
 # Use it to play the walk animation for the character
 # target_pos can be used to know the movement direction
 func play_walk(target_pos: Vector2) -> void:
-	.play_walk(target_pos)
+	super.play_walk(target_pos)
 
 
 # Use it to play the talk animation for the character

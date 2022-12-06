@@ -1,4 +1,4 @@
-tool
+@tool
 extends Node
 # (A) To work with audio (music and sound effects).
 # TODO: Create AudioHandle so each AudioCue has its own AudioStreamPlayer...
@@ -22,7 +22,7 @@ var _fading_sounds := {}
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	if Engine.editor_hint: return
+	if Engine.is_editor_hint(): return
 	
 	for arr in ['mx_cues', 'sfx_cues', 'vo_cues', 'ui_cues']:
 		for rp in PopochiuResources.get_data_value('audio', arr, []):
@@ -37,14 +37,14 @@ func play(
 ) -> Node:
 	yield()
 	
-	return yield(_play_sound_cue(cue_name, position_2d, wait_to_end), 'completed')
+	return await _play_sound_cue(cue_name, position_2d, wait_to_end).completed
 
 
 func play_no_block(
 	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
 ) -> Node:
 	if wait_to_end:
-		return yield(_play_sound_cue(cue_name, position_2d, true), 'completed')
+		return await _play_sound_cue(cue_name, position_2d, true).completed
 	else:
 		return _play_sound_cue(cue_name, position_2d)
 
@@ -59,7 +59,7 @@ cue_name: String, fade_duration := 0.0, music_position := 0.0) -> Node:
 		cue_name, fade_duration, music_position
 	)
 	
-	yield(get_tree(), 'idle_frame')
+	await get_tree().idle_frame
 	
 	return stream_player
 
@@ -114,7 +114,7 @@ func stop(cue_name: String, fade_duration := 0.0) -> void:
 	
 	_stop(cue_name, fade_duration)
 	
-	yield(get_tree(), 'idle_frame')
+	await get_tree().idle_frame
 
 
 func stop_no_block(cue_name: String, fade_duration := 0.0) -> void:
@@ -167,14 +167,14 @@ cue_name := '', position_2d := Vector2.ZERO, wait_to_end = null) -> Node:
 		prints('[Popochiu] Sound not found:', cue_name)
 		
 		if wait_to_end != null:
-			yield(get_tree(), 'idle_frame')
+			await get_tree().idle_frame
 		
 		return null
 	
 	if wait_to_end == true and stream_player:
-		yield(stream_player, 'finished')
+		await stream_player.finished
 	elif wait_to_end == false:
-		yield(get_tree(), 'idle_frame')
+		await get_tree().idle_frame
 	
 	return stream_player
 
@@ -231,14 +231,14 @@ func _play_fade_cue(
 		prints('[Popochiu] Sound for fade not found:', cue_name)
 		
 		if wait_to_end != null:
-			yield(get_tree(), 'idle_frame')
+			await get_tree().idle_frame
 		
 		return null
 	
 	if wait_to_end == true and stream_player:
-		yield(stream_player, 'finished')
+		await stream_player.finished
 	elif wait_to_end == false:
-		yield(get_tree(), 'idle_frame')
+		await get_tree().idle_frame
 	
 	return stream_player
 
@@ -275,7 +275,7 @@ func _play(cue: AudioCue, position := Vector2.ZERO, from_position := 0.0) -> Nod
 	
 	player.bus = cue.bus
 	player.play(from_position)
-	player.connect('finished', self, '_make_available', [player, cue_name, 0])
+	player.connect('finished',Callable(self,'_make_available').bind(player, cue_name, 0))
 	
 	if _active.has(cue_name):
 		_active[cue_name].players.append(player)
@@ -303,17 +303,17 @@ func _make_available(stream_player: Node, cue_name: String, _debug_idx: int) -> 
 	var players: Array = _active[cue_name].players
 	for idx in players.size():
 		if players[idx].get_instance_id() == stream_player.get_instance_id():
-			players.remove(idx)
+			players.remove_at(idx)
 			break
 	
-	if players.empty():
+	if players.is_empty():
 		_active.erase(cue_name)
 	
-	stream_player.disconnect('finished', self, '_make_available')
+	stream_player.disconnect('finished',Callable(self,'_make_available'))
 
 
 func _reparent(source: Node, target: Node, child_idx: int) -> Node:
-	if source.get_children().empty(): return null
+	if source.get_children().is_empty(): return null
 	
 	var node_to_reparent: Node = source.get_child(child_idx)
 	
@@ -363,8 +363,8 @@ func _fade_sound(cue_name: String, duration = 1, from = 0, to = 0) -> void:
 	if from > to :
 		_fading_sounds[stream_player.stream.get_instance_id()] = stream_player
 		
-		if not $Tween.is_connected('tween_completed', self, '_fadeout_finished'):
-			$Tween.connect('tween_completed', self, '_fadeout_finished')
+		if not $Tween.is_connected('finished',Callable(self,'_fadeout_finished')):
+			$Tween.connect('finished',Callable(self,'_fadeout_finished'))
 
 
 func _fadeout_finished(obj: Node, _key: NodePath) -> void:
@@ -372,8 +372,8 @@ func _fadeout_finished(obj: Node, _key: NodePath) -> void:
 		_fading_sounds.erase(obj.stream.get_instance_id())
 		obj.stop()
 		
-		if _fading_sounds.empty():
-			$Tween.disconnect('tween_completed', self, '_fadeout_finished')
+		if _fading_sounds.is_empty():
+			$Tween.disconnect('finished',Callable(self,'_fadeout_finished'))
 
 
 func _stop(cue_name: String, fade_duration := 0.0) -> void:

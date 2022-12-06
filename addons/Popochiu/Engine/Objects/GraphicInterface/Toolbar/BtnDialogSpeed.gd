@@ -1,7 +1,7 @@
 extends 'ToolbarButton.gd'
 
-export(Array, Texture) var btn_states := []
-export var states_descriptions := ['normal', 'rápido', 'inmediato']
+@export var btn_states := [] # (Array, Texture2D)
+@export var states_descriptions := ['normal', 'rápido', 'inmediato']
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░

@@ -1,4 +1,4 @@
-tool
+@tool
 extends PopochiuRoom
 
 var state: PopochiuRoomData = null
@@ -18,7 +18,7 @@ func on_room_entered() -> void:
 # What happens when the room changing transition finishes. At this point the room
 # is visible.
 func on_room_transition_finished() -> void:
-	# You can use yield(E.run([]), 'completed') to excecute a queue of instructions
+	# You can use await E.run([]).completed to excecute a queue of instructions
 	pass
 
 

@@ -2,11 +2,11 @@
 
 [ext_resource path="res://addons/Popochiu/Editor/MainDock/TabRoom.gd" type="Script" id=1]
 [ext_resource path="res://addons/Popochiu/Editor/MainDock/PopochiuGroup/PopochiuGroup.tscn" type="PackedScene" id=2]
-[ext_resource path="res://addons/Popochiu/icons/region.png" type="Texture" id=3]
-[ext_resource path="res://addons/Popochiu/icons/point.png" type="Texture" id=4]
-[ext_resource path="res://addons/Popochiu/icons/hotspot.png" type="Texture" id=5]
-[ext_resource path="res://addons/Popochiu/icons/prop.png" type="Texture" id=6]
-[ext_resource path="res://addons/Popochiu/icons/walkable_area.png" type="Texture" id=7]
+[ext_resource path="res://addons/Popochiu/icons/region.png" type="Texture2D" id=3]
+[ext_resource path="res://addons/Popochiu/icons/point.png" type="Texture2D" id=4]
+[ext_resource path="res://addons/Popochiu/icons/hotspot.png" type="Texture2D" id=5]
+[ext_resource path="res://addons/Popochiu/icons/prop.png" type="Texture2D" id=6]
+[ext_resource path="res://addons/Popochiu/icons/walkable_area.png" type="Texture2D" id=7]
 
 [sub_resource type="StyleBoxFlat" id=22]
 content_margin_top = 4.0
@@ -19,7 +19,7 @@ corner_radius_bottom_left = 4
 
 [sub_resource type="Image" id=23]
 data = {
-"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"data": PackedByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
 "format": "LumAlpha8",
 "height": 16,
 "mipmaps": false,
@@ -60,8 +60,8 @@ __meta__ = {
 
 [node name="RoomName" type="Button" parent="."]
 visible = false
-margin_right = 118.0
-margin_bottom = 22.0
+offset_right = 118.0
+offset_bottom = 22.0
 custom_colors/font_color_focus = Color( 1, 1, 1, 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_hover = Color( 1, 1, 1, 1 )
@@ -70,89 +70,89 @@ custom_styles/hover = SubResource( 22 )
 custom_styles/pressed = SubResource( 22 )
 custom_styles/focus = SubResource( 22 )
 custom_styles/normal = SubResource( 22 )
-text = "Room name"
+text = "Node3D name"
 
 [node name="ToolButtons" type="HBoxContainer" parent="."]
 visible = false
-margin_right = 320.0
-margin_bottom = 22.0
+offset_right = 320.0
+offset_bottom = 22.0
 alignment = 1
 
 [node name="BtnScript" type="Button" parent="ToolButtons"]
-margin_left = 122.0
-margin_right = 188.0
-margin_bottom = 22.0
+offset_left = 122.0
+offset_right = 188.0
+offset_bottom = 22.0
 text = "Script"
 icon = SubResource( 12 )
 
 [node name="BtnResource" type="Button" parent="ToolButtons"]
-margin_left = 192.0
-margin_right = 254.0
-margin_bottom = 22.0
+offset_left = 192.0
+offset_right = 254.0
+offset_bottom = 22.0
 text = "State"
 icon = SubResource( 12 )
 
 [node name="BtnResourceScript" type="Button" parent="ToolButtons"]
-margin_left = 258.0
-margin_right = 320.0
-margin_bottom = 22.0
+offset_left = 258.0
+offset_right = 320.0
+offset_bottom = 22.0
 text = "State"
 icon = SubResource( 12 )
 
 [node name="RoomScrollContainer" type="ScrollContainer" parent="."]
-margin_right = 320.0
-margin_bottom = 180.0
+offset_right = 320.0
+offset_bottom = 180.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="RoomScrollContainer"]
-margin_right = 320.0
-margin_bottom = 179.0
+offset_right = 320.0
+offset_bottom = 179.0
 size_flags_horizontal = 3
 
 [node name="NoRoomInfo" type="Label" parent="RoomScrollContainer/VBoxContainer"]
-margin_right = 320.0
-margin_bottom = 39.0
+offset_right = 320.0
+offset_bottom = 39.0
 custom_colors/font_color = Color( 0.768627, 0.423529, 0.443137, 1 )
 custom_styles/normal = SubResource( 5 )
 text = "Open a room in Main tab to see or create Props, Hotspots, Regions and Points."
 autowrap = true
 
 [node name="PropsGroup" parent="RoomScrollContainer/VBoxContainer" instance=ExtResource( 2 )]
-margin_top = 43.0
-margin_bottom = 67.0
+offset_top = 43.0
+offset_bottom = 67.0
 custom_styles/panel = SubResource( 1 )
 icon = ExtResource( 6 )
 title = "Props"
 create_text = "Create prop"
 
 [node name="HotspotsGroup" parent="RoomScrollContainer/VBoxContainer" instance=ExtResource( 2 )]
-margin_top = 71.0
-margin_bottom = 95.0
+offset_top = 71.0
+offset_bottom = 95.0
 custom_styles/panel = SubResource( 1 )
 icon = ExtResource( 5 )
 title = "Hotspots"
 create_text = "Create hotspot"
 
 [node name="WalkableAreasGroup" parent="RoomScrollContainer/VBoxContainer" instance=ExtResource( 2 )]
-margin_top = 99.0
-margin_bottom = 123.0
+offset_top = 99.0
+offset_bottom = 123.0
 custom_styles/panel = SubResource( 1 )
 icon = ExtResource( 7 )
 title = "Walkable Areas"
 create_text = "Create walkable area"
 
 [node name="RegionsGroup" parent="RoomScrollContainer/VBoxContainer" instance=ExtResource( 2 )]
-margin_top = 127.0
-margin_bottom = 151.0
+offset_top = 127.0
+offset_bottom = 151.0
 custom_styles/panel = SubResource( 1 )
 icon = ExtResource( 3 )
 title = "Regions"
 create_text = "Create region"
 
 [node name="PointsGroup" parent="RoomScrollContainer/VBoxContainer" instance=ExtResource( 2 )]
-margin_top = 155.0
-margin_bottom = 179.0
+offset_top = 155.0
+offset_bottom = 179.0
 custom_styles/panel = SubResource( 1 )
 icon = ExtResource( 4 )
 title = "Points"

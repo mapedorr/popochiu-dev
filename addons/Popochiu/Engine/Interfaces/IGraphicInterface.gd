@@ -25,11 +25,11 @@ func display(msg: String, is_in_queue := true) -> void:
 	if is_in_queue: yield()
 
 	if E.cutscene_skipped:
-		yield(get_tree(), 'idle_frame')
+		await get_tree().idle_frame
 		return
 	
 	emit_signal('show_box_requested', E.get_text(msg))
-	yield(self, 'continue_clicked')
+	await self.continue_clicked
 
 
 # Shows a text at the bottom of the screen. It is used to show players the
@@ -51,7 +51,7 @@ func block() -> void:
 # has ended).
 func done() -> void:
 	is_blocked = false
-	Cursor.unlock()
+	false # Cursor.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	Cursor.set_cursor()
 	emit_signal('freed')
 

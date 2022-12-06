@@ -1,4 +1,4 @@
-tool
+@tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
 # Permite crear un nuevo Hotspot para una habitación.
 
@@ -23,7 +23,7 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: PopochiuDock) -> void:
-	.set_main_dock(node)
+	super.set_main_dock(node)
 
 
 func room_opened(r: Node2D) -> void:
@@ -59,7 +59,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Crear el hotspot a agregar a la habitación
-	var hotspot: PopochiuHotspot = ResourceLoader.load(HOTSPOT_SCENE).instance()
+	var hotspot: PopochiuHotspot = ResourceLoader.load(HOTSPOT_SCENE).instantiate()
 	hotspot.set_script(ResourceLoader.load(script_path))
 	hotspot.name = _new_hotspot_name
 	hotspot.script_name = _new_hotspot_name
@@ -79,12 +79,12 @@ func create() -> void:
 	collision.name = 'InteractionPolygon'
 	hotspot.add_child(collision)
 	collision.owner = _room
-	collision.modulate = Color.blue
+	collision.modulate = Color.BLUE
 	
 	_main_dock.ei.save_scene()
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Update the list of Hotspots in the Room tab
+	# Update the list of Hotspots in the Node3D tab
 	room_tab.add_to_list(
 		Constants.Types.HOTSPOT,
 		_new_hotspot_name,
@@ -93,7 +93,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Abrir las propiedades del hotspot creado en el Inspector
-	yield(get_tree().create_timer(0.1), 'timeout')
+	await get_tree().create_timer(0.1).timeout
 	_main_dock.ei.edit_node(hotspot)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -102,14 +102,14 @@ func create() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	._update_name(new_text)
+	super._update_name(new_text)
 
 	if _name:
 		_new_hotspot_name = _name
 		_new_hotspot_path = _hotspot_path_template %\
 		[_new_hotspot_name, _new_hotspot_name]
 
-		_info.bbcode_text = (
+		_info.text = (
 			'In [b]%s[/b] the following file will be created: [code]%s[/code]' \
 			% [
 				_new_hotspot_path.get_base_dir(),
@@ -121,7 +121,7 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	._clear_fields()
+	super._clear_fields()
 	
 	_new_hotspot_name = ''
 	_new_hotspot_path = ''

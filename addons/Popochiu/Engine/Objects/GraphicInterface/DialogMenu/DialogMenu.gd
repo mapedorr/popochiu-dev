@@ -8,26 +8,26 @@ signal hidden
 const PopochiuDialogOption :=\
 preload('res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialogOption.gd')
 
-export var option_scene: PackedScene
-export var default: Color = Color('5B6EE1')
-export var used: Color = Color('3F3F74')
-export var hover: Color = Color.white
+@export var option_scene: PackedScene
+@export var default: Color = Color('5B6EE1')
+@export var used: Color = Color('3F3F74')
+@export var hover: Color = Color.WHITE
 
 var current_options := []
 
 
-onready var _panel: Container = find_node('Panel')
-onready var _options: Container = find_node('Options')
+@onready var _panel: Container = find_child('Panel')
+@onready var _options: Container = find_child('Options')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	connect('gui_input', self, '_clicked')
+	connect('gui_input',Callable(self,'_clicked'))
 	
 	# Conectarse a eventos de los evnetruchos
-	D.connect('dialog_options_requested', self, '_create_options', [true])
-	D.connect('inline_dialog_requested', self, '_create_inline_options')
-	D.connect('dialog_finished', self, 'remove_options')
+	D.connect('dialog_options_requested',Callable(self,'_create_options').bind(true))
+	D.connect('inline_dialog_requested',Callable(self,'_create_inline_options'))
+	D.connect('dialog_finished',Callable(self,'remove_options'))
 
 	hide()
 
@@ -35,7 +35,7 @@ func _ready() -> void:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _clicked(event: InputEvent) -> void:
 	var mouse_event: = event as InputEventMouseButton
-	if mouse_event and mouse_event.button_index == BUTTON_LEFT \
+	if mouse_event and mouse_event.button_index == MOUSE_BUTTON_LEFT \
 		and mouse_event.pressed:
 			pass
 
@@ -59,25 +59,25 @@ func _create_inline_options(opts: Array) -> void:
 func _create_options(options := [], autoshow := false) -> void:
 	remove_options()
 
-	if options.empty():
-		if not current_options.empty():
+	if options.is_empty():
+		if not current_options.is_empty():
 			show_options()
 		return
 
 	current_options = options.duplicate(true)
 
 	for opt in options:
-		var btn: Button = option_scene.instance() as Button
+		var btn: Button = option_scene.instantiate() as Button
 		var dialog_option: PopochiuDialogOption = opt
 
 		btn.text = dialog_option.text
-		btn.add_color_override('font_color', default)
-		btn.add_color_override('font_color_hover', hover)
+		btn.add_theme_color_override('font_color', default)
+		btn.add_theme_color_override('font_color_hover', hover)
 		
 		if dialog_option.used and not dialog_option.always_on:
-			btn.add_color_override('font_color', used)
+			btn.add_theme_color_override('font_color', used)
 
-		btn.connect('pressed', self, '_on_option_clicked', [dialog_option])
+		btn.connect('pressed',Callable(self,'_on_option_clicked').bind(dialog_option))
 
 		_options.add_child(btn)
 
@@ -88,13 +88,13 @@ func _create_options(options := [], autoshow := false) -> void:
 
 	if autoshow: show_options()
 	
-	yield(get_tree(), 'idle_frame')
+	await get_tree().idle_frame
 
-	_panel.rect_min_size.y = _options.rect_size.y
+	_panel.minimum_size.y = _options.size.y
 
 
 func remove_options() -> void:
-	if not current_options.empty():
+	if not current_options.is_empty():
 		current_options.clear()
 
 		for btn in _options.get_children():
@@ -102,10 +102,10 @@ func remove_options() -> void:
 			_options.remove_child(btn as Button)
 #		hide()
 	
-	yield(get_tree(), 'idle_frame')
+	await get_tree().idle_frame
 
-	_panel.rect_size.y = 0
-	_options.rect_size.y = 0
+	_panel.size.y = 0
+	_options.size.y = 0
 
 
 func show_options() -> void:

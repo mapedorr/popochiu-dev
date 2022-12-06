@@ -1,4 +1,4 @@
-tool
+@tool
 extends VBoxContainer
 # Handles the Audio tab in Popochiu's dock
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -6,7 +6,7 @@ extends VBoxContainer
 const SEARCH_PATH := 'res://popochiu/'
 const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd')
 
-var main_dock: Panel setget _set_main_dock
+var main_dock: Panel : set = _set_main_dock
 var last_played: Control = null
 var last_selected: Control = null
 
@@ -19,33 +19,33 @@ var _audio_files_to_assign := []
 var _audio_cues_to_create := []
 var _created_audio_cues := 0
 
-onready var _unassigned_group: PopochiuGroup = find_node('UnassignedGroup')
-onready var _groups := {
+@onready var _unassigned_group: PopochiuGroup = find_child('UnassignedGroup')
+@onready var _groups := {
 	mx = {
 		array = 'mx_cues',
-		group = find_node('MusicGroup')
+		group = find_child('MusicGroup')
 	},
 	sfx = {
 		array = 'sfx_cues',
-		group = find_node('SFXGroup')
+		group = find_child('SFXGroup')
 	},
 	vo = {
 		array = 'vo_cues',
-		group = find_node('VoiceGroup')
+		group = find_child('VoiceGroup')
 	},
 	ui = {
 		array = 'ui_cues',
-		group = find_node('UIGroup')
+		group = find_child('UIGroup')
 	}
 }
-onready var _asp: AudioStreamPlayer = find_node('AudioStreamPlayer')
-onready var _btn_search_files: Button = find_node('BtnSearchAudioFiles')
+@onready var _asp: AudioStreamPlayer = find_child('AudioStreamPlayer')
+@onready var _btn_search_files: Button = find_child('BtnSearchAudioFiles')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	_btn_search_files.icon = get_icon('Search', 'EditorIcons')
-	_btn_search_files.connect('pressed', self, 'search_audio_files')
+	_btn_search_files.connect('pressed',Callable(self,'search_audio_files'))
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -55,25 +55,25 @@ func fill_data() -> void:
 
 
 func search_audio_files() -> void:
-	# Look PopochiuData.cfg to remove entries for AudioCue files that don't
+	# Look PopochiuData.cfg to remove_at entries for AudioCue files that don't
 	# exists in the project anymore
 	_group_audio_cues()
 	_read_directory(main_dock.fs.get_filesystem_path(SEARCH_PATH))
 	
-	if not _audio_cues_to_create.empty():
+	if not _audio_cues_to_create.is_empty():
 		_created_audio_cues = 0
-		var progress: ProgressBar = main_dock.loading_dialog.find_node('Progress')
+		var progress: ProgressBar = main_dock.loading_dialog.find_child('Progress')
 		
 		progress.max_value = _audio_cues_to_create.size()
 		(main_dock.loading_dialog as Popup).set_as_minsize()
 		(main_dock.loading_dialog as Popup).popup_centered()
 		
-		yield(get_tree(), 'idle_frame')
+		await get_tree().idle_frame
 		
 		for arr in _audio_cues_to_create:
-			yield(_create_audio_cue(arr[0], arr[1]), 'completed')
+			await _create_audio_cue(arr[0], arr[1]).completed
 			progress.value = _created_audio_cues
-			yield(get_tree(), 'idle_frame')
+			await get_tree().idle_frame
 		
 		_group_audio_cues()
 		_audio_cues_to_create.clear()
@@ -119,7 +119,7 @@ func _group_audio_cues() -> void:
 		if not group_data: continue
 		
 		for rp in group_data:
-			if not (main_dock.dir as Directory).file_exists(rp):
+			if not (main_dock.dir as DirAccess).file_exists(rp):
 				entries_to_delete[d].append(rp)
 				continue
 			
@@ -136,7 +136,7 @@ func _group_audio_cues() -> void:
 			_audio_files_in_group.append(ac.audio.resource_path)
 	
 	for dic in entries_to_delete:
-		if entries_to_delete[dic].empty(): continue
+		if entries_to_delete[dic].is_empty(): continue
 		
 		var group: String = _groups[dic].array
 		var paths: Array = PopochiuResources.get_data_value('audio', group, [])
@@ -144,26 +144,26 @@ func _group_audio_cues() -> void:
 		for rp in entries_to_delete[dic]:
 			(_groups[dic].group as PopochiuGroup).remove_by_name(
 				rp.get_file().get_basename()\
-				.capitalize().to_lower().replace(' ', '_')
+				super.capitalize().to_lower().replace(' ', '_')
 			)
 			
 			paths.erase(rp)
 		
-		if paths.empty():
+		if paths.is_empty():
 			PopochiuResources.erase_data_value('audio', group)
 		else:
 			PopochiuResources.set_data_value('audio', group, paths)
 
 
 func _create_audio_cue_row(audio_cue: AudioCue) -> HBoxContainer:
-	var ar: HBoxContainer = _audio_row.instance()
+	var ar: HBoxContainer = _audio_row.instantiate()
 	
 	ar.audio_cue = audio_cue
 	ar.main_dock = main_dock
 	ar.audio_tab = self
 	ar.stream_player = _asp
 	
-	ar.connect('deleted', self, '_audio_cue_deleted')
+	ar.connect('deleted',Callable(self,'_audio_cue_deleted'))
 	
 	return ar
 
@@ -216,7 +216,7 @@ func _read_files(dir: EditorFileSystemDirectory) -> void:
 
 
 func _create_audio_file_row(file_path: String) -> void:
-	var ar: HBoxContainer = _audio_row.instance()
+	var ar: HBoxContainer = _audio_row.instantiate()
 	
 	ar.name = file_path.get_file().get_basename()
 	ar.file_name = file_path.get_file()
@@ -225,7 +225,7 @@ func _create_audio_file_row(file_path: String) -> void:
 	ar.audio_tab = self
 	ar.stream_player = _asp
 	
-	ar.connect('target_clicked', self, '_create_audio_cue', [file_path, ar])
+	ar.connect('target_clicked',Callable(self,'_create_audio_cue').bind(file_path, ar))
 	
 	_unassigned_group.add(ar)
 	_audio_files_to_assign.append(file_path)
@@ -249,7 +249,7 @@ type: String, path: String, audio_row: Container = null
 		ac
 	)
 	
-	assert(error == OK, "[Popochiu] Can't save AudioCue: %s" % cue_file_name)
+	assert(error == OK) #,"[Popochiu] Can't save AudioCue: %s" % cue_file_name)
 	
 	var res: AudioCue = load('%s/%s' % [path.get_base_dir(), cue_file_name])
 	var target := ''
@@ -270,15 +270,15 @@ type: String, path: String, audio_row: Container = null
 	
 	if not target_data.has(res.resource_path):
 		target_data.append(res.resource_path)
-		target_data.sort_custom(A, '_sort_resource_paths')
+		target_data.sort_custom(Callable(A,'_sort_resource_paths'))
 		PopochiuResources.set_data_value('audio', target, target_data)
 	else:
-		yield(get_tree(), 'idle_frame')
+		await get_tree().idle_frame
 		return
 	
 	# ...
 #	main_dock.fs.scan()
-	yield(main_dock.fs, 'filesystem_changed')
+	await main_dock.fs.filesystem_changed
 	
 	# Check if the AudioCue was created when assigning the audio file from the
 	# "Not assigned" group
@@ -288,7 +288,7 @@ type: String, path: String, audio_row: Container = null
 		audio_row.queue_free()
 	
 		# Put the row in its corresponding group
-#		yield(get_tree().create_timer(0.1), 'timeout')
+#		await get_tree().create_timer(0.1).timeout
 		_group_audio_cues()
 	else:
 		_created_audio_cues += 1

@@ -9,11 +9,11 @@ var _date := ''
 var _prev_text := ''
 var _slot := 0
 
-onready var _dialog: ConfirmationDialog = $SaveLoadDialog
-onready var _label: Label = find_node('Title')
-onready var _slots: VBoxContainer = find_node('Slots')
-onready var _ok: Button = _dialog.get_ok()
-onready var _cancel: Button = _dialog.get_cancel()
+@onready var _dialog: ConfirmationDialog = $SaveLoadDialog
+@onready var _label: Label = find_child('Title')
+@onready var _slots: VBoxContainer = find_child('Slots')
+@onready var _ok: Button = _dialog.get_ok_button()
+@onready var _cancel: Button = _dialog.get_cancel_button()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -22,8 +22,8 @@ func _ready() -> void:
 	_cancel.text = 'close'
 	_ok.disabled = true
 	
-	_dialog.connect('popup_hide', self, '_close')
-	_ok.connect('pressed', self, '_confirmed')
+	_dialog.connect('popup_hide',Callable(self,'_close'))
+	_ok.connect('pressed',Callable(self,'_confirmed'))
 	
 	var saves: Dictionary = E.get_saves_descriptions()
 	for btn in _slots.get_children():
@@ -35,10 +35,10 @@ func _ready() -> void:
 		else:
 			btn.disabled = true
 		
-		btn.connect('pressed', self, '_select_slot', [btn])
+		btn.connect('pressed',Callable(self,'_select_slot').bind(btn))
 	
-	G.connect('save_requested', self, '_show_save')
-	G.connect('load_requested', self, '_show_load')
+	G.connect('save_requested',Callable(self,'_show_save'))
+	G.connect('load_requested',Callable(self,'_show_load'))
 	
 	hide()
 
@@ -72,14 +72,14 @@ func _show() -> void:
 	
 	if _current_slot:
 		_current_slot.text = _prev_text
-		_current_slot.pressed = false
+		_current_slot.button_pressed = false
 		
 		_current_slot = null
 		_prev_text = ''
 	
 	if E.settings.scale_gui:
-		rect_scale = Vector2.ONE * E.scale
-		_dialog.rect_scale = Vector2.ONE * E.scale
+		scale = Vector2.ONE * E.scale
+		_dialog.scale = Vector2.ONE * E.scale
 	
 	_dialog.popup_centered(Vector2(240.0, 120.0))
 	_cancel.grab_focus()
@@ -93,7 +93,7 @@ func _show() -> void:
 
 func _close() -> void:
 	G.done()
-	Cursor.unlock()
+	false # Cursor.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	
 	hide()
 	
@@ -109,14 +109,14 @@ func _select_slot(btn: Button) -> void:
 	if _date:
 		if _current_slot:
 			_current_slot.text = _prev_text
-			_current_slot.pressed = false
+			_current_slot.button_pressed = false
 		
 		_current_slot = btn
 		_prev_text = _current_slot.text
 		_current_slot.text = _date
 	else:
 		if _current_slot:
-			_current_slot.pressed = false
+			_current_slot.button_pressed = false
 		
 		_current_slot = btn
 		_prev_text = _current_slot.text

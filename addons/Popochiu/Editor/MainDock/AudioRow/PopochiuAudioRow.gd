@@ -1,4 +1,4 @@
-tool
+@tool
 extends HBoxContainer
 
 signal target_clicked(type)
@@ -13,7 +13,7 @@ var file_name: String
 var file_path: String
 var audio_cue: AudioCue
 var cue_group: String
-var main_dock: Panel setget _set_main_dock
+var main_dock: Panel : set = _set_main_dock
 var stream_player: AudioStreamPlayer
 var audio_tab: VBoxContainer = null
 
@@ -21,13 +21,13 @@ var _current := 0.0
 var _confirmation_dialog: ConfirmationDialog
 var _delete_all_checkbox: CheckBox
 
-onready var _label: Label = find_node('Label')
-onready var _dflt_font_color: Color = _label.get_color('font_color')
-onready var _menu_btn: MenuButton = find_node('MenuButton')
-onready var _menu_popup: PopupMenu = _menu_btn.get_popup()
-onready var _play: Button = find_node('Play')
-onready var _stop: Button = find_node('Stop')
-onready var _menu_cfg := [
+@onready var _label: Label = find_child('Label')
+@onready var _dflt_font_color: Color = _label.get_color('font_color')
+@onready var _menu_btn: MenuButton = find_child('MenuButton')
+@onready var _menu_popup: PopupMenu = _menu_btn.get_popup()
+@onready var _play: Button = find_child('Play')
+@onready var _stop: Button = find_child('Stop')
+@onready var _menu_cfg := [
 	{
 		id = MenuOptions.ADD_TO_MUSIC,
 		icon = preload('res://addons/Popochiu/icons/music.png'),
@@ -60,7 +60,7 @@ onready var _menu_cfg := [
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	_label.text = file_name if file_name else name
-	hint_tooltip = file_path if file_name else audio_cue.resource_path
+	tooltip_text = file_path if file_name else audio_cue.resource_path
 	_menu_btn.icon = get_icon('GuiTabMenu', 'EditorIcons')
 	_play.icon = get_icon('MainPlay', 'EditorIcons')
 	_stop.icon = get_icon('Stop', 'EditorIcons')
@@ -68,10 +68,10 @@ func _ready() -> void:
 	# Crear menú contextual
 	_create_menu()
 	
-	connect('gui_input', self, '_open_in_inspector')
-	_menu_popup.connect('id_pressed', self, '_menu_item_pressed')
-	_play.connect('pressed', self, '_play')
-	_stop.connect('pressed', self, '_stop')
+	connect('gui_input',Callable(self,'_open_in_inspector'))
+	_menu_popup.connect('id_pressed',Callable(self,'_menu_item_pressed'))
+	_play.connect('pressed',Callable(self,'_play'))
+	_stop.connect('pressed',Callable(self,'_stop'))
 	
 	if is_instance_valid(audio_cue):
 		_label.text = audio_cue.resource_name
@@ -84,16 +84,16 @@ func _ready() -> void:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func select() -> void:
 	if is_instance_valid(audio_tab.last_selected):
-		audio_tab.last_selected.unselect()
+		audio_tab.last_selected.deselect()
 	
 	main_dock.ei.select_file(audio_cue.resource_path)
 	main_dock.ei.edit_resource(audio_cue)
-	_label.add_color_override('font_color', SELECTED_FONT_COLOR)
+	_label.add_theme_color_override('font_color', SELECTED_FONT_COLOR)
 	audio_tab.last_selected = self
 
 
-func unselect() -> void:
-	_label.add_color_override('font_color', _dflt_font_color)
+func deselect() -> void:
+	_label.add_theme_color_override('font_color', _dflt_font_color)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -114,7 +114,7 @@ func _create_menu() -> void:
 func _open_in_inspector(event: InputEvent) -> void:
 	var mouse_event: = event as InputEventMouseButton
 	if is_instance_valid(audio_cue) and mouse_event\
-	and mouse_event.button_index == BUTTON_LEFT and mouse_event.pressed:
+	and mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 		select()
 
 
@@ -149,11 +149,11 @@ func _play() -> void:
 	
 	if stream_player.is_playing():
 		_current = stream_player.get_playback_position()
-		stream_player.disconnect('finished', self, '_stop')
+		stream_player.disconnect('finished',Callable(self,'_stop'))
 		stream_player.stop()
 		_play.icon = _play.get_icon('MainPlay', 'EditorIcons')
 	else:
-		stream_player.connect('finished', self, '_stop')
+		stream_player.connect('finished',Callable(self,'_stop'))
 		stream_player.play(_current)
 		_play.icon = _play.get_icon('Pause', 'EditorIcons')
 		audio_tab.last_played = self
@@ -163,11 +163,11 @@ func _stop() -> void:
 	_current = 0.0
 	stream_player.stop()
 	stream_player.stream = null
-	_label.add_color_override('font_color', _dflt_font_color)
+	_label.add_theme_color_override('font_color', _dflt_font_color)
 	_play.icon = _play.get_icon('MainPlay', 'EditorIcons')
 	
-	if stream_player.is_connected('finished', self, '_stop'):
-		stream_player.disconnect('finished', self, '_stop')
+	if stream_player.is_connected('finished',Callable(self,'_stop')):
+		stream_player.disconnect('finished',Callable(self,'_stop'))
 	
 	audio_tab.last_played = null
 
@@ -175,12 +175,12 @@ func _stop() -> void:
 # Abre un popup de confirmación para saber si la desarrolladora quiere eliminar
 # el objeto del núcleo del plugin y del sistema.
 func _ask_basic_delete() -> void:
-	_confirmation_dialog.get_cancel().connect('pressed', self, '_disconnect_popup')
+	_confirmation_dialog.get_cancel_button().connect('pressed',Callable(self,'_disconnect_popup'))
 	
 	if is_instance_valid(audio_cue):
 		main_dock.show_confirmation(
 			'Remove %s' % audio_cue.resource_name,
-			'This will remove the [b]%s[/b] resource.'\
+			'This will remove_at the [b]%s[/b] resource.'\
 			% audio_cue.resource_name +\
 			' Calls to this audio in scripts will not work anymore.' +\
 			' This action cannot be reversed. Continue?',
@@ -188,7 +188,7 @@ func _ask_basic_delete() -> void:
 			' (cannot be reversed)'
 		)
 		
-		_confirmation_dialog.connect('confirmed', self, '_remove_in_audio_manager')
+		_confirmation_dialog.connect('confirmed',Callable(self,'_remove_in_audio_manager'))
 	else:
 		main_dock.show_confirmation(
 			'[b]%s[/b] file deletion' % file_name,
@@ -205,7 +205,7 @@ func _ask_basic_delete() -> void:
 
 
 func _remove_in_audio_manager() -> void:
-	_confirmation_dialog.disconnect('confirmed', self, '_remove_in_audio_manager')
+	_confirmation_dialog.disconnect('confirmed',Callable(self,'_remove_in_audio_manager'))
 	
 	# Remove the AudioCue from PopochiuData.cfg --------------------------------
 	var group_data: Array = PopochiuResources.get_data_value(
@@ -214,7 +214,7 @@ func _remove_in_audio_manager() -> void:
 	if group_data:
 		group_data.erase(audio_cue.resource_path)
 		
-		if group_data.empty():
+		if group_data.is_empty():
 			PopochiuResources.erase_data_value('audio', cue_group)
 		else:
 			PopochiuResources.set_data_value('audio', cue_group, group_data)
@@ -230,7 +230,7 @@ func _remove_in_audio_manager() -> void:
 
 func _delete_from_file_system(path: String) -> void:
 	# Delete the AudioCue .tres file from the file system
-	var err: int = main_dock.dir.remove(path)
+	var err: int = main_dock.dir.remove_at(path)
 	main_dock.fs.update_file(path)
 	
 	if err != OK:
@@ -244,15 +244,15 @@ func _delete_from_file_system(path: String) -> void:
 
 # Se desconecta de las señales del popup utilizado para configurar la eliminación.
 func _disconnect_popup() -> void:
-	if _confirmation_dialog.is_connected('confirmed', self, '_remove_in_audio_manager'):
-		_confirmation_dialog.disconnect('confirmed', self, '_remove_in_audio_manager')
+	if _confirmation_dialog.is_connected('confirmed',Callable(self,'_remove_in_audio_manager')):
+		_confirmation_dialog.disconnect('confirmed',Callable(self,'_remove_in_audio_manager'))
 	
-	if _confirmation_dialog.is_connected('confirmed', self, '_delete_from_file_system'):
+	if _confirmation_dialog.is_connected('confirmed',Callable(self,'_delete_from_file_system')):
 		# Se canceló la eliminación de los archivos en disco
-		_confirmation_dialog.disconnect('confirmed', self, '_delete_from_file_system')
+		_confirmation_dialog.disconnect('confirmed',Callable(self,'_delete_from_file_system'))
 
 
 func _set_main_dock(value: Panel) -> void:
 	main_dock = value
 	_confirmation_dialog = main_dock.delete_dialog
-	_delete_all_checkbox = _confirmation_dialog.find_node('CheckBox')
+	_delete_all_checkbox = _confirmation_dialog.find_child('CheckBox')

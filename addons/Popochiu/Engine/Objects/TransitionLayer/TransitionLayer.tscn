@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://addons/Popochiu/Engine/Objects/TransitionLayer/TransitionLayer.gd" type="Script" id=1]
-[ext_resource path="res://addons/Popochiu/Engine/Objects/TransitionLayer/fade.png" type="Texture" id=2]
+[ext_resource path="res://addons/Popochiu/Engine/Objects/TransitionLayer/fade.png" type="Texture2D" id=2]
 
 [sub_resource type="Animation" id=5]
 length = 0.001
@@ -12,8 +12,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 0,
 "values": [ false ]
 }
@@ -24,8 +24,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 0,
 "values": [ false ]
 }
@@ -39,8 +39,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = false
 tracks/0/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/1/type = "bezier"
 tracks/1/path = NodePath("Transitions/Fade:modulate:g")
@@ -49,8 +49,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = false
 tracks/1/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/2/type = "bezier"
 tracks/2/path = NodePath("Transitions/Fade:modulate:b")
@@ -59,8 +59,8 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = false
 tracks/2/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/3/type = "bezier"
 tracks/3/path = NodePath("Transitions/Fade:modulate:a")
@@ -69,8 +69,8 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 0, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/4/type = "value"
 tracks/4/path = NodePath("Transitions/Fade:visible")
@@ -79,8 +79,8 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 1,
 "values": [ true ]
 }
@@ -93,8 +93,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = false
 tracks/0/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/1/type = "bezier"
 tracks/1/path = NodePath("Transitions/Fade:modulate:g")
@@ -103,8 +103,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = false
 tracks/1/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/2/type = "bezier"
 tracks/2/path = NodePath("Transitions/Fade:modulate:b")
@@ -113,8 +113,8 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = false
 tracks/2/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/3/type = "bezier"
 tracks/3/path = NodePath("Transitions/Fade:modulate:a")
@@ -123,8 +123,8 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/4/type = "value"
 tracks/4/path = NodePath("Transitions/Fade:visible")
@@ -133,8 +133,8 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 1,
 "values": [ true ]
 }
@@ -148,8 +148,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"points": PoolRealArray( 160, -0.25, 0, 0.25, 0, 160, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 160, -0.25, 0, 0.25, 0, 160, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/1/type = "bezier"
 tracks/1/path = NodePath("Transitions/Pass:position:y")
@@ -158,8 +158,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"points": PoolRealArray( -90, -0.25, 0, 0.25, 0, 90, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( -90, -0.25, 0, 0.25, 0, 90, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("Transitions/Pass:visible")
@@ -168,8 +168,8 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 1,
 "values": [ true ]
 }
@@ -183,8 +183,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"points": PoolRealArray( 160, -0.25, 0, 0.25, 0, 160, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 160, -0.25, 0, 0.25, 0, 160, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/1/type = "bezier"
 tracks/1/path = NodePath("Transitions/Pass:position:y")
@@ -193,8 +193,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"points": PoolRealArray( 90, -0.25, 0, 0.25, 0, 270, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1 )
+"points": PackedFloat32Array( 90, -0.25, 0, 0.25, 0, 270, -0.25, 0, 0.25, 0 ),
+"times": PackedFloat32Array( 0, 1 )
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("Transitions/Pass:visible")
@@ -203,8 +203,8 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 1,
 "values": [ true ]
 }
@@ -222,14 +222,14 @@ anims/pass_down_out = SubResource( 4 )
 
 [node name="Transitions" type="Node2D" parent="."]
 
-[node name="Fade" type="Sprite" parent="Transitions"]
+[node name="Fade" type="Sprite2D" parent="Transitions"]
 visible = false
 modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 160, 90 )
 scale = Vector2( 10, 10 )
 texture = ExtResource( 2 )
 
-[node name="Pass" type="Sprite" parent="Transitions"]
+[node name="Pass" type="Sprite2D" parent="Transitions"]
 visible = false
 position = Vector2( 160, 90 )
 scale = Vector2( 10, 10 )

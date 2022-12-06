@@ -1,8 +1,8 @@
-tool
+@tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
 # Allows to create a new PopochiuRoom with the files required for its operation
 # within Popochiu and to store its state:
-#   Room???.tsn, Room???.gd, Room???.tres and Room???State.gd
+#   Node3D???.tsn, Node3D???.gd, Node3D???.tres and Node3D???State.gd
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 const ROOM_STATE_TEMPLATE :=\
@@ -10,22 +10,22 @@ const ROOM_STATE_TEMPLATE :=\
 const ROOM_SCRIPT_TEMPLATE :=\
 'res://addons/Popochiu/Engine/Templates/RoomTemplate.gd'
 const BASE_ROOM_PATH :=\
-'res://addons/Popochiu/Engine/Objects/Room/PopochiuRoom.tscn'
+'res://addons/Popochiu/Engine/Objects/Node3D/PopochiuRoom.tscn'
 const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
 
-var show_set_as_main := false setget _set_show_set_as_main
+var show_set_as_main := false : set = _set_show_set_as_main
 
 var _new_room_name := ''
 var _new_room_path := ''
 var _room_path_template := ''
 
-onready var _set_as_main: PanelContainer = find_node('SetAsMainContainer')
-onready var _set_as_main_check: CheckBox = _set_as_main.find_node('CheckBox')
+@onready var _set_as_main: PanelContainer = find_child('SetAsMainContainer')
+@onready var _set_as_main_check: CheckBox = _set_as_main.find_child('CheckBox')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	connect('about_to_show', self, '_check_if_first_room')
+	connect('about_to_popup',Callable(self,'_check_if_first_room'))
 	
 	_clear_fields()
 	_set_as_main.hide()
@@ -33,10 +33,10 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: PopochiuDock) -> void:
-	.set_main_dock(node)
+	super.set_main_dock(node)
 	
 	# res://popochiu/Rooms
-	_room_path_template = _main_dock.ROOMS_PATH + '%s/Room%s'
+	_room_path_template = _main_dock.ROOMS_PATH + '%s/Node3D%s'
 
 
 func create() -> void:
@@ -85,18 +85,18 @@ func create() -> void:
 	var room_script: Script = load(_new_room_path + '.gd')
 	room_script.source_code = room_script.source_code.replace(
 		'PopochiuRoomData = null',
-		"PopochiuRoomData = preload('Room%s.tres')" % _new_room_name
+		"PopochiuRoomData = preload('Node3D%s.tres')" % _new_room_name
 	)
 	ResourceSaver.save(_new_room_path + '.gd', room_script)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the room instance
-	var new_room: PopochiuRoom = preload(BASE_ROOM_PATH).instance()
+	var new_room: PopochiuRoom = preload(BASE_ROOM_PATH).instantiate()
 	# 	The script is assigned first so that other properties will not be
 	# 	overwritten by that assignment.
 	new_room.set_script(load(_new_room_path + '.gd'))
 	new_room.script_name = _new_room_name
-	new_room.name = 'Room' + _new_room_name
+	new_room.name = 'Node3D' + _new_room_name
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Save the room scene (.tscn)
@@ -128,7 +128,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Open the scene in the editor
-	yield(get_tree().create_timer(0.1), 'timeout')
+	await get_tree().create_timer(0.1).timeout
 	_main_dock.ei.select_file(_new_room_path + '.tscn')
 	_main_dock.ei.open_scene_from_path(_new_room_path + '.tscn')
 	
@@ -139,19 +139,19 @@ func create() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	._update_name(new_text)
+	super._update_name(new_text)
 
 	if _name:
 		_new_room_name = _name
 		_new_room_path = _room_path_template % [_new_room_name, _new_room_name]
 
-		_info.bbcode_text = (
+		_info.text = (
 			'In [b]%s[/b] the following files will be created:\n[code]%s, %s and %s[/code]' \
 			% [
 				_main_dock.ROOMS_PATH + _new_room_name,
-				'Room' + _new_room_name + '.tscn',
-				'Room' + _new_room_name + '.gd',
-				'Room' + _new_room_name + '.tres'
+				'Node3D' + _new_room_name + '.tscn',
+				'Node3D' + _new_room_name + '.gd',
+				'Node3D' + _new_room_name + '.tres'
 			]
 		)
 	else:
@@ -159,18 +159,18 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	._clear_fields()
+	super._clear_fields()
 	
 	_new_room_name = ''
 	_new_room_path = ''
-	_set_as_main_check.pressed = false
+	_set_as_main_check.button_pressed = false
 
 
 func _check_if_first_room() -> void:
 	# Mostrar una casilla de verificación para establecer la habitación a crear
 	# como la escene principal del proyecto si se trata de la primera.
-#	self.show_set_as_main = _main_dock.popochiu.rooms.empty()
-	self.show_set_as_main = PopochiuResources.get_section('rooms').empty()
+#	self.show_set_as_main = _main_dock.popochiu.rooms.is_empty()
+	self.show_set_as_main = PopochiuResources.get_section('rooms').is_empty()
 
 
 func _set_show_set_as_main(value: bool) -> void:

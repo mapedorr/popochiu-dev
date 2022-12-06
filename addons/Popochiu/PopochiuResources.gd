@@ -6,7 +6,7 @@ enum Types {
 	CHARACTER,
 	INVENTORY_ITEM,
 	DIALOG,
-	# Room's object types
+	# Node3D's object types
 	PROP,
 	HOTSPOT,
 	REGION,
@@ -80,7 +80,7 @@ const IMPORTER_TEXTURE := 'importer_defaults/texture'
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 # Verify if the folders (where Popochiu's objects will be) exists
 static func init_file_structure() -> bool:
-	var directory := Directory.new()
+	var directory := DirAccess.new()
 	var is_first_install := !directory.dir_exists(BASE_DIR)
 	
 	# Create the folders that does not exist
@@ -96,13 +96,13 @@ static func init_file_structure() -> bool:
 	
 	# Create settings file
 	if not directory.file_exists(SETTINGS):
-		if ResourceSaver.save(SETTINGS, SETTINGS_CLASS.new()) != OK:
+		if ResourceSaver.save(SETTINGS_CLASS.new(), SETTINGS) != OK:
 			prints('[Popochiu] Error %s creating PopochiuSettings.tres')
 	
 	# Create Globals file
 	if not directory.file_exists(GLOBALS_SNGL):
-		var file = File.new()
-		file.open(GLOBALS_SNGL, File.WRITE)
+		var file = FileAccess.new()
+		file.open(GLOBALS_SNGL, FileAccess.WRITE)
 		file.store_string('extends Node')
 		file.close()
 	
@@ -169,7 +169,7 @@ static func get_settings() -> PopochiuSettings:
 
 
 static func save_settings(new_settings: PopochiuSettings) -> bool:
-	var result := ResourceSaver.save(SETTINGS, new_settings)
+	var result := ResourceSaver.save(new_settings, SETTINGS)
 	
 	if result != OK:
 		push_error('[Popochiu] Error %d when updating settings.' % result)
@@ -196,8 +196,8 @@ static func get_version() -> String:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 static func _create_empty_file(path):
-	var file = File.new()
-	file.open(path, File.WRITE)
+	var file = FileAccess.new()
+	file.open(path, FileAccess.WRITE)
 	file.store_string('')
 	file.close()
 

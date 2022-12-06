@@ -1,18 +1,18 @@
-tool
+@tool
 extends EditorScript
 
 
 func _run():
 	var interface = get_editor_interface()
 	var filesys = interface.get_resource_filesystem()
-	var dir = filesys.get_filesystem_path(get_editor_interface().get_selected_path())
+	var dir = filesys.get_filesystem_path(get_editor_interface().get_current_directory())
 	
 	var res = filesys.get_filesystem()
 
 	for f in dir.get_file_count():
 		var path = dir.get_file_path(f)
 		var dependencies = ResourceLoader.get_dependencies(path)
-		var file = File.new()
+		var file = FileAccess.new()
 
 		for d in dependencies:
 			if file.file_exists(d):
@@ -26,7 +26,7 @@ func _run():
 			var dependencies = ResourceLoader.get_dependencies(path)
 			if dependencies.size() < 1:
 				continue
-			var file = File.new()
+			var file = FileAccess.new()
 			for d in dependencies:
 				if file.file_exists(d):
 					continue
@@ -41,7 +41,7 @@ func fix_dependency(dependency, directory, resource_path):
 	for f in directory.get_file_count():
 		if not directory.get_file(f) == dependency.get_file():
 			continue
-		var file = File.new()
+		var file = FileAccess.new()
 		file.open(resource_path, file.READ)
 		var text = file.get_as_text()
 		file.close()

@@ -1,16 +1,17 @@
-tool
-class_name PopochiuRegion, 'res://addons/Popochiu/icons/region.png'
+@tool
+class_name PopochiuRegion
 extends Area2D
-# Can trigger events when the player walks on them. Can tint the PC.
+@icon('res://addons/Popochiu/icons/region.png')
+# Can trigger events when the player walks checked them. Can tint the PC.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-export var script_name := ''
-export var description := ''
-export var enabled := true setget _set_enabled
+@export var script_name := ''
+@export var description := ''
+@export var enabled := true : set = _set_enabled
 # TODO: If walkable is false, characters should not be able to walk through this.
 #export var walkable := true
-export var tint := Color.white
-# TODO: Make the scale of the character change depending on where it is placed in
+@export var tint := Color.WHITE
+# TODO: Make the scale of the character change depending checked where it is placed in
 # the area.
 #export var scale_top := 1.0
 #export var scale_bottom := 1.0
@@ -19,8 +20,8 @@ export var tint := Color.white
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	add_to_group('regions')
-	connect('area_entered', self, '_check_area', [true])
-	connect('area_exited', self, '_check_area', [false])
+	connect('area_entered',Callable(self,'_check_area').bind(true))
+	connect('area_exited',Callable(self,'_check_area').bind(false))
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -43,4 +44,4 @@ func _set_enabled(value: bool) -> void:
 	enabled = value
 	monitoring = value
 	
-	property_list_changed_notify()
+	notify_property_list_changed()

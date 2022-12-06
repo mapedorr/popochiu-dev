@@ -18,8 +18,8 @@ corner_detail = 4
 anti_aliasing = false
 
 [node name="DisplayBox" type="RichTextLabel"]
-margin_right = 24.0
-margin_bottom = 24.0
+offset_right = 24.0
+offset_bottom = 24.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource( 1 )

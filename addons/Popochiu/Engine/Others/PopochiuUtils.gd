@@ -1,4 +1,4 @@
-tool
+@tool
 extends Node
 # Utility functions for Popochiu
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -26,7 +26,7 @@ func get_random_array_idx(arr: Array) -> int:
 
 # https://gist.github.com/me2beats/443b40ba79d5b589a96a16c565952419 ❱❱❱❱❱❱❱❱❱❱❱❱❱❱❱❱
 func snake2camel(string:String)->String:
-	var result = PoolStringArray()
+	var result = PackedStringArray()
 	var prev_is_underscore = false
 	for ch in string:
 		if ch=='_':
@@ -39,7 +39,7 @@ func snake2camel(string:String)->String:
 			prev_is_underscore = false
 
 
-	return result.join('')
+	return ''.join(result)
 
 
 func snake2pascal(string:String)->String:
@@ -49,23 +49,23 @@ func snake2pascal(string:String)->String:
 
 
 func camel2snake(string:String)->String:
-	var result = PoolStringArray()
+	var result = PackedStringArray()
 	for ch in string:
 		if ch == ch.to_lower():
 			result.append(ch)
 		else:
 			result.append('_'+ch.to_lower())
 
-	return result.join('')
+	return ''.join(result)
 
 
 func pascal2snake(string:String)->String:
-	var result = PoolStringArray()
+	var result = PackedStringArray()
 	for ch in string:
 		if ch == ch.to_lower():
 			result.append(ch)
 		else:
 			result.append('_'+ch.to_lower())
 	result[0] = result[0][1]
-	return result.join('')
+	return ''.join(result)
 # ❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰

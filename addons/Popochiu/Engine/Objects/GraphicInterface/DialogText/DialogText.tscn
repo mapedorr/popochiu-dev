@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Resources/DynamicFonts/MonkeyIsland-outline-16.tres" type="DynamicFont" id=1]
+[ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Resources/DynamicFonts/MonkeyIsland-outline-16.tres" type="FontFile" id=1]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogText/DialogText.gd" type="Script" id=2]
-[ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogText/dialog_continue.png" type="Texture" id=3]
+[ext_resource path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogText/dialog_continue.png" type="Texture2D" id=3]
 
 [sub_resource type="StyleBoxFlat" id=1]
 content_margin_left = 0.0
@@ -13,10 +13,10 @@ bg_color = Color( 0.768627, 0.423529, 0.443137, 1 )
 draw_center = false
 
 [node name="DialogText" type="RichTextLabel"]
-margin_right = 16.0
-margin_bottom = 16.0
+offset_right = 16.0
+offset_bottom = 16.0
 grow_horizontal = 2
-rect_clip_content = false
+clip_contents = false
 mouse_filter = 2
 size_flags_horizontal = 3
 custom_fonts/normal_font = ExtResource( 1 )
@@ -29,12 +29,12 @@ script = ExtResource( 2 )
 
 [node name="Tween" type="Tween" parent="."]
 
-[node name="ContinueIcon" type="TextureProgress" parent="."]
+[node name="ContinueIcon" type="TextureProgressBar" parent="."]
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -16.0
+offset_left = -16.0
 value = 100.0
 texture_progress = ExtResource( 3 )
 fill_mode = 2

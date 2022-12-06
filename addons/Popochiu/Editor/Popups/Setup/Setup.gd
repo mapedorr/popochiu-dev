@@ -1,4 +1,4 @@
-tool
+@tool
 extends AcceptDialog
 
 const ImporterDefaults :=\
@@ -11,24 +11,24 @@ const SCALE_MESSAGE :=\
 
 var es: EditorSettings = null
 
-onready var _welcome: RichTextLabel = find_node('Welcome')
-onready var _welcome_separator: HSeparator = find_node('WelcomeSeparator')
-onready var _game_width: SpinBox = find_node('GameWidth')
-onready var _scale_msg: RichTextLabel = find_node('ScaleMessage')
-onready var _game_height: SpinBox = find_node('GameHeight')
-onready var _test_width: SpinBox = find_node('TestWidth')
-onready var _test_height: SpinBox = find_node('TestHeight')
-onready var _game_type: OptionButton = find_node('GameType')
-onready var _btn_update_imports: Button = find_node('BtnUpdateFiles')
+@onready var _welcome: RichTextLabel = find_child('Welcome')
+@onready var _welcome_separator: HSeparator = find_child('WelcomeSeparator')
+@onready var _game_width: SpinBox = find_child('GameWidth')
+@onready var _scale_msg: RichTextLabel = find_child('ScaleMessage')
+@onready var _game_height: SpinBox = find_child('GameHeight')
+@onready var _test_width: SpinBox = find_child('TestWidth')
+@onready var _test_height: SpinBox = find_child('TestHeight')
+@onready var _game_type: OptionButton = find_child('GameType')
+@onready var _btn_update_imports: Button = find_child('BtnUpdateFiles')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	# Connect to signals
-	connect('popup_hide', self, '_update_project_settings')
-	_game_width.connect('value_changed', self, '_update_scale')
-	_game_height.connect('value_changed', self, '_update_scale')
-	_btn_update_imports.connect('pressed', self, '_update_imports')
+	connect('popup_hide',Callable(self,'_update_project_settings'))
+	_game_width.connect('value_changed',Callable(self,'_update_scale'))
+	_game_height.connect('value_changed',Callable(self,'_update_scale'))
+	_btn_update_imports.connect('pressed',Callable(self,'_update_imports'))
 	
 	# Set default state
 	_btn_update_imports.hide()
@@ -38,12 +38,12 @@ func _ready() -> void:
 func appear(show_welcome := false) -> void:
 	_welcome.hide()
 	_welcome_separator.hide()
-	_welcome.add_font_override('bold_font', get_font('bold', 'EditorFonts'))
-	_scale_msg.add_font_override('normal_font', get_font('main', 'EditorFonts'))
-	_scale_msg.add_font_override('bold_font', get_font('bold', 'EditorFonts'))
-	_scale_msg.add_font_override('mono_font', get_font('doc_source', 'EditorFonts'))
+	_welcome.add_theme_font_override('bold_font', get_font('bold', 'EditorFonts'))
+	_scale_msg.add_theme_font_override('normal_font', get_font('main', 'EditorFonts'))
+	_scale_msg.add_theme_font_override('bold_font', get_font('bold', 'EditorFonts'))
+	_scale_msg.add_theme_font_override('mono_font', get_font('doc_source', 'EditorFonts'))
 	_scale_msg.modulate = Color(\
-	'#000' if es.get_setting('interface/theme/preset').find('Light') > -1\
+	'#000' if es.get_setting('interface/theme/preset').find('Light3D') > -1\
 	else '#fff')
 	_scale_msg.modulate.a = 0.8
 
@@ -56,7 +56,7 @@ func appear(show_welcome := false) -> void:
 	_game_height.value = ProjectSettings.get_setting(PopochiuResources.DISPLAY_HEIGHT)
 	_test_width.value = ProjectSettings.get_setting(PopochiuResources.TEST_WIDTH)
 	_test_height.value = ProjectSettings.get_setting(PopochiuResources.TEST_HEIGHT)
-	_scale_msg.bbcode_text = _get_scale_msg()
+	_scale_msg.text = _get_scale_msg()
 	
 	_game_type.selected = 0
 	if ProjectSettings.get_setting(PopochiuResources.STRETCH_MODE) == '2d'\
@@ -69,11 +69,11 @@ func appear(show_welcome := false) -> void:
 			_game_type.selected = 2
 	
 	if show_welcome:
-		# Make Pixel the default game type on first run
+		# Make Pixel the default game type checked first run
 		_game_type.selected = 2
 	
-	popup_centered_minsize(Vector2(480.0, 180.0))
-	get_ok().text = 'Close'
+	popup_centered_clamped(Vector2(480.0, 180.0))
+	get_ok_button().text = 'Close'
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -108,7 +108,7 @@ func _update_project_settings() -> void:
 
 
 func _update_scale(_value: float) -> void:
-	_scale_msg.bbcode_text = _get_scale_msg()
+	_scale_msg.text = _get_scale_msg()
 
 
 func _get_scale_msg() -> String:
@@ -117,7 +117,7 @@ func _get_scale_msg() -> String:
 	return SCALE_MESSAGE % [
 		scale.x, scale.y,
 		'res://addons/Popochiu/Editor/Popups/Setup/godot_tools_%s.png' %\
-		('light' if es.get_setting('interface/theme/preset').find('Light') > -1\
+		('light' if es.get_setting('interface/theme/preset').find('Light3D') > -1\
 		else 'dark'),
 	]
 

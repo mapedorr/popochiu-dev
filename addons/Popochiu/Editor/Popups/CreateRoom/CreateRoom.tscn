@@ -1,11 +1,11 @@
 [gd_scene load_steps=15 format=2]
 
-[ext_resource path="res://addons/Popochiu/Editor/Fonts/NotoSansUI_Regular.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://addons/Popochiu/Editor/Fonts/Hack_Regular.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://addons/Popochiu/Editor/Fonts/NotoSansUI_Bold.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://addons/Popochiu/Editor/Fonts/NotoSansUI_Regular.ttf" type="FontFile" id=1]
+[ext_resource path="res://addons/Popochiu/Editor/Fonts/Hack_Regular.ttf" type="FontFile" id=2]
+[ext_resource path="res://addons/Popochiu/Editor/Fonts/NotoSansUI_Bold.ttf" type="FontFile" id=3]
 [ext_resource path="res://addons/Popochiu/Editor/Popups/CreateRoom/CreateRoom.gd" type="Script" id=4]
-[ext_resource path="res://addons/Popochiu/Editor/Resources/DynamicFonts/NotoSansUIRegular.tres" type="DynamicFont" id=5]
-[ext_resource path="res://addons/Popochiu/Editor/Resources/DynamicFonts/NotoSansUIBold.tres" type="DynamicFont" id=6]
+[ext_resource path="res://addons/Popochiu/Editor/Resources/DynamicFonts/NotoSansUIRegular.tres" type="FontFile" id=5]
+[ext_resource path="res://addons/Popochiu/Editor/Resources/DynamicFonts/NotoSansUIBold.tres" type="FontFile" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
 content_margin_left = 4.0
@@ -39,15 +39,15 @@ corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxEmpty" id=8]
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="FontFile" id=3]
 size = 14
 font_data = ExtResource( 2 )
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="FontFile" id=4]
 size = 14
 font_data = ExtResource( 3 )
 
-[sub_resource type="DynamicFont" id=5]
+[sub_resource type="FontFile" id=5]
 size = 14
 font_data = ExtResource( 1 )
 
@@ -59,11 +59,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -160.0
-margin_top = -90.0
-margin_right = 160.0
-margin_bottom = 90.0
-rect_min_size = Vector2( 640, 360 )
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
+minimum_size = Vector2( 640, 360 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
 window_title = "Create room"
@@ -77,28 +77,28 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 8.0
-margin_top = 8.0
-margin_right = -8.0
-margin_bottom = -36.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -36.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="InputContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 624.0
-margin_bottom = 24.0
+offset_right = 624.0
+offset_bottom = 24.0
 
 [node name="Label" type="Label" parent="VBoxContainer/InputContainer"]
-margin_top = 5.0
-margin_right = 104.0
-margin_bottom = 19.0
-text = "Room name"
+offset_top = 5.0
+offset_right = 104.0
+offset_bottom = 19.0
+text = "Node3D name"
 
 [node name="Input" type="LineEdit" parent="VBoxContainer/InputContainer"]
-margin_left = 108.0
-margin_right = 624.0
-margin_bottom = 24.0
+offset_left = 108.0
+offset_right = 624.0
+offset_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 context_menu_enabled = false
@@ -107,61 +107,61 @@ shortcut_keys_enabled = false
 
 [node name="ErrorFeedback" type="Label" parent="VBoxContainer"]
 visible = false
-margin_top = 28.0
-margin_right = 304.0
-margin_bottom = 42.0
+offset_top = 28.0
+offset_right = 304.0
+offset_bottom = 42.0
 custom_colors/font_color = Color( 0.8, 0.258824, 0.258824, 1 )
 text = "A room name is mandatory!"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
-margin_top = 28.0
-margin_right = 624.0
-margin_bottom = 32.0
+offset_top = 28.0
+offset_right = 624.0
+offset_bottom = 32.0
 
 [node name="Guide" type="Label" parent="VBoxContainer"]
 modulate = Color( 1, 1, 1, 0.698039 )
-margin_top = 36.0
-margin_right = 624.0
-margin_bottom = 75.0
+offset_top = 36.0
+offset_right = 624.0
+offset_bottom = 75.0
 custom_styles/normal = SubResource( 1 )
 text = "Use PascalCase. No spaces. i.e. Garage or CasinoInterior."
 autowrap = true
 
 [node name="SetAsMainContainer" type="PanelContainer" parent="VBoxContainer"]
-margin_top = 79.0
-margin_right = 624.0
-margin_bottom = 125.0
+offset_top = 79.0
+offset_right = 624.0
+offset_bottom = 125.0
 custom_styles/panel = SubResource( 6 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/SetAsMainContainer"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 620.0
-margin_bottom = 42.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 620.0
+offset_bottom = 42.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/SetAsMainContainer/HBoxContainer"]
-margin_right = 588.0
-margin_bottom = 38.0
+offset_right = 588.0
+offset_bottom = 38.0
 size_flags_horizontal = 3
 custom_fonts/bold_font = ExtResource( 6 )
 custom_fonts/normal_font = ExtResource( 5 )
 custom_styles/focus = SubResource( 7 )
 custom_styles/normal = SubResource( 8 )
 bbcode_enabled = true
-bbcode_text = "This will be Popochiu's first room. Do you want it to become the main scene of the project? This will modify Settings: [b]application/run/main_scene[/b]."
+text = "This will be Popochiu's first room. Do you want it to become the main scene of the project? This will modify Settings: [b]application/run/main_scene[/b]."
 text = "This will be Popochiu's first room. Do you want it to become the main scene of the project? This will modify Settings: application/run/main_scene."
 fit_content_height = true
 scroll_active = false
 
 [node name="CheckBox" type="CheckBox" parent="VBoxContainer/SetAsMainContainer/HBoxContainer"]
-margin_left = 592.0
-margin_right = 616.0
-margin_bottom = 38.0
+offset_left = 592.0
+offset_right = 616.0
+offset_bottom = 38.0
 
 [node name="Info" type="RichTextLabel" parent="VBoxContainer"]
-margin_top = 129.0
-margin_right = 624.0
-margin_bottom = 316.0
+offset_top = 129.0
+offset_right = 624.0
+offset_bottom = 316.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_fonts/mono_font = SubResource( 3 )

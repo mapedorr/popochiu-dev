@@ -9,27 +9,27 @@ __meta__ = {
 }
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="."]
-polygon = PoolVector2Array( -10, -10, 10, -10, 10, 10, -10, 10 )
+polygon = PackedVector2Array( -10, -10, 10, -10, 10, 10, -10, 10 )
 
 [node name="BaselineHelper" type="Line2D" parent="."]
 visible = false
-points = PoolVector2Array( -10000, 0, 10000, 0 )
+points = PackedVector2Array( -10000, 0, 10000, 0 )
 width = 1.0
 
-[node name="WalkToHelper" type="Position2D" parent="."]
+[node name="WalkToHelper" type="Marker2D" parent="."]
 visible = false
 __meta__ = {
 "_edit_group_": true
 }
 
 [node name="ColorRect" type="ColorRect" parent="WalkToHelper"]
-margin_left = -2.5
-margin_top = -2.5
-margin_right = 2.5
-margin_bottom = 2.5
+offset_left = -2.5
+offset_top = -2.5
+offset_right = 2.5
+offset_bottom = 2.5
 color = Color( 0, 1, 1, 1 )
 
-[node name="Sprite" type="Sprite" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 
-[node name="DialogPos" type="Position2D" parent="."]
+[node name="DialogPos" type="Marker2D" parent="."]
 visible = false

@@ -1,4 +1,4 @@
-tool
+@tool
 extends 'res://addons/Popochiu/Editor/Popups/CreationPopup.gd'
 # Permite crear un nuevo diálogo con los archivos necesarios para que funcione
 # en el Popochiu: DialogDDD.gd, DialogDDD.tres.
@@ -19,7 +19,7 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: PopochiuDock) -> void:
-	.set_main_dock(node)
+	super.set_main_dock(node)
 	# Por defecto: res://popochiu/Dialogs
 	_dialog_path_template = _main_dock.DIALOGS_PATH + '%s/Dialog%s'
 
@@ -71,7 +71,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Abrir el diálogo en el Inspector
-	yield(get_tree().create_timer(0.1), 'timeout')
+	await get_tree().create_timer(0.1).timeout
 	_main_dock.ei.select_file(_new_dialog_path + '.tres')
 	_main_dock.ei.edit_resource(load(_new_dialog_path + '.tres'))
 	
@@ -81,14 +81,14 @@ func create() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	._update_name(new_text)
+	super._update_name(new_text)
 
 	if _name:
 		_new_dialog_name = _name
 		_new_dialog_path = _dialog_path_template %\
 		[_new_dialog_name, _new_dialog_name]
 
-		_info.bbcode_text = (
+		_info.text = (
 			'In [b]%s[/b] the following files will be created:\n[code]%s and %s[/code]' \
 			% [
 				_main_dock.DIALOGS_PATH + _new_dialog_name,
@@ -100,7 +100,7 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	._clear_fields()
+	super._clear_fields()
 	
 	_new_dialog_name = ''
 	_new_dialog_path = ''
