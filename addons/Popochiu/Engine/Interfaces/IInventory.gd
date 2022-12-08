@@ -23,7 +23,7 @@ var _item_instances := []
 # Adds an item to the inventory. The item is added based checked its script_name
 # property.
 func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
 	if E.settings.inventory_limit > 0\
 	and items.size() == E.settings.inventory_limit:
@@ -38,7 +38,7 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 	if is_instance_valid(i) and not i.in_inventory:
 		items.append(item_name)
 		
-		emit_signal('item_added', i, animate)
+		item_added.emit(i, animate)
 		i.in_inventory = true
 		
 		return await self.item_add_done
@@ -53,12 +53,9 @@ func add_item_as_active(
 	is_in_queue := true,
 	animate := true
 ) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
-	var item: PopochiuInventoryItem = yield(
-		add_item(item_name, false, animate),
-		'completed'
-	)
+	var item: PopochiuInventoryItem = await add_item(item_name, false, animate)
 	
 	if is_instance_valid(item):
 		set_active_item(item, is_in_queue)
@@ -86,7 +83,7 @@ func remove_item(
 	is_in_queue := true,
 	animate := true
 ) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 	if is_instance_valid(i):
@@ -94,7 +91,7 @@ func remove_item(
 		items.erase(item_name)
 		
 		set_active_item(null)
-		emit_signal('item_removed', i, animate)
+		item_removed.emit(i, animate)
 		
 		await self.item_remove_done
 
@@ -110,7 +107,7 @@ func is_full() -> bool:
 
 
 func discard_item(item_name: String, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 	
@@ -118,9 +115,9 @@ func discard_item(item_name: String, is_in_queue := true) -> void:
 		i.on_discard()
 		items.erase(item_name)
 		
-		emit_signal('item_discarded', i)
+		item_discarded.emit(i)
 		
-		await remove_item(item_name, is_in_queue).completed
+		await remove_item(item_name, is_in_queue)
 
 
 func clean_inventory() -> void:
@@ -129,28 +126,28 @@ func clean_inventory() -> void:
 	for ii in _item_instances:
 		ii.on_discard()
 		
-		emit_signal('item_discarded', ii)
+		item_discarded.emit(ii)
 		
 		remove_item(ii.script_name, false)
 
 
 # Notifies that the inventory should appear.
 func show_inventory(time := 1.0, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
 	if E.cutscene_skipped:
 		await get_tree().idle_frame
 		return
 	
-	emit_signal('inventory_show_requested', time)
+	inventory_show_requested.emit(time)
 	
 	await self.inventory_shown
 
 
 func hide_inventory(use_anim := true, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
-	emit_signal('inventory_hide_requested', use_anim)
+	inventory_hide_requested.emit(use_anim)
 	
 	await get_tree().idle_frame
 

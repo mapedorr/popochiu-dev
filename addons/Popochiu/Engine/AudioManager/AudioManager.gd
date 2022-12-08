@@ -35,25 +35,25 @@ func _ready() -> void:
 func play(
 	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
 ) -> Node:
-	yield()
+#	yield()
 	
-	return await _play_sound_cue(cue_name, position_2d, wait_to_end).completed
+	return await _play_sound_cue(cue_name, position_2d, wait_to_end)
 
 
 func play_no_block(
 	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
 ) -> Node:
 	if wait_to_end:
-		return await _play_sound_cue(cue_name, position_2d, true).completed
+		return await _play_sound_cue(cue_name, position_2d, true)
 	else:
-		return _play_sound_cue(cue_name, position_2d)
+		return await _play_sound_cue(cue_name, position_2d)
 
 
 func play_music(\
 cue_name: String, fade_duration := 0.0, music_position := 0.0) -> Node:
 	# TODO: Add a position: Vector2 parameter in case one want to play music coming
 	# out from a specific source (e.g. a radio in the room).
-	yield()
+#	yield()
 	
 	var stream_player: Node = _play_music_cue(
 		cue_name, fade_duration, music_position
@@ -80,11 +80,10 @@ func play_fade(
 	to := INF,
 	position_2d := Vector2.ZERO
 ) -> Node:
-	yield()
+#	yield()
 	
-	return yield(
-		_play_fade_cue(cue_name, duration, from, to, position_2d, wait_to_end),
-		'completed'
+	return await _play_fade_cue(
+		cue_name, duration, from, to, position_2d, wait_to_end
 	)
 
 
@@ -97,20 +96,20 @@ func play_fade_no_block(
 	position_2d := Vector2.ZERO
 ) -> Node:
 	if wait_to_end:
-		return yield(_play_fade_cue(
+		return await _play_fade_cue(
 			cue_name, 
 			duration,
 			from,
 			to,
 			position_2d,
 			true
-		), 'completed')
+		)
 	else:
-		return _play_fade_cue(cue_name, duration, from, to, position_2d)
+		return await _play_fade_cue(cue_name, duration, from, to, position_2d)
 
 
 func stop(cue_name: String, fade_duration := 0.0) -> void:
-	yield()
+#	yield()
 	
 	_stop(cue_name, fade_duration)
 	
@@ -271,7 +270,7 @@ func _play(cue: AudioCue, position := Vector2.ZERO, from_position := 0.0) -> Nod
 		(player as AudioStreamPlayer).pitch_scale = cue.get_pitch()
 		(player as AudioStreamPlayer).volume_db = cue.volume
 	
-	var cue_name := cue.resource_name
+	var cue_name: String = cue.resource_name
 	
 	player.bus = cue.bus
 	player.play(from_position)
@@ -335,7 +334,7 @@ from_position := 0.0
 		from = _fading_sounds[cue.audio.get_instance_id()].volume_db
 		
 		$Tween.stop(_fading_sounds[cue.audio.get_instance_id()])
-		_fading_sounds[cue.audio.get_instance_id()].emit_signal('finished')
+		_fading_sounds[cue.audio.get_instance_id()].finished.emit()
 		_fading_sounds.erase(cue.audio.get_instance_id())
 	
 	cue.volume = from
@@ -389,7 +388,7 @@ func _stop(cue_name: String, fade_duration := 0.0) -> void:
 			if stream_player is AudioStreamPlayer2D and _active[cue_name].loop:
 				# When stopped (.stop()) an audio in loop, for some reason
 				# 'finished' is not emitted.
-				stream_player.emit_signal('finished')
+				stream_player.finished.emit()
 		else:
 			_active.erase(cue_name)
 

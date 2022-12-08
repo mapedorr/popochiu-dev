@@ -82,7 +82,7 @@ func _ready() -> void:
 func scene_changed(scene_root: Node) -> void:
 	# Set the default tab state
 	if is_instance_valid(opened_room):
-		await _clear_content().completed
+		await _clear_content()
 	
 	if scene_root is PopochiuRoom:
 		# Updated the opened room's info

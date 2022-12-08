@@ -2,16 +2,17 @@ extends Control
 # warning-ignore-all:return_value_discarded
 
 @onready var _lines_list: VBoxContainer = find_child('LinesList')
-@onready var _dialog_line_path := filename.get_base_dir() + '/DialogLine.tscn'
-@onready var _interaction_line_path := filename.get_base_dir() + '/InteractionLine.tscn'
+@onready var _dialog_line_path := scene_file_path.get_base_dir() + '/DialogLine.tscn'
+@onready var _interaction_line_path := scene_file_path.get_base_dir() + '/InteractionLine.tscn'
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	# Conectarse a eventos de los hijos
-	$Window.connect('popup_hide',Callable(self,'_destroy_history'))
-	# Conectarse a eventos de singletons
-	G.connect('history_opened',Callable(self,'_show_history'))
+	# Connect to child signals
+	$Window.close_requested.connect(_destroy_history)
+	
+	# Connect to singletons signals
+	G.history_opened.connect(_show_history)
 	
 	hide()
 
@@ -37,7 +38,8 @@ func _show_history() -> void:
 #	popup(Rect2(8, 16, 304, 160))
 	$Window.popup_centered(Vector2(240.0, 120.0))
 	
-	G.emit_signal('blocked', { blocking = false })
+	G.blocked.emit({ blocking = false })
+	
 	Cursor.set_cursor(Cursor.Type.USE)
 	Cursor.block()
 	

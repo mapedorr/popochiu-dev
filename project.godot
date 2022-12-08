@@ -29,6 +29,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialog.gd"
 }, {
+"base": "Resource",
+"class": &"PopochiuDialogOption",
+"language": &"GDScript",
+"path": "res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialogOption.gd"
+}, {
 "base": "Area2D",
 "class": &"PopochiuHotspot",
 "language": &"GDScript",
@@ -89,6 +94,7 @@ _global_script_class_icons={
 "PopochiuCharacterData": "res://addons/Popochiu/icons/character.png",
 "PopochiuClickable": "",
 "PopochiuDialog": "res://addons/Popochiu/icons/dialog.png",
+"PopochiuDialogOption": "",
 "PopochiuHotspot": "res://addons/Popochiu/icons/hotspot.png",
 "PopochiuInventoryItem": "res://addons/Popochiu/icons/inventory_item.png",
 "PopochiuInventoryItemData": "res://addons/Popochiu/icons/inventory_item.png",

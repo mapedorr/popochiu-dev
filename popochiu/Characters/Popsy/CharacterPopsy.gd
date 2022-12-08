@@ -1,7 +1,7 @@
 @tool
 extends PopochiuCharacter
 # You can use E.run([]) to trigger a sequence of events.
-# Use await E.run([]).completed if you want to pause the excecution of
+# Use await E.run([]) if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
 var state: PopochiuCharacterData = preload('CharacterPopsy.tres')
@@ -34,15 +34,16 @@ func on_look() -> void:
 
 # When the node is clicked and there is an inventory item selected
 func on_item_used(_item: PopochiuInventoryItem) -> void:
-	E.run([
-		C.walk_to_clicked(),
-		C.face_clicked(),
-		'Player: Take this',
-		I.remove_item('ToyCar', true, false),
-		'Popsy[2]: Oh...',
-		'...',
-		'Popsy: Thanks',
-	])
+	# E.run([
+	# 	C.walk_to_clicked(),
+	# 	C.face_clicked(),
+	# 	'Player: Take this',
+	# 	I.remove_item('ToyCar', true, false),
+	# 	'Popsy[2]: Oh...',
+	# 	'...',
+	# 	'Popsy: Thanks',
+	# ])
+	pass
 
 
 # Use it to play the idle animation for the character

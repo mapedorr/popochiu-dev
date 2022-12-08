@@ -28,18 +28,18 @@ func _ready():
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the item is clicked in the Inventory
 func on_interact() -> void:
-	emit_signal('selected', self)
+	selected.emit(self)
 
 
 # When the item is right clicked in the Inventory
 func on_look() -> void:
-	await E.run([G.display('Nothing to see in this item')])
+	await E.run([await G.display('Nothing to see in this item')])
 
 
 # When the item is clicked and there is another inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
 	await E.run([
-		G.display('Nothing happens when using %s in this item' % item.description)
+		await G.display('Nothing happens when using %s in this item' % item.description)
 	])
 
 
@@ -73,11 +73,9 @@ func _toggle_description(display: bool) -> void:
 	Cursor.set_cursor(cursor if display else null)
 	G.show_info(self.description if display else '')
 	if display:
-		emit_signal(
-			'description_toggled', description if description else script_name
-		)
+		description_toggled.emit(description if description else script_name)
 	else:
-		emit_signal('description_toggled', '')
+		description_toggled.emit('')
 
 
 func _on_action_pressed(event: InputEvent) -> void: 

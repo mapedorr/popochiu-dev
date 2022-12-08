@@ -225,7 +225,7 @@ func _move_addon_folders() -> void:
 
 	# Fix dependencies
 #	await _editor_file_system.filesystem_changed
-#	await _check_popochiu_dependencies().completed
+#	await _check_popochiu_dependencies()
 	
 	# Save settings
 #	var settings := PopochiuResources.get_settings()

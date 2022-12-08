@@ -6,7 +6,7 @@ func _ready() -> void:
 	text = ''
 	
 	# Conectarse 
-	G.connect('show_info_requested',Callable(self,'_show_info'))
+	G.show_info_requested.connect(_show_info)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

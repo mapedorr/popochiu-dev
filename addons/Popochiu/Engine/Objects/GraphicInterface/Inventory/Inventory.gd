@@ -145,7 +145,7 @@ func _show_and_hide(time := 1.0) -> void:
 	_open()
 	
 	await $Tween.tween_all_completed
-	await E.wait(time, false).completed
+	await E.wait(time, false)
 	
 	_close()
 	

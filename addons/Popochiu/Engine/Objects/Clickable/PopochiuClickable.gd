@@ -82,17 +82,17 @@ func _process(delta):
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	await E.run([G.display("Can't INTERACT with it")])
+	await E.run([await G.display("Can't INTERACT with it")])
 
 
 # When the node is right clicked
 func on_look() -> void:
-	await E.run([G.display("Can't EXAMINE it")])
+	await E.run([await G.display("Can't EXAMINE it")])
 
 
 # When the node is clicked and there is an inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
-	await E.run([G.display("Can't USE %s here" % item.description)])
+	await E.run([await G.display("Can't USE %s here" % item.description)])
 
 
 func on_room_set() -> void:

@@ -6,7 +6,6 @@ extends RichTextLabel
 # warning-ignore-all:return_value_discarded
 
 signal shown
-signal hidden
 
 const DFLT_SIZE := 'dflt_size'
 
@@ -52,7 +51,7 @@ func _show_box(msg := '') -> void:
 	rt.free()
 	# ===================================== Calculate the width of the node ====
 	
-	append_bbcode('[center]%s[/center]' % msg)
+	append_text('[center]%s[/center]' % msg)
 	size = Vector2(size.x + 16.0, get_meta(DFLT_SIZE).y)
 	
 	if msg:

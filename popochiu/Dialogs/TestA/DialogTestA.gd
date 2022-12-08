@@ -4,34 +4,34 @@ extends PopochiuDialog
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func on_start() -> void:
-	await E.run([]).completed
+	await E.run([])
 
 
 func option_selected(opt: PopochiuDialogOption) -> void:
 	# Use match to check which option was selected and excecute something for
 	# each one
-	await D.say_selected().completed
+	await D.say_selected()
 	
 	match opt.id:
-		'Opt1':
-			yield(E.run([
-				'Popsy: Hi!'
-			]), 'completed')
+		# 'Opt1':
+		# 	yield(E.run([
+		# 		'Popsy: Hi!'
+		# 	]), 'completed')
 			
-			opt.turn_off_forever()
-			turn_on_options(['Opt2'])
-		'Opt2':
-			if opt.used_times == 1:
-				yield(E.run([
-					'Popsy: Fine. Thanks!'
-				]), 'completed')
-			else:
-				yield(E.run([
-					'Popsy: ...',
-					'Popsy: You already asked that......',
-				]), 'completed')
+		# 	opt.turn_off_forever()
+		# 	turn_on_options(['Opt2'])
+		# 'Opt2':
+		# 	if opt.used_times == 1:
+		# 		yield(E.run([
+		# 			'Popsy: Fine. Thanks!'
+		# 		]), 'completed')
+		# 	else:
+		# 		yield(E.run([
+		# 			'Popsy: ...',
+		# 			'Popsy: You already asked that......',
+		# 		]), 'completed')
 			
-			turn_on_options(['Opt1'])
+		# 	turn_on_options(['Opt1'])
 		_:
 			# By default close the dialog
 			stop()

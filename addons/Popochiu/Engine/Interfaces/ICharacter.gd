@@ -79,7 +79,7 @@ func walk_to_clicked(is_in_queue := true) -> void:
 func face_clicked(is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 	
-	await C.player.face_clicked(false).completed
+	await C.player.face_clicked(false)
 
 
 # Checks if the character exists in the array of PopochiuCharacter instances.

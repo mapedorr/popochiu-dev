@@ -24,10 +24,11 @@ const History := preload('History/History.gd')
 func _ready():
 	# Connect to children signals
 	# TODO: Some of this could be in their own script
-	_click_handler.connect('pressed',Callable(self,'_continue'))
-	_dialog_menu.connect('shown',Callable(self,'_disable_panels').bind({ blocking = false }))
-	_display_box.connect('shown',Callable(self,'_disable_panels'))
-	_display_box.connect('hidden',Callable(self,'_enable_panels'))
+	_click_handler.pressed.connect(_continue)
+	_dialog_menu.shown.connect(_disable_panels.bind({ blocking = false }))
+	_display_box.shown.connect(_enable_panels)
+	
+#	_display_box.connect('hidden',Callable(self,'_enable_panels'))
 	
 	# Connect to singleton signals
 	C.connect('character_spoke',Callable(self,'_show_dialog_text'))

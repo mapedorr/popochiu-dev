@@ -53,4 +53,4 @@ func play_transition(type := FADE_IN, duration := 1.0) -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _transition_finished(anim_name := '') -> void:
-	emit_signal('transition_finished', anim_name)
+	transition_finished.emit(anim_name)

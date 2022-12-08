@@ -3,7 +3,6 @@ extends Container
 # warning-ignore-all:unused_signal
 
 signal shown
-signal hidden
 
 const PopochiuDialogOption :=\
 preload('res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialogOption.gd')
@@ -22,13 +21,13 @@ var current_options := []
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	connect('gui_input',Callable(self,'_clicked'))
+	gui_input.connect(_clicked)
 	
-	# Conectarse a eventos de los evnetruchos
-	D.connect('dialog_options_requested',Callable(self,'_create_options').bind(true))
-	D.connect('inline_dialog_requested',Callable(self,'_create_inline_options'))
-	D.connect('dialog_finished',Callable(self,'remove_options'))
-
+	# Connect to IDialog signals
+	D.dialog_options_requested.connect(_create_options.bind(true))
+	D.inline_dialog_requested.connect(_create_inline_options)
+	D.dialog_finished.connect(remove_options)
+	
 	hide()
 
 
@@ -110,9 +109,9 @@ func remove_options() -> void:
 
 func show_options() -> void:
 	show()
-	emit_signal('shown')
+	shown.emit()
 
 
 func _on_option_clicked(opt: PopochiuDialogOption) -> void:
 	hide()
-	D.emit_signal('option_selected', opt)
+	D.option_selected.emit(opt)

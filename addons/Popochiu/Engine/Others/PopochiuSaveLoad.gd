@@ -29,19 +29,19 @@ func get_saves_descriptions() -> Dictionary:
 	
 	for i in range(1, 5):
 		if _file.file_exists(SAVE_GAME_PATH % i):
-			var error := _file.open(SAVE_GAME_PATH % i, FileAccess.READ)
-			if error != OK:
+			var opened := _file.open(SAVE_GAME_PATH % i, FileAccess.READ)
+			if not opened:
 				printerr(\
 				'[Popochiu] Could not open the file %s. Error code: %s'\
-				% [SAVE_GAME_PATH % i, error])
+				% [SAVE_GAME_PATH % i, _file.get_open_error()])
 				return {}
 
 			var content := _file.get_as_text()
 			_file.close()
 			
 			var test_json_conv = JSON.new()
-			test_json_conv.parse(content).result
-			var loaded_data: Dictionary = test_json_conv.get_data()
+			test_json_conv.parse(content)
+			var loaded_data: Dictionary = test_json_conv.data
 			
 			saves[i] = loaded_data.description
 	
@@ -49,11 +49,11 @@ func get_saves_descriptions() -> Dictionary:
 
 
 func save_game(slot := 1, description := '') -> bool:
-	var error := _file.open(SAVE_GAME_PATH % slot, FileAccess.WRITE)
-	if error != OK:
+	var opened := _file.open(SAVE_GAME_PATH % slot, FileAccess.WRITE)
+	if not opened:
 		printerr(\
 		'[Popochiu] Could not open the file %s. Error code: %s'\
-		% [SAVE_GAME_PATH % slot, error])
+		% [SAVE_GAME_PATH % slot, _file.get_open_error()])
 		return false
 	
 	var data := {
@@ -106,19 +106,19 @@ func save_game(slot := 1, description := '') -> bool:
 
 
 func load_game(slot := 1) -> Dictionary:
-	var error := _file.open(SAVE_GAME_PATH % slot, FileAccess.READ)
-	if error != OK:
+	var opened := _file.open(SAVE_GAME_PATH % slot, FileAccess.READ)
+	if not opened:
 		printerr(\
 		'[Popochiu] Could not open the file %s. Error code: %s'\
-		% [SAVE_GAME_PATH % slot, error])
+		% [SAVE_GAME_PATH % slot, _file.get_open_error()])
 		return {}
 
 	var content := _file.get_as_text()
 	_file.close()
 	
 	var test_json_conv = JSON.new()
-	test_json_conv.parse(content).result
-	var loaded_data: Dictionary = test_json_conv.get_data()
+	test_json_conv.parse(content)
+	var loaded_data: Dictionary = test_json_conv.data
 	
 	# Load inventory items
 	for item in loaded_data.player.inventory:

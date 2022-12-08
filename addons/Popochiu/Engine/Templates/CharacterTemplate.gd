@@ -1,7 +1,7 @@
 @tool
 extends PopochiuCharacter
 # You can use E.run([]) to trigger a sequence of events.
-# Use await E.run([]).completed if you want to pause the excecution of
+# Use await E.run([]) if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
 var state: PopochiuCharacterData = null

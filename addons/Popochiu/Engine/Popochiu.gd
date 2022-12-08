@@ -103,7 +103,7 @@ func _ready() -> void:
 	if settings.scale_gui:
 		Cursor.scale_cursor(scale)
 	
-	emit_signal('redied')
+	redied.emit()
 
 
 func _process(delta: float) -> void:
@@ -132,10 +132,10 @@ func _input(event: InputEvent) -> void:
 		
 		await $TransitionLayer.transition_finished
 		
-		G.emit_signal('continue_clicked')
+		G.continue_clicked.emit()
 
 
-func _unhandled_key_input(event: InputEventKey) -> void:
+func _unhandled_key_input(event: InputEvent) -> void:
 	# TODO: Capture keys for debugging or for triggering game signals that can
 	# ease tests
 	pass
@@ -143,7 +143,7 @@ func _unhandled_key_input(event: InputEventKey) -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func wait(time := 1.0, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	if cutscene_skipped:
 		await get_tree().idle_frame
 		return
@@ -164,7 +164,8 @@ func run(instructions: Array, show_gi := true) -> void:
 	
 	if _running:
 		await get_tree().idle_frame
-		return run(instructions, show_gi)
+		await run(instructions, show_gi)
+		return
 	
 	_running = true
 	
@@ -174,15 +175,15 @@ func run(instructions: Array, show_gi := true) -> void:
 		var instruction = instructions[idx]
 	
 		if instruction is String:
-			await _eval_string(instruction as String).completed
+			await _eval_string(instruction as String)
 		elif instruction is Dictionary:
 			if instruction.has('dialog'):
 				_eval_string(instruction.dialog)
-				await self.wait(instruction.time, false).completed
-				G.emit_signal('continue_clicked')
-		elif instruction is GDScriptFunctionState and instruction.is_valid():
-			instruction.resume()
-			await instruction.completed
+				await self.wait(instruction.time, false)
+				G.continue_clicked.emit()
+#		elif instruction is GDScriptFunctionState and instruction.is_valid():
+#			instruction.resume()
+#			await instruction
 	
 	if not D.active and show_gi:
 		G.done()
@@ -199,7 +200,7 @@ func run(instructions: Array, show_gi := true) -> void:
 # Like run, but can be skipped with the input action: popochiu-skip.
 func run_cutscene(instructions: Array) -> void:
 	set_process_input(true)
-	await run(instructions).completed
+	await run(instructions)
 	set_process_input(false)
 	
 	if cutscene_skipped:
@@ -253,7 +254,7 @@ func goto_room(
 	if ignore_change: return
 	
 	var rp: String = PopochiuResources.get_data_value('rooms', script_name, null)
-	if not rp:
+	if rp.is_empty():
 		prints('[Popochiu] No PopochiuRoom with name: %s' % script_name)
 		return
 	
@@ -282,7 +283,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	current_room.setup_camera()
 	
 	# Update the core state
-	if not _loaded_game:
+	if _loaded_game.is_empty():
 		current_room.state.visited = true
 		current_room.state.visited_times += 1
 		current_room.state.visited_first_time = current_room.state.visited_times == 1
@@ -309,7 +310,7 @@ func room_readied(room: PopochiuRoom) -> void:
 		if not current_room.has_character(C.player.script_name):
 			current_room.add_character(C.player)
 		
-		await C.player.idle(false).completed
+		await C.player.idle(false)
 	
 	for c in get_tree().get_nodes_in_group('PopochiuClickable'):
 		c.room = current_room
@@ -325,7 +326,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	if _use_transition_on_room_change:
 		$TransitionLayer.play_transition($TransitionLayer.FADE_OUT)
 		await $TransitionLayer.transition_finished
-		await wait(0.3, false).completed
+		await wait(0.3, false)
 	else:
 		await get_tree().idle_frame
 	
@@ -335,8 +336,8 @@ func room_readied(room: PopochiuRoom) -> void:
 	self.in_room = true
 	
 	if _loaded_game:
-		emit_signal('game_loaded', _loaded_game)
-		E.run([G.display('Game loaded')])
+		game_loaded.emit(_loaded_game)
+		E.run([await G.display('Game loaded')])
 		
 		_loaded_game = {}
 	
@@ -348,7 +349,7 @@ func room_readied(room: PopochiuRoom) -> void:
 
 # Changes the main camera's offset (useful when zooming the camera)
 func camera_offset(offset := Vector2.ZERO, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
 	main_camera.offset = offset
 	
@@ -358,7 +359,7 @@ func camera_offset(offset := Vector2.ZERO, is_in_queue := true) -> void:
 # Makes the camera shake with strength for duration seconds
 func camera_shake(\
 strength := 1.0, duration := 1.0, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
 	_camera_shake_amount = strength
 	_shake_timer = duration
@@ -369,9 +370,10 @@ strength := 1.0, duration := 1.0, is_in_queue := true) -> void:
 
 # Makes the camera shake with strength for duration seconds without blocking
 # excecution
-func camera_shake_no_block(\
-strength := 1.0, duration := 1.0, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+func camera_shake_no_block(
+	strength := 1.0, duration := 1.0, is_in_queue := true
+) -> void:
+#	if is_in_queue: yield()
 	
 	_camera_shake_amount = strength
 	_shake_timer = duration
@@ -383,9 +385,10 @@ strength := 1.0, duration := 1.0, is_in_queue := true) -> void:
 # Changes the camera zoom. If target is larger than Vector2(1, 1) the camera
 # will zoom out, smaller values make it zoom in. The effect will last duration
 # seconds
-func camera_zoom(\
-target := Vector2.ONE, duration := 1.0, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+func camera_zoom(
+	target := Vector2.ONE, duration := 1.0, is_in_queue := true
+) -> void:
+#	if is_in_queue: yield()
 	
 	$Tween.interpolate_property(
 		main_camera, 'zoom',
@@ -448,7 +451,7 @@ func add_history(data: Dictionary) -> void:
 func runnable(
 	node: Object, method: String, params := [], yield_signal := ''
 ) -> void:
-	yield()
+#	yield()
 	
 	if cutscene_skipped:
 		# TODO: What should happen if the skipped function was an animation that
@@ -457,14 +460,15 @@ func runnable(
 		await get_tree().idle_frame
 		return
 	
-	var f := funcref(node, method)
-	var c = f.call_funcv(params)
+	var f := Callable(node, method)
+	var c = f.callv(params)
 	
 	if yield_signal:
 		if yield_signal == 'func_comp':
-			await c.completed
-		else:
-			await node.yield_signal
+			await c
+#		else:
+			# TODO: How to do this in GDScript 2
+			# await node.yield_signal
 	else:
 		await get_tree().idle_frame
 
@@ -482,7 +486,7 @@ func room_exists(script_name: String) -> bool:
 # Plays the transition type animation in TransitionLayer.tscn that last duration
 # in seconds. Possible type values can be found in TransitionLayer
 func play_transition(type: int, duration: float, is_in_queue := true) -> void:
-	if is_in_queue: yield()
+#	if is_in_queue: yield()
 	
 	$TransitionLayer.play_transition(type, duration)
 	
@@ -497,7 +501,7 @@ func change_text_speed() -> void:
 	)
 	current_text_speed = settings.text_speeds[current_text_speed_idx]
 	
-	emit_signal('text_speed_changed')
+	text_speed_changed.emit()
 
 
 func has_save() -> bool:
@@ -514,15 +518,15 @@ func get_saves_descriptions() -> Dictionary:
 
 func save_game(slot := 1, description := '') -> void:
 	if _saveload.save_game(slot, description):
-		emit_signal('game_saved')
+		game_saved.emit()
 		
-		E.run([G.display('Game saved')])
+		E.run([await G.display('Game saved')])
 
 
 func load_game(slot := 1) -> void:
 	_loaded_game = _saveload.load_game(slot)
 	
-	if not _loaded_game: return
+	if _loaded_game.is_empty(): return
 	
 	goto_room(
 		_loaded_game.player.room,
@@ -593,13 +597,13 @@ func clear_hovered() -> void:
 func _eval_string(text: String) -> void:
 	match text:
 		'.':
-			await wait(0.25, false).completed
+			await wait(0.25, false)
 		'..':
-			await wait(0.5, false).completed
+			await wait(0.5, false)
 		'...':
-			await wait(1.0, false).completed
+			await wait(1.0, false)
 		'....':
-			await wait(2.0, false).completed
+			await wait(2.0, false)
 		_:
 			var colon_idx: int = text.find(':')
 			if colon_idx:
@@ -631,12 +635,9 @@ func _eval_string(text: String) -> void:
 				
 				if character_name == 'player'\
 				or C.player.script_name.to_lower() == character_name:
-					await C.player_say_no_block(dialogue, false).completed
+					await C.player_say_no_block(dialogue, false)
 				elif C.is_valid_character(character_name):
-					yield(
-						C.character_say_no_block(character_name, dialogue, false),
-						'completed'
-					)
+					await C.character_say_no_block(character_name, dialogue, false)
 				else:
 					await get_tree().idle_frame
 			else:

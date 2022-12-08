@@ -41,14 +41,14 @@ func show_dialog(script_name: String) -> void:
 # Shows a list of options (like a dialog tree would do) and returns the
 # PopochiuDialogOption of the selected option
 func show_inline_dialog(opts: Array) -> PopochiuDialogOption:
-	emit_signal('inline_dialog_requested', opts)
+	inline_dialog_requested.emit(opts)
 	return await self.option_selected
 
 
 # Finishes the dialog currently in execution.
 func finish_dialog() -> void:
-	emit_signal('dialog_finished')
+	dialog_finished.emit()
 
 
 func say_selected() -> void:
-	await E.run(['Player: ' + selected_option.text]).completed
+	await E.run(['Player: ' + selected_option.text])

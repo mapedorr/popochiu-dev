@@ -19,9 +19,9 @@ var _dialog_pos := Vector2.ZERO
 var _x_limit := 0.0
 var _y_limit := 0.0
 
-@onready var _tween: Tween = $Tween
+@onready var _tween: Tween = get_tree().create_tween()
 @onready var _continue_icon: TextureProgressBar = find_child('ContinueIcon')
-@onready var _continue_icon_tween: Tween = _continue_icon.get_node('Tween')
+@onready var _continue_icon_tween: Tween = get_tree().create_tween()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -89,13 +89,13 @@ func play_text(props: Dictionary) -> void:
 	# Assign text and align mode (based checked overflow)
 	push_color(props.color)
 	
-	var center := floor(position.x + (size.x / 2))
+	var center := floori(position.x + (size.x / 2))
 	if center == props.position.x:
-		append_bbcode('[center]%s[/center]' % msg)
+		append_text('[center]%s[/center]' % msg)
 	elif center < props.position.x:
-		append_bbcode('[right]%s[/right]' % msg)
+		append_text('[right]%s[/right]' % msg)
 	else:
-		append_bbcode(msg)
+		append_text(msg)
 
 	if _secs_per_character > 0.0:
 		# Que el texto aparezca animado
@@ -121,7 +121,7 @@ func stop() ->void:
 	else:
 		# Saltarse las animaciones
 		_tween.remove_all()
-		percent_visible = 1.0
+		visible_ratio = 1.0
 		
 		_wait_input()
 

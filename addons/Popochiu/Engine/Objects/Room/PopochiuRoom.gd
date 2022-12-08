@@ -27,15 +27,15 @@ var _nav_path: PopochiuWalkableArea = null
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _enter_tree() -> void:
 	if Engine.is_editor_hint():
-		sort_enabled = false
-		$Props.sort_enabled = false
-		$Characters.sort_enabled = false
+#		sort_enabled = false
+#		$Props.sort_enabled = false
+#		$Characters.sort_enabled = false
 		
 		return
-	else:
-		sort_enabled = true
-		$Props.sort_enabled = true
-		$Characters.sort_enabled = true
+#	else:
+#		sort_enabled = true
+#		$Props.sort_enabled = true
+#		$Characters.sort_enabled = true
 	
 	for c in $Characters.get_children():
 		if c is PopochiuCharacter:
@@ -230,7 +230,7 @@ func get_active_walkable_area() -> PopochiuWalkableArea:
 
 
 func get_active_walkable_area_name() -> String:
-	return _nav_path.name
+	return _nav_path.script_name
 
 
 func get_characters_count() -> int:

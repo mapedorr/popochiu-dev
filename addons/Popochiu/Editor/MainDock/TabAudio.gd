@@ -71,7 +71,7 @@ func search_audio_files() -> void:
 		await get_tree().idle_frame
 		
 		for arr in _audio_cues_to_create:
-			await _create_audio_cue(arr[0], arr[1]).completed
+			await _create_audio_cue(arr[0], arr[1])
 			progress.value = _created_audio_cues
 			await get_tree().idle_frame
 		
