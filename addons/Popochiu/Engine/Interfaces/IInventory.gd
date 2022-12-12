@@ -32,7 +32,7 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 			item_name
 		)
 		
-		return await get_tree().idle_frame
+		return await get_tree().process_frame
 	
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 	if is_instance_valid(i) and not i.in_inventory:
@@ -43,7 +43,7 @@ func add_item(item_name: String, is_in_queue := true, animate := true) -> void:
 		
 		return await self.item_add_done
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 # Adds an item to the inventory and make it the current selected item. That is,
@@ -136,7 +136,7 @@ func show_inventory(time := 1.0, is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 	
 	if E.cutscene_skipped:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	inventory_show_requested.emit(time)
@@ -149,7 +149,7 @@ func hide_inventory(use_anim := true, is_in_queue := true) -> void:
 	
 	inventory_hide_requested.emit(use_anim)
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

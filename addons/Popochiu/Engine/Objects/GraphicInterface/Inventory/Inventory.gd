@@ -42,11 +42,12 @@ func disable(use_tween := true) -> void:
 		return
 	
 	if use_tween:
+		_tween.stop()
 		_tween.tween_property(self, 'position:y', _hide_y - 4.5, 0.3)\
 		.from_current().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
 		_tween.play()
 	else:
-		_tween.remove_all()
+		_tween.kill()
 		position.y = _hide_y - 4.5
 
 
@@ -57,6 +58,7 @@ func enable() -> void:
 		show()
 		return
 	
+	_tween.stop()
 	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
 	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	_tween.play()
@@ -67,6 +69,7 @@ func _open() -> void:
 	if E.settings.inventory_always_visible: return
 	if not is_disabled and position.y != _hide_y: return
 	
+	_tween.stop()
 	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
 	.from(_hide_y if not is_disabled else position.y)\
 	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
@@ -76,10 +79,11 @@ func _open() -> void:
 func _close() -> void:
 	if E.settings.inventory_always_visible: return
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
 	if not _can_hide_inventory: return
 	
+	_tween.stop()
 	_tween.tween_property(
 		self, 'position:y',
 		_hide_y if not is_disabled else _hide_y - 3.5,
@@ -108,7 +112,7 @@ func _add_item(item: PopochiuInventoryItem, animate := true) -> void:
 		_close()
 		await get_tree().create_timer(0.5).timeout
 	else:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 	
 	I.item_add_done.emit(item)
 
@@ -129,7 +133,7 @@ func _remove_item(item: PopochiuInventoryItem, animate := true) -> void:
 			_close()
 			await get_tree().create_timer(1.0).timeout
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
 	I.item_remove_done.emit(item)
 

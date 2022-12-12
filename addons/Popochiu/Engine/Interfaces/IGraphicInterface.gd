@@ -25,7 +25,7 @@ func display(msg: String, is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 
 	if E.cutscene_skipped:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	show_box_requested.emit(E.get_text(msg))
@@ -52,7 +52,7 @@ func block() -> void:
 # has ended).
 func done() -> void:
 	is_blocked = false
-	false # Cursor.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+	Cursor.unlock()
 	Cursor.set_cursor()
 	freed.emit()
 

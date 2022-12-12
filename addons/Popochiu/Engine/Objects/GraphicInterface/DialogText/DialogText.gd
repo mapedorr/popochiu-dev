@@ -21,7 +21,7 @@ var _y_limit := 0.0
 
 @onready var _tween: Tween = create_tween()
 @onready var _continue_icon: TextureProgressBar = find_child('ContinueIcon')
-@onready var _continue_icon_tween: Tween = get_tree().create_tween()
+@onready var _continue_icon_tween: Tween = create_tween()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -39,12 +39,12 @@ func _ready() -> void:
 	_continue_icon.hide()
 	
 	# Conectarse a señales de los hijos
-	_tween.connect('tween_all_completed',Callable(self,'_wait_input'))
-	_continue_icon_tween.connect('tween_all_completed',Callable(self,'_continue'))
+	_tween.finished.connect(_wait_input)
+	_continue_icon_tween.finished.connect(_continue)
 	
 	# Conectarse a eventos del universo Chimpoko
-	E.connect('text_speed_changed',Callable(self,'change_speed'))
-	C.connect('character_spoke',Callable(self,'_show_dialogue'))
+	E.text_speed_changed.connect(change_speed)
+	C.character_spoke.connect(_show_dialogue)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -99,13 +99,12 @@ func play_text(props: Dictionary) -> void:
 
 	if _secs_per_character > 0.0:
 		# Que el texto aparezca animado
-		_tween.interpolate_property(
-			self, 'percent_visible',
-			0, 1,
-			_secs_per_character * get_total_character_count(),
-			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
-		)
-		_tween.start()
+		_tween.tween_property(
+			self, 'visible_ratio',
+			1,
+			_secs_per_character * get_total_character_count()
+		).from(0).set_trans(Tween.TRANS_LINEAR)
+		_tween.play()
 	else:
 		_wait_input()
 
@@ -120,7 +119,7 @@ func stop() ->void:
 		_notify_completion()
 	else:
 		# Saltarse las animaciones
-		_tween.remove_all()
+		_tween.kill()
 		visible_ratio = 1.0
 		
 		_wait_input()
@@ -133,12 +132,12 @@ func hide() -> void:
 	modulate.a = 0.5
 	_is_waiting_input = false
 	
-	_tween.remove_all()
+	_tween.kill()
 	clear()
 	
 	_continue_icon.hide()
 	_continue_icon.modulate.a = 1.0
-	_continue_icon_tween.remove_all()
+	_continue_icon_tween.kill()
 	
 	size = get_meta(DFLT_SIZE)
 
@@ -173,38 +172,35 @@ func _wait_input() -> void:
 
 func _notify_completion() -> void:
 	self.hide()
-	emit_signal('animation_finished')
+	animation_finished.emit()
 
 
 func _show_icon() -> void:
 	if not E.settings.auto_continue_text:
 		# For manual continuation: make the continue icon jump
 		_continue_icon.value = 100.0
-		_continue_icon_tween.interpolate_property(
+		_continue_icon_tween.tween_property(
 			_continue_icon, 'position:y',
-			size.y,
 			size.y + 3.0,
-			0.8,
-			Tween.TRANS_BOUNCE, Tween.EASE_OUT
-		)
+			0.8
+		).from(size.y).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 		_continue_icon_tween.repeat = true
 	else:
 		# For automatic continuation: Make the icon appear like a progress bar
 		# the time players wil have to read befor auto-continuing
 		_continue_icon.value = 0.0
-		_continue_icon_tween.interpolate_property(
+		_continue_icon_tween.tween_property(
 			_continue_icon, 'value',
-			null, 100.0, 3.0,
-			Tween.TRANS_LINEAR, Tween.EASE_OUT
-		)
+			100.0, 3.0,
+		).from_current().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
 		_continue_icon_tween.repeat = false
 
 	await get_tree().create_timer(0.2).timeout
 
-	_continue_icon_tween.start()
+	_continue_icon_tween.play()
 	_continue_icon.show()
 
 
 func _continue(forced_continue := false) -> void:
 	if E.settings.auto_continue_text or forced_continue:
-		G.emit_signal('continue_clicked')
+		G.continue_clicked.emit()

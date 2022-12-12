@@ -63,6 +63,8 @@ var _hovered_queue := []
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	if Engine.is_editor_hint(): return
+	
 	_config = PopochiuResources.get_data_cfg()
 	
 	var gi: CanvasLayer = null
@@ -331,7 +333,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	else:
 		await get_tree().process_frame
 	
-	if not current_room.hide_gi:
+	if Engine.get_process_frames() > 1 and not current_room.hide_gi:
 		G.done()
 	
 	self.in_room = true

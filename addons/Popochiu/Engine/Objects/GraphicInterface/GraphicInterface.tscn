@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://d3ejrl8qralu0"]
+[gd_scene load_steps=16 format=3 uid="uid://d3ejrl8qralu0"]
 
 [ext_resource type="Script" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/GraphicInterface.gd" id="1"]
 [ext_resource type="Theme" uid="uid://dpequqav4rjaf" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Resources/PopochiuTheme.tres" id="2"]
@@ -10,6 +10,16 @@
 [ext_resource type="PackedScene" uid="uid://cm3mcl2hp08ef" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/SaveLoad/SaveLoad.tscn" id="8"]
 [ext_resource type="PackedScene" uid="uid://cm34lgxbyi4bb" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/InfoBar/InfoBar.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://bvjq6ylvam48c" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DisplayBox/DisplayBox.tscn" id="11"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dlu6y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1w7s2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f0ojp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pcw4k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_scpl3"]
 
 [node name="GraphicInterface" type="CanvasLayer"]
 layer = 10
@@ -77,11 +87,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dlu6y")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1w7s2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_f0ojp")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_pcw4k")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_scpl3")
 
 [node name="History" parent="." instance=ExtResource("7")]
-visible = false
 
 [node name="SaveLoad" parent="." instance=ExtResource("8")]
-visible = false
-grow_horizontal = 2
-grow_vertical = 2

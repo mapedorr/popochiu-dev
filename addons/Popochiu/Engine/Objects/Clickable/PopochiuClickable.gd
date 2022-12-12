@@ -12,11 +12,10 @@ const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Ty
 @export var clickable := true
 @export var baseline := 0 : set = set_baseline
 @export var walk_to_point: Vector2 : get = get_walk_to_point, set = set_walk_to_point
-@export_enum(CURSOR_TYPE) var cursor := CURSOR_TYPE.NONE
+@export var cursor := CURSOR_TYPE.NONE
 @export var always_on_top := false
 
-var room: Node2D = null:
-	set = set_room # It is a PopochiuRoom
+var room: Node2D = null : set = set_room # It is a PopochiuRoom
 
 @onready var _description_code := description
 
@@ -32,15 +31,15 @@ func _ready():
 		remove_child($BaselineHelper)
 		remove_child($WalkToHelper)
 	
-	connect('visibility_changed',Callable(self,'_toggle_input'))
+	visibility_changed.connect(_toggle_input)
 
 	if clickable:
 		# Connect to own signals
-		connect('mouse_entered',Callable(self,'_toggle_description').bind(true))
-		connect('mouse_exited',Callable(self,'_toggle_description').bind(false))
+		mouse_entered.connect(_toggle_description.bind(true))
+		mouse_exited.connect(_toggle_description.bind(false))
 		
 		# Connect to singleton signals
-		E.connect('language_changed',Callable(self,'_translate'))
+		E.language_changed.connect(_translate)
 	
 	set_process_unhandled_input(false)
 	_translate()
@@ -115,7 +114,7 @@ func disable(is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 	
 	self.visible = false
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 # Makes the Node visible and enables its interaction
@@ -123,7 +122,7 @@ func enable(is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 	
 	self.visible = true
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 func get_description() -> String:

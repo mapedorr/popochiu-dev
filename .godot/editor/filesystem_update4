@@ -1,6 +1,4 @@
+res://addons/Popochiu/Engine/Objects/GraphicInterface/GraphicInterface.tscn
+res://addons/Popochiu/Engine/Objects/GraphicInterface/Resources/PopochiuTheme.tres
 res://popochiu/Rooms/101/Room101.tscn
-res://addons/Popochiu/Engine/Popochiu.gd
-res://addons/Popochiu/Engine/Objects/GraphicInterface/Inventory/Inventory.tscn
-res://addons/Popochiu/Engine/Objects/GraphicInterface/Inventory/Inventory.gd
-res://addons/Popochiu/Engine/Objects/GraphicInterface/Toolbar/Toolbar.gd
-res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogText/DialogText.gd
+res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd

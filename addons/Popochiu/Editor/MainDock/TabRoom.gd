@@ -84,7 +84,7 @@ func scene_changed(scene_root: Node) -> void:
 	if is_instance_valid(opened_room):
 		await _clear_content()
 	
-	if scene_root is PopochiuRoom:
+	if scene_root is PopochiuRoom and not scene_root.script_name.is_empty():
 		# Updated the opened room's info
 		opened_room = scene_root
 		opened_room_state_path = PopochiuResources.get_data_value(
@@ -176,7 +176,7 @@ func _clear_content() -> void:
 		t.group.clear_list()
 		t.group.disable_create()
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 func _create_object_row(

@@ -9,7 +9,7 @@
 config_version=5
 
 _global_script_classes=[{
-"base": "Area2D",
+"base": "PopochiuClickable",
 "class": &"PopochiuCharacter",
 "language": &"GDScript",
 "path": "res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacter.gd"
@@ -39,7 +39,7 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/Popochiu/Editor/MainDock/PopochiuGroup/PopochiuGroup.gd"
 }, {
-"base": "Area2D",
+"base": "PopochiuClickable",
 "class": &"PopochiuHotspot",
 "language": &"GDScript",
 "path": "res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.gd"
@@ -54,7 +54,7 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/Popochiu/Engine/Objects/InventoryItem/PopochiuInventoryItemData.gd"
 }, {
-"base": "Area2D",
+"base": "PopochiuClickable",
 "class": &"PopochiuProp",
 "language": &"GDScript",
 "path": "res://addons/Popochiu/Engine/Objects/Prop/PopochiuProp.gd"
@@ -139,11 +139,9 @@ A="*res://addons/Popochiu/Engine/AudioManager/AudioManager.tscn"
 
 window/size/viewport_width=320
 window/size/viewport_height=180
+window/size/window_width_override=640
+window/size/window_height_override=360
 window/stretch/mode="canvas_items"
-window/size/width=320
-window/size/height=180
-window/size/test_width=640
-window/size/test_height=360
 
 [editor_plugins]
 

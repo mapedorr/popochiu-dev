@@ -1,6 +1,6 @@
 @tool
 class_name PopochiuProp
-extends 'res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd'
+extends PopochiuClickable
 @icon('res://addons/Popochiu/icons/prop.png')
 # Visual elements in the Room. Can have interaction.
 # E.g. Background, foreground, a table, a cup, etc.
@@ -66,7 +66,7 @@ func change_frame(new_frame: int) -> void:
 #	yield()
 	
 	self.current_frame = new_frame
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░

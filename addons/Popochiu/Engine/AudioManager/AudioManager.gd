@@ -16,8 +16,9 @@ var _vo_cues := {}
 var _ui_cues := {}
 var _active := {}
 var _all_in_one := {}
-
 var _fading_sounds := {}
+
+@onready var _tween := create_tween()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -59,7 +60,7 @@ cue_name: String, fade_duration := 0.0, music_position := 0.0) -> Node:
 		cue_name, fade_duration, music_position
 	)
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
 	return stream_player
 
@@ -113,7 +114,7 @@ func stop(cue_name: String, fade_duration := 0.0) -> void:
 	
 	_stop(cue_name, fade_duration)
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 func stop_no_block(cue_name: String, fade_duration := 0.0) -> void:
@@ -166,14 +167,14 @@ cue_name := '', position_2d := Vector2.ZERO, wait_to_end = null) -> Node:
 		prints('[Popochiu] Sound not found:', cue_name)
 		
 		if wait_to_end != null:
-			await get_tree().idle_frame
+			await get_tree().process_frame
 		
 		return null
 	
 	if wait_to_end == true and stream_player:
 		await stream_player.finished
 	elif wait_to_end == false:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 	
 	return stream_player
 
@@ -230,14 +231,14 @@ func _play_fade_cue(
 		prints('[Popochiu] Sound for fade not found:', cue_name)
 		
 		if wait_to_end != null:
-			await get_tree().idle_frame
+			await get_tree().process_frame
 		
 		return null
 	
 	if wait_to_end == true and stream_player:
 		await stream_player.finished
 	elif wait_to_end == false:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 	
 	return stream_player
 
@@ -333,7 +334,9 @@ from_position := 0.0
 	if cue.audio.get_instance_id() in _fading_sounds:
 		from = _fading_sounds[cue.audio.get_instance_id()].volume_db
 		
-		$Tween.stop(_fading_sounds[cue.audio.get_instance_id()])
+		# TODO: Stop the tween only of the sound that is fading
+#		_tween.stop(_fading_sounds[cue.audio.get_instance_id()])
+		_tween.stop()
 		_fading_sounds[cue.audio.get_instance_id()].finished.emit()
 		_fading_sounds.erase(cue.audio.get_instance_id())
 	
@@ -352,18 +355,18 @@ from_position := 0.0
 func _fade_sound(cue_name: String, duration = 1, from = 0, to = 0) -> void:
 	var stream_player: Node = (_active[cue_name].players as Array).front()
 	
-	$Tween.interpolate_property(
+	_tween.interpolate_property(
 		stream_player, 'volume_db',
 		from, to,
 		duration, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
 	)
-	$Tween.start()
+	_tween.start()
 	
 	if from > to :
 		_fading_sounds[stream_player.stream.get_instance_id()] = stream_player
 		
-		if not $Tween.is_connected('finished',Callable(self,'_fadeout_finished')):
-			$Tween.connect('finished',Callable(self,'_fadeout_finished'))
+		if not _tween.is_connected('finished',Callable(self,'_fadeout_finished')):
+			_tween.connect('finished',Callable(self,'_fadeout_finished'))
 
 
 func _fadeout_finished(obj: Node, _key: NodePath) -> void:
@@ -372,7 +375,7 @@ func _fadeout_finished(obj: Node, _key: NodePath) -> void:
 		obj.stop()
 		
 		if _fading_sounds.is_empty():
-			$Tween.disconnect('finished',Callable(self,'_fadeout_finished'))
+			_tween.disconnect('finished',Callable(self,'_fadeout_finished'))
 
 
 func _stop(cue_name: String, fade_duration := 0.0) -> void:

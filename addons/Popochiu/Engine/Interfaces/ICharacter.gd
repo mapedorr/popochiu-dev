@@ -55,7 +55,7 @@ chr_name: String, position: Vector2, is_in_queue := true) -> void:
 			'[Popochiu] ICharacter.character_walk_to:',
 			'character %s not found' % chr_name
 		)
-		await get_tree().idle_frame
+		await get_tree().process_frame
 
 
 # Makes the PC (player character) walk to a position in the current room.
@@ -115,11 +115,11 @@ func change_camera_owner(c: PopochiuCharacter, is_in_queue := true) -> void:
 	
 	if E.cutscene_skipped:
 		camera_owner = c
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	camera_owner = c
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 func set_character_emotion(\
@@ -129,7 +129,7 @@ chr_name: String, emotion: String, is_in_queue := true) -> void:
 	if get_character(chr_name):
 		get_character(chr_name).emotion = emotion
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 func set_character_ignore_walkable_areas(chr_name: String, value: bool) -> void:
@@ -158,4 +158,4 @@ func _character_say(chr_name: String, dialog: String) -> void:
 			'[Popochiu] ICharacter.character_say:',
 			'character %s not found' % chr_name
 		)
-		await get_tree().idle_frame
+		await get_tree().process_frame

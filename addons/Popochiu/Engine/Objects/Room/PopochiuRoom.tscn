@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://addons/Popochiu/Engine/Objects/Node3D/PopochiuRoom.gd" type="Script" id=1]
+[ext_resource path="res://addons/Popochiu/Engine/Objects/Room/PopochiuRoom.gd" type="Script" id=1]
 
-[node name="Node3D" type="Node2D"]
+[node name="Room" type="Node2D"]
 sort_enabled = false
 script = ExtResource( 1 )
 

@@ -31,11 +31,11 @@ func _ready():
 #	_display_box.connect('hidden',Callable(self,'_enable_panels'))
 	
 	# Connect to singleton signals
-	C.connect('character_spoke',Callable(self,'_show_dialog_text'))
-	G.connect('blocked',Callable(self,'_disable_panels'))
-	G.connect('freed',Callable(self,'_enable_panels'))
-	G.connect('interface_hidden',Callable(self,'_hide_panels'))
-	G.connect('interface_shown',Callable(self,'_show_panels'))
+	C.character_spoke.connect(_show_dialog_text)
+	G.blocked.connect(_disable_panels)
+	G.freed.connect(_enable_panels)
+	G.interface_hidden.connect(_hide_panels)
+	G.interface_shown.connect(_show_panels)
 	
 	if E.settings.scale_gui:
 		$MainContainer.scale = E.scale

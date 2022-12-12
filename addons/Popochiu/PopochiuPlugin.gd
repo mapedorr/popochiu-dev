@@ -252,7 +252,7 @@ func _check_popochiu_dependencies() -> void:
 		)
 	)
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 # Thanks PigDev ;)

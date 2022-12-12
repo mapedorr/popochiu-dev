@@ -30,7 +30,7 @@ script = ExtResource("1")
 visible = false
 offset_right = 118.0
 offset_bottom = 22.0
-text = "Node3D name"
+text = "Room name"
 
 [node name="ToolButtons" type="HBoxContainer" parent="."]
 visible = false

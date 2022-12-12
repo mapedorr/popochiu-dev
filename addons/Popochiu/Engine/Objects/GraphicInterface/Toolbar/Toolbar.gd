@@ -43,6 +43,7 @@ func disable() -> void:
 		hide()
 		return
 	
+	_tween.stop()
 	_tween.tween_property(self, 'position:y', _hide_y - 3.5, 0.3)\
 	.from(_hide_y).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
 	_tween.play()
@@ -55,6 +56,7 @@ func enable() -> void:
 		show()
 		return
 	
+	_tween.stop()
 	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
 	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	_tween.play()
@@ -65,6 +67,7 @@ func _open() -> void:
 	if E.settings.toolbar_always_visible: return
 	if not is_disabled and position.y != _hide_y: return
 	
+	_tween.stop()
 	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
 	.from(_hide_y if not is_disabled else position.y)\
 	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
@@ -74,10 +77,11 @@ func _open() -> void:
 func _close() -> void:
 	if E.settings.toolbar_always_visible: return
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
 	if not _can_hide: return
 	
+	_tween.stop()
 	_tween.tween_property(
 		self, 'position:y',
 		_hide_y if not is_disabled else _hide_y - 3.5,

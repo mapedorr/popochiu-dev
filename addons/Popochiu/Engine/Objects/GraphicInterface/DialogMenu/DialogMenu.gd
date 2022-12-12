@@ -87,7 +87,7 @@ func _create_options(options := [], autoshow := false) -> void:
 
 	if autoshow: show_options()
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 	_panel.minimum_size.y = _options.size.y
 
@@ -101,7 +101,7 @@ func remove_options() -> void:
 			_options.remove_child(btn as Button)
 #		hide()
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 	_panel.size.y = 0
 	_options.size.y = 0

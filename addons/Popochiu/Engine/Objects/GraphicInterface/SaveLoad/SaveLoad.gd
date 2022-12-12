@@ -22,8 +22,9 @@ func _ready() -> void:
 	_cancel.text = 'close'
 	_ok.disabled = true
 	
-	_dialog.connect('popup_hide',Callable(self,'_close'))
-	_ok.connect('pressed',Callable(self,'_confirmed'))
+	_dialog.confirmed.connect(_close)
+#	_dialog.connect('popup_hide',Callable(self,'_close'))
+	_ok.pressed.connect(_confirmed)
 	
 	var saves: Dictionary = E.get_saves_descriptions()
 	for btn in _slots.get_children():
@@ -35,12 +36,13 @@ func _ready() -> void:
 		else:
 			btn.disabled = true
 		
-		btn.connect('pressed',Callable(self,'_select_slot').bind(btn))
+		btn.pressed.connect(_select_slot.bind(btn))
 	
-	G.connect('save_requested',Callable(self,'_show_save'))
-	G.connect('load_requested',Callable(self,'_show_load'))
+	G.save_requested.connect(_show_save)
+	G.load_requested.connect(_show_load)
 	
 	hide()
+	_dialog.hide()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -93,7 +95,7 @@ func _show() -> void:
 
 func _close() -> void:
 	G.done()
-	false # Cursor.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+	Cursor.unlock()
 	
 	hide()
 	

@@ -35,7 +35,7 @@ func show_dialog(script_name: String) -> void:
 		
 		G.done()
 	else:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 
 
 # Shows a list of options (like a dialog tree would do) and returns the

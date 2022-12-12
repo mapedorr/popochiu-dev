@@ -15,6 +15,7 @@ func _ready() -> void:
 	G.history_opened.connect(_show_history)
 	
 	hide()
+	$Window.hide()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -51,6 +52,6 @@ func _destroy_history() -> void:
 		(c as Label).queue_free()
 	
 	G.done()
-	false # Cursor.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+	Cursor.unlock()
 	
 	hide()

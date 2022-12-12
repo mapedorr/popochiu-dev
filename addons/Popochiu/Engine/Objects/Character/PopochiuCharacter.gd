@@ -1,6 +1,6 @@
 @tool
 class_name PopochiuCharacter
-extends 'res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd'
+extends PopochiuClickable
 @icon('res://addons/Popochiu/icons/character.png')
 # Any Object that can move, walk, navigate rooms, have an inventory, etc.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -64,7 +64,7 @@ func idle(is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 	
 	if E.cutscene_skipped:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	play_idle()
@@ -89,12 +89,12 @@ func walk(target_pos: Vector2, is_in_queue := true) -> void:
 		is_moving = false
 		E.main_camera.follow_smoothing_enabled = false
 		
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		
 		position = target_pos
 		E.main_camera.position = target_pos
 		
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		
 		E.main_camera.follow_smoothing_enabled = true
 		
@@ -117,7 +117,7 @@ func stop_walking(is_in_queue := true) -> void:
 	
 	emit_signal('stoped_walk')
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 func face_up(is_in_queue := true) -> void:
@@ -175,7 +175,7 @@ func say(dialog: String, is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 	
 	if E.cutscene_skipped:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	play_talk()
@@ -196,7 +196,7 @@ func grab(is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 	
 	if E.cutscene_skipped:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	play_grab()

@@ -68,12 +68,12 @@ func search_audio_files() -> void:
 		(main_dock.loading_dialog as Popup).set_as_minsize()
 		(main_dock.loading_dialog as Popup).popup_centered()
 		
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		
 		for arr in _audio_cues_to_create:
 			await _create_audio_cue(arr[0], arr[1])
 			progress.value = _created_audio_cues
-			await get_tree().idle_frame
+			await get_tree().process_frame
 		
 		_group_audio_cues()
 		_audio_cues_to_create.clear()
@@ -274,7 +274,7 @@ type: String, path: String, audio_row: Container = null
 		target_data.sort_custom(Callable(A,'_sort_resource_paths'))
 		PopochiuResources.set_data_value('audio', target, target_data)
 	else:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	# ...
