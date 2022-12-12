@@ -19,7 +19,7 @@ var _dialog_pos := Vector2.ZERO
 var _x_limit := 0.0
 var _y_limit := 0.0
 
-@onready var _tween: Tween = get_tree().create_tween()
+@onready var _tween: Tween = create_tween()
 @onready var _continue_icon: TextureProgressBar = find_child('ContinueIcon')
 @onready var _continue_icon_tween: Tween = get_tree().create_tween()
 

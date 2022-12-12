@@ -25,10 +25,11 @@ var es: EditorSettings = null
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	# Connect to signals
-	connect('popup_hide',Callable(self,'_update_project_settings'))
-	_game_width.connect('value_changed',Callable(self,'_update_scale'))
-	_game_height.connect('value_changed',Callable(self,'_update_scale'))
-	_btn_update_imports.connect('pressed',Callable(self,'_update_imports'))
+	confirmed.connect(_update_project_settings)
+	close_requested.connect(_update_project_settings)
+	_game_width.value_changed.connect(_update_scale)
+	_game_height.value_changed.connect(_update_scale)
+	_btn_update_imports.pressed.connect(_update_imports)
 	
 	# Set default state
 	_btn_update_imports.hide()
@@ -38,10 +39,18 @@ func _ready() -> void:
 func appear(show_welcome := false) -> void:
 	_welcome.hide()
 	_welcome_separator.hide()
-	_welcome.add_theme_font_override('bold_font', get_font('bold', 'EditorFonts'))
-	_scale_msg.add_theme_font_override('normal_font', get_font('main', 'EditorFonts'))
-	_scale_msg.add_theme_font_override('bold_font', get_font('bold', 'EditorFonts'))
-	_scale_msg.add_theme_font_override('mono_font', get_font('doc_source', 'EditorFonts'))
+	_welcome.add_theme_font_override(
+		'bold_font', get_theme_font('bold', 'EditorFonts')
+	)
+	_scale_msg.add_theme_font_override(
+		'normal_font', get_theme_font('main', 'EditorFonts')
+	)
+	_scale_msg.add_theme_font_override(
+		'bold_font', get_theme_font('bold', 'EditorFonts')
+	)
+	_scale_msg.add_theme_font_override(
+		'mono_font', get_theme_font('doc_source', 'EditorFonts')
+	)
 	_scale_msg.modulate = Color(\
 	'#000' if es.get_setting('interface/theme/preset').find('Light3D') > -1\
 	else '#fff')
@@ -101,9 +110,9 @@ func _update_project_settings() -> void:
 		ProjectSettings.set_setting('display/window/stretch/mode', 'disabled')
 		ProjectSettings.set_setting('display/window/stretch/aspect', 'ignore')
 	
-	assert(
-		ProjectSettings.save() == OK,
-		'[Popochiu] Could not save Project settings'
+	assert(\
+		ProjectSettings.save() == OK,\
+		'[Popochiu] Could not save Project settings'\
 	)
 
 

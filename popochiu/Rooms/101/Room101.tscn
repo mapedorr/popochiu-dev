@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://do1k681xt48cm" path="res://addons/Popochiu/Engine/Objects/Prop/PopochiuProp.tscn" id="3"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Props/Blanket/PropBlanket.gd" id="4"]
 [ext_resource type="Texture2D" uid="uid://dfs4mwls34yg2" path="res://popochiu/Rooms/101/Props/_NoInteraction/background.png" id="5"]
-[ext_resource type="PackedScene" path="res://popochiu/Characters/Popsy/CharacterPopsy.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://dwurc22nw1rkx" path="res://popochiu/Characters/Popsy/CharacterPopsy.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://cq7xaja0esx5m" path="res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn" id="7"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Props/ToyCar/PropToyCar.gd" id="8"]
 [ext_resource type="Texture2D" uid="uid://ddvstx60w78gn" path="res://popochiu/Rooms/101/Props/Blanket/blanket.png" id="9"]
 [ext_resource type="Texture2D" uid="uid://fs4wx6wfenu7" path="res://popochiu/Rooms/101/Props/ToyCar/toy_car.png" id="10"]
@@ -121,9 +121,6 @@ polygon = PackedVector2Array(-18, 22, -21, 2, -16, -20, -4, -28, 14, -22, 18, -5
 
 [node name="CharacterGoddiu *" parent="Characters" instance=ExtResource("7")]
 position = Vector2(110, 106)
-voices = []
-walk_to_point = Vector2(0, 0)
 
 [node name="CharacterPopsy *" parent="Characters" instance=ExtResource("6")]
 position = Vector2(219, 132)
-voices = []

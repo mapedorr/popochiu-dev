@@ -1,11 +1,12 @@
 @tool
-class_name PopochiuGroup,\
-'res://addons/Popochiu/Editor/MainDock/PopochiuGroup/popochiu_group.svg'
+class_name PopochiuGroup
 extends PanelContainer
+@icon('res://addons/Popochiu/Editor/MainDock/PopochiuGroup/popochiu_group.svg')
 
 signal create_clicked
 
-const PopochiuObjectRow := preload('res://addons/Popochiu/Editor/MainDock/ObjectRow/PopochiuObjectRow.gd')
+const PopochiuObjectRow :=\
+preload('res://addons/Popochiu/Editor/MainDock/ObjectRow/PopochiuObjectRow.gd')
 
 @export var icon: Texture2D : set = _set_icon
 @export var is_open := true : set = _set_is_open
@@ -29,20 +30,22 @@ var _external_list: VBoxContainer = null
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	# Establecer estado inicial
-	_header.add_theme_stylebox_override('panel', _header.get_theme_stylebox('panel').duplicate())
+	_header.add_theme_stylebox_override(
+		'panel', _header.get_theme_stylebox('panel').duplicate()
+	)
 	(_header.get_theme_stylebox('panel') as StyleBoxFlat).bg_color = color
 	_icon.texture = icon
 	_lbl_title.text = title
-	_btn_create.icon = get_icon('Add', 'EditorIcons')
+	_btn_create.icon = get_theme_icon('Add', 'EditorIcons')
 	_btn_create.text = create_text
 	self.is_open = _list.get_child_count() > 0
 	
 	if not can_create:
 		_btn_create.hide()
-
-	_header.connect('gui_input',Callable(self,'_on_input'))
-	_list.connect('resized',Callable(self,'_update_child_count'))
-	_btn_create.connect('pressed',Callable(self,'emit_signal').bind('create_clicked'))
+	
+	_header.gui_input.connect(_on_input)
+	_list.resized.connect(_update_child_count)
+	_btn_create.pressed.connect(emit_signal.bind('create_clicked'))
 	
 	if target_list:
 		_external_list = get_node(target_list) as VBoxContainer
@@ -100,9 +103,9 @@ func _on_input(event: InputEvent) -> void:
 
 func _toggled(button_pressed: bool) -> void:
 	if is_instance_valid(_arrow):
-#		_arrow.texture = open_icon if button_pressed else closed_icon
-		_arrow.texture = get_icon('GuiTreeArrowDown', 'EditorIcons')\
-			if button_pressed else get_icon('GuiTreeArrowRight', 'EditorIcons')
+		_arrow.texture = get_theme_icon('GuiTreeArrowDown', 'EditorIcons')\
+			if button_pressed\
+			else get_theme_icon('GuiTreeArrowRight', 'EditorIcons')
 	
 	if is_instance_valid(_body):
 		if button_pressed: _body.show()

@@ -1,6 +1,6 @@
 @tool
 extends VBoxContainer
-# Handles the Node3D tab in Popochiu's dock
+# Handles the Room tab in Popochiu's dock
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 const PopochiuObjectRow := preload('ObjectRow/PopochiuObjectRow.gd')
@@ -65,14 +65,14 @@ func _ready() -> void:
 	_no_room_info.show()
 	_tool_buttons.hide()
 	
-	_btn_script.icon = get_icon('Script', 'EditorIcons')
-	_btn_resource.icon = get_icon('Object', 'EditorIcons')
-	_btn_resource_script.icon = get_icon('GDScript', 'EditorIcons')
+	_btn_script.icon = get_theme_icon('Script', 'EditorIcons')
+	_btn_resource.icon = get_theme_icon('Object', 'EditorIcons')
+	_btn_resource_script.icon = get_theme_icon('GDScript', 'EditorIcons')
 	
-	_room_name.connect('pressed',Callable(self,'_select_file'))
-	_btn_script.connect('pressed',Callable(self,'_open_script'))
-	_btn_resource.connect('pressed',Callable(self,'_edit_resource'))
-	_btn_resource_script.connect('pressed',Callable(self,'_open_resource_script'))
+	_room_name.pressed.connect(_select_file)
+	_btn_script.pressed.connect(_open_script)
+	_btn_resource.pressed.connect(_edit_resource)
+	_btn_resource_script.pressed.connect(_open_resource_script)
 	
 	for t in _types.values():
 		t.group.disable_create()
@@ -155,7 +155,7 @@ func _set_main_dock(value: Panel) -> void:
 		t.popup = main_dock.get_popup(t.popup)
 		t.popup.set_main_dock(main_dock)
 		t.popup.room_tab = self
-		t.group.connect('create_clicked',Callable(main_dock,'_open_popup').bind(t.popup))
+		t.group.create_clicked.connect(main_dock._open_popup.bind(t.popup))
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -189,7 +189,7 @@ func _create_object_row(
 	new_obj.path = path # This will be useful for deleting objects with interaction
 	new_obj.main_dock = main_dock
 	new_obj.node_path = node_path
-	new_obj.connect('clicked',Callable(self,'_select_in_tree'))
+	new_obj.clicked.connect(_select_in_tree)
 	
 	_rows_paths.append('%s/%d/%s' % [opened_room.script_name, type, node_name])
 	

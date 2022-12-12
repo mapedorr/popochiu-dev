@@ -10,15 +10,13 @@ const VALID_TYPES := [
 	TYPE_ARRAY, TYPE_PACKED_STRING_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_INT32_ARRAY
 ]
 
-var _file := FileAccess.new()
-
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func count_saves() -> int:
 	var saves := 0
 	
 	for i in range(1, 5):
-		if _file.file_exists(SAVE_GAME_PATH % i):
+		if FileAccess.file_exists(SAVE_GAME_PATH % i):
 			saves += 1
 	
 	return saves
@@ -28,16 +26,15 @@ func get_saves_descriptions() -> Dictionary:
 	var saves := {}
 	
 	for i in range(1, 5):
-		if _file.file_exists(SAVE_GAME_PATH % i):
-			var opened := _file.open(SAVE_GAME_PATH % i, FileAccess.READ)
+		if FileAccess.file_exists(SAVE_GAME_PATH % i):
+			var opened := FileAccess.open(SAVE_GAME_PATH % i, FileAccess.READ)
 			if not opened:
 				printerr(\
 				'[Popochiu] Could not open the file %s. Error code: %s'\
-				% [SAVE_GAME_PATH % i, _file.get_open_error()])
+				% [SAVE_GAME_PATH % i, opened.get_open_error()])
 				return {}
 
-			var content := _file.get_as_text()
-			_file.close()
+			var content := opened.get_as_text()
 			
 			var test_json_conv = JSON.new()
 			test_json_conv.parse(content)
@@ -49,11 +46,11 @@ func get_saves_descriptions() -> Dictionary:
 
 
 func save_game(slot := 1, description := '') -> bool:
-	var opened := _file.open(SAVE_GAME_PATH % slot, FileAccess.WRITE)
+	var opened := FileAccess.open(SAVE_GAME_PATH % slot, FileAccess.WRITE)
 	if not opened:
 		printerr(\
 		'[Popochiu] Could not open the file %s. Error code: %s'\
-		% [SAVE_GAME_PATH % slot, _file.get_open_error()])
+		% [SAVE_GAME_PATH % slot, opened.get_open_error()])
 		return false
 	
 	var data := {
@@ -99,22 +96,20 @@ func save_game(slot := 1, description := '') -> bool:
 	
 	# Write the JSON -----------------------------------------------------------
 	var json_string := JSON.stringify(data)
-	_file.store_string(json_string)
-	_file.close()
+	opened.store_string(json_string)
 	
 	return true
 
 
 func load_game(slot := 1) -> Dictionary:
-	var opened := _file.open(SAVE_GAME_PATH % slot, FileAccess.READ)
+	var opened := FileAccess.open(SAVE_GAME_PATH % slot, FileAccess.READ)
 	if not opened:
 		printerr(\
 		'[Popochiu] Could not open the file %s. Error code: %s'\
-		% [SAVE_GAME_PATH % slot, _file.get_open_error()])
+		% [SAVE_GAME_PATH % slot, opened.get_open_error()])
 		return {}
 
-	var content := _file.get_as_text()
-	_file.close()
+	var content := opened.get_as_text()
 	
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(content)

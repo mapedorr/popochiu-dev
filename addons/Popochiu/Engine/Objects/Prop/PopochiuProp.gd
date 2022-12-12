@@ -2,7 +2,7 @@
 class_name PopochiuProp
 extends 'res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd'
 @icon('res://addons/Popochiu/icons/prop.png')
-# Visual elements in the Node3D. Can have interaction.
+# Visual elements in the Room. Can have interaction.
 # E.g. Background, foreground, a table, a cup, etc.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

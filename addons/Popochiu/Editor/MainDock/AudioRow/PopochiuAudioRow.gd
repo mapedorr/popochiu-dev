@@ -22,12 +22,12 @@ var _confirmation_dialog: ConfirmationDialog
 var _delete_all_checkbox: CheckBox
 
 @onready var _label: Label = find_child('Label')
-@onready var _dflt_font_color: Color = _label.get_color('font_color')
+@onready var _dflt_font_color: Color = _label.get_theme_color('font_color')
 @onready var _menu_btn: MenuButton = find_child('MenuButton')
 @onready var _menu_popup: PopupMenu = _menu_btn.get_popup()
-@onready var _play: Button = find_child('Play')
-@onready var _stop: Button = find_child('Stop')
-@onready var _menu_cfg := [
+@onready var _btn_play: Button = find_child('Play')
+@onready var _btn_stop: Button = find_child('Stop')
+@onready var _menu_cfg: Array = [
 	{
 		id = MenuOptions.ADD_TO_MUSIC,
 		icon = preload('res://addons/Popochiu/icons/music.png'),
@@ -51,7 +51,7 @@ var _delete_all_checkbox: CheckBox
 	null,
 	{
 		id = MenuOptions.DELETE,
-		icon = get_icon('Remove', 'EditorIcons'),
+		icon = get_theme_icon('Remove', 'EditorIcons'),
 		label = 'Remove'
 	}
 ]
@@ -61,17 +61,17 @@ var _delete_all_checkbox: CheckBox
 func _ready() -> void:
 	_label.text = file_name if file_name else name
 	tooltip_text = file_path if file_name else audio_cue.resource_path
-	_menu_btn.icon = get_icon('GuiTabMenu', 'EditorIcons')
-	_play.icon = get_icon('MainPlay', 'EditorIcons')
-	_stop.icon = get_icon('Stop', 'EditorIcons')
+	_menu_btn.icon = get_theme_icon('GuiTabMenu', 'EditorIcons')
+	_btn_play.icon = get_theme_icon('MainPlay', 'EditorIcons')
+	_btn_stop.icon = get_theme_icon('Stop', 'EditorIcons')
 	
 	# Crear menú contextual
 	_create_menu()
 	
-	connect('gui_input',Callable(self,'_open_in_inspector'))
-	_menu_popup.connect('id_pressed',Callable(self,'_menu_item_pressed'))
-	_play.connect('pressed',Callable(self,'_play'))
-	_stop.connect('pressed',Callable(self,'_stop'))
+	gui_input.connect(_open_in_inspector)
+	_menu_popup.id_pressed.connect(_menu_item_pressed)
+	_btn_play.pressed.connect(_play)
+	_btn_stop.pressed.connect(_stop)
 	
 	if is_instance_valid(audio_cue):
 		_label.text = audio_cue.resource_name
@@ -149,13 +149,13 @@ func _play() -> void:
 	
 	if stream_player.is_playing():
 		_current = stream_player.get_playback_position()
-		stream_player.disconnect('finished',Callable(self,'_stop'))
+		stream_player.finished.disconnect(_stop)
 		stream_player.stop()
-		_play.icon = _play.get_icon('MainPlay', 'EditorIcons')
+		_btn_play.icon = _btn_play.get_theme_icon('MainPlay', 'EditorIcons')
 	else:
-		stream_player.connect('finished',Callable(self,'_stop'))
+		stream_player.finished.connect(_stop)
 		stream_player.play(_current)
-		_play.icon = _play.get_icon('Pause', 'EditorIcons')
+		_btn_play.icon = _btn_play.get_theme_icon('Pause', 'EditorIcons')
 		audio_tab.last_played = self
 
 
@@ -164,7 +164,7 @@ func _stop() -> void:
 	stream_player.stop()
 	stream_player.stream = null
 	_label.add_theme_color_override('font_color', _dflt_font_color)
-	_play.icon = _play.get_icon('MainPlay', 'EditorIcons')
+	_btn_play.icon = _btn_play.get_theme_icon('MainPlay', 'EditorIcons')
 	
 	if stream_player.is_connected('finished',Callable(self,'_stop')):
 		stream_player.disconnect('finished',Callable(self,'_stop'))
@@ -175,7 +175,7 @@ func _stop() -> void:
 # Abre un popup de confirmación para saber si la desarrolladora quiere eliminar
 # el objeto del núcleo del plugin y del sistema.
 func _ask_basic_delete() -> void:
-	_confirmation_dialog.get_cancel_button().connect('pressed',Callable(self,'_disconnect_popup'))
+	_confirmation_dialog.get_cancel_button().pressed.connect(_disconnect_popup)
 	
 	if is_instance_valid(audio_cue):
 		main_dock.show_confirmation(
@@ -188,7 +188,7 @@ func _ask_basic_delete() -> void:
 			' (cannot be reversed)'
 		)
 		
-		_confirmation_dialog.connect('confirmed',Callable(self,'_remove_in_audio_manager'))
+		_confirmation_dialog.confirmed.connect(_remove_in_audio_manager)
 	else:
 		main_dock.show_confirmation(
 			'[b]%s[/b] file deletion' % file_name,
@@ -196,11 +196,8 @@ func _ask_basic_delete() -> void:
 			' This action cannot be reversed. Continue?'
 		)
 		
-		_confirmation_dialog.connect(
-			'confirmed',
-			self,
-			'_delete_from_file_system',
-			[file_path]
+		_confirmation_dialog.confirmed.connect(
+			_delete_from_file_system.bind(file_path)
 		)
 
 
@@ -242,14 +239,14 @@ func _delete_from_file_system(path: String) -> void:
 	queue_free()
 
 
-# Se desconecta de las señales del popup utilizado para configurar la eliminación.
+# Disconnect from delete popup
 func _disconnect_popup() -> void:
-	if _confirmation_dialog.is_connected('confirmed',Callable(self,'_remove_in_audio_manager')):
-		_confirmation_dialog.disconnect('confirmed',Callable(self,'_remove_in_audio_manager'))
+	if _confirmation_dialog.confirmed.is_connected(_remove_in_audio_manager):
+		_confirmation_dialog.confirmed.disconnect(_remove_in_audio_manager)
 	
-	if _confirmation_dialog.is_connected('confirmed',Callable(self,'_delete_from_file_system')):
-		# Se canceló la eliminación de los archivos en disco
-		_confirmation_dialog.disconnect('confirmed',Callable(self,'_delete_from_file_system'))
+	if _confirmation_dialog.confirmed.is_connected(_delete_from_file_system):
+		# File deletion cancelled
+		_confirmation_dialog.confirmed.disconnect(_delete_from_file_system)
 
 
 func _set_main_dock(value: Panel) -> void:

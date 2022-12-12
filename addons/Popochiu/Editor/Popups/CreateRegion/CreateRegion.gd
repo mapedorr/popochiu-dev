@@ -22,7 +22,7 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
-func set_main_dock(node: PopochiuDock) -> void:
+func set_main_dock(node: Panel) -> void:
 	super.set_main_dock(node)
 
 
@@ -34,7 +34,7 @@ func room_opened(r: Node2D) -> void:
 
 
 func create() -> void:
-	if not _new_region_name:
+	if _new_region_name.is_empty():
 		_error_feedback.show()
 		return
 	
@@ -44,15 +44,15 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the folder for the Region
-	assert(
-		_main_dock.dir.make_dir_recursive(_new_region_path.get_base_dir()) == OK,
-		'[Popochiu] Could not create Region folder for ' + _new_region_name
+	assert(\
+		_main_dock.dir.make_dir_recursive(_new_region_path.get_base_dir()) == OK,\
+		'[Popochiu] Could not create Region folder for ' + _new_region_name\
 	)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Crear el script de la región
 	var region_template := load(SCRIPT_TEMPLATE)
-	if ResourceSaver.save(script_path, region_template) != OK:
+	if ResourceSaver.save(region_template, script_path) != OK:
 		push_error('[Popochiu] Could not create script: %s.gd' % _new_region_name)
 		# TODO: Show feedback in the popup
 		return
@@ -83,7 +83,7 @@ func create() -> void:
 	_main_dock.ei.save_scene()
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Update the list of Regions in the Node3D tab
+	# Update the list of Regions in the Room tab
 	room_tab.add_to_list(
 		Constants.Types.REGION,
 		_new_region_name,

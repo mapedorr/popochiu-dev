@@ -1,7 +1,7 @@
 extends 'ToolbarButton.gd'
 
 @export var btn_states := [] # (Array, Texture2D)
-@export var states_descriptions := ['manual', 'automático']
+@export var states_descriptions := ['manual', 'auto']
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -13,8 +13,7 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func on_pressed() -> void:
-	E.settings.auto_continue_text =\
-	!E.settings.auto_continue_text
+	E.settings.auto_continue_text = !E.settings.auto_continue_text
 	texture_normal = btn_states[
 		1 if E.settings.auto_continue_text else 0
 	]

@@ -34,6 +34,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialogOption.gd"
 }, {
+"base": "PanelContainer",
+"class": &"PopochiuGroup",
+"language": &"GDScript",
+"path": "res://addons/Popochiu/Editor/MainDock/PopochiuGroup/PopochiuGroup.gd"
+}, {
 "base": "Area2D",
 "class": &"PopochiuHotspot",
 "language": &"GDScript",
@@ -95,6 +100,7 @@ _global_script_class_icons={
 "PopochiuClickable": "",
 "PopochiuDialog": "res://addons/Popochiu/icons/dialog.png",
 "PopochiuDialogOption": "",
+"PopochiuGroup": "res://addons/Popochiu/Editor/MainDock/PopochiuGroup/popochiu_group.svg",
 "PopochiuHotspot": "res://addons/Popochiu/icons/hotspot.png",
 "PopochiuInventoryItem": "res://addons/Popochiu/icons/inventory_item.png",
 "PopochiuInventoryItemData": "res://addons/Popochiu/icons/inventory_item.png",
@@ -131,7 +137,9 @@ A="*res://addons/Popochiu/Engine/AudioManager/AudioManager.tscn"
 
 [display]
 
-window/stretch/mode="2d"
+window/size/viewport_width=320
+window/size/viewport_height=180
+window/stretch/mode="canvas_items"
 window/size/width=320
 window/size/height=180
 window/size/test_width=640
@@ -139,11 +147,16 @@ window/size/test_height=360
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/Popochiu/plugin.cfg")
 
 [fc]
 
 colorpicker_palette/gpl_file="res://addons/Popochiu/palette/colodore.gpl"
+
+[filesystem]
+
+import/blender/enabled=false
+import/fbx/enabled=false
 
 [importer_defaults]
 

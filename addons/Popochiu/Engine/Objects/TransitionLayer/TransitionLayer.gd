@@ -19,7 +19,7 @@ enum {
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	$AnimationPlayer.connect('animation_finished',Callable(self,'_transition_finished'))
+	$AnimationPlayer.animation_finished.connect(_transition_finished)
 	
 	if E.settings.scale_gui:
 		$Transitions.scale = E.scale

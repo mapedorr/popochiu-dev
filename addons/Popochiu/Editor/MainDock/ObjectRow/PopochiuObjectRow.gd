@@ -40,7 +40,7 @@ var _delete_dialog: ConfirmationDialog
 var _delete_all_checkbox: CheckBox
 
 @onready var _label: Label = find_child('Label')
-@onready var _dflt_font_color: Color = _label.get_color('font_color')
+@onready var _dflt_font_color: Color = _label.get_theme_color('font_color')
 @onready var _fav_icon: TextureRect = find_child('FavIcon')
 @onready var _menu_btn: MenuButton = find_child('MenuButton')
 @onready var _menu_popup: PopupMenu = _menu_btn.get_popup()
@@ -48,7 +48,7 @@ var _delete_all_checkbox: CheckBox
 @onready var _btn_script: Button = find_child('Script')
 @onready var _btn_state: Button = find_child('State')
 @onready var _btn_state_script: Button = find_child('StateScript')
-@onready var _menu_cfg := [
+@onready var _menu_cfg: Array = [
 	{
 		id = MenuOptions.ADD_TO_CORE,
 		icon = preload(\
@@ -58,13 +58,13 @@ var _delete_all_checkbox: CheckBox
 	},
 	{
 		id = MenuOptions.CREATE_STATE_SCRIPT,
-		icon = get_icon('ScriptCreate', 'EditorIcons'),
+		icon = get_theme_icon('ScriptCreate', 'EditorIcons'),
 		label = 'Create state script',
 		types = Constants.MAIN_TYPES
 	},
 	{
 		id = MenuOptions.SET_AS_MAIN,
-		icon = get_icon('Heart', 'EditorIcons'),
+		icon = get_theme_icon('Heart', 'EditorIcons'),
 		label = 'Set as Main scene',
 		types = [Constants.Types.ROOM]
 	},
@@ -76,14 +76,14 @@ var _delete_all_checkbox: CheckBox
 	},
 	{
 		id = MenuOptions.CREATE_SCRIPT,
-		icon = get_icon('ScriptCreate', 'EditorIcons'),
+		icon = get_theme_icon('ScriptCreate', 'EditorIcons'),
 		label = 'Create script',
 		types = [Constants.Types.PROP]
 	},
 	null,
 	{
 		id = MenuOptions.DELETE,
-		icon = get_icon('Remove', 'EditorIcons'),
+		icon = get_theme_icon('Remove', 'EditorIcons'),
 		label = 'Remove'
 	}
 ]
@@ -95,16 +95,16 @@ func _ready() -> void:
 	tooltip_text = path
 	
 	# Assign icons
-	_fav_icon.texture = get_icon('Heart', 'EditorIcons')
+	_fav_icon.texture = get_theme_icon('Heart', 'EditorIcons')
 	
 	if type == Constants.Types.INVENTORY_ITEM:
 		_fav_icon.texture = INVENTORY_START_ICON
 	
-	_btn_open.icon = get_icon('InstanceOptions', 'EditorIcons')
-	_btn_script.icon = get_icon('Script', 'EditorIcons')
-	_btn_state.icon = get_icon('Object', 'EditorIcons')
-	_btn_state_script.icon = get_icon('GDScript', 'EditorIcons')
-	_menu_btn.icon = get_icon('GuiTabMenuHl', 'EditorIcons')
+	_btn_open.icon = get_theme_icon('InstanceOptions', 'EditorIcons')
+	_btn_script.icon = get_theme_icon('Script', 'EditorIcons')
+	_btn_state.icon = get_theme_icon('Object', 'EditorIcons')
+	_btn_state_script.icon = get_theme_icon('GDScript', 'EditorIcons')
+	_menu_btn.icon = get_theme_icon('GuiTabMenuHl', 'EditorIcons')
 	
 	_btn_script.show()
 	_btn_state.show()
@@ -119,7 +119,7 @@ func _ready() -> void:
 		_menu_popup.set_item_disabled(0, true)
 		_menu_popup.set_item_disabled(1, true)
 	elif path.find('.gd') > -1:
-		# If the Node3D object has a script, disable the Create script button
+		# If the Room object has a script, disable the Create script button
 		_menu_popup.set_item_disabled(0, true)
 	
 	# Hide buttons based checked the type of the Object this row represents
@@ -133,16 +133,16 @@ func _ready() -> void:
 		_btn_state_script.hide()
 	
 	if type in Constants.ROOM_TYPES:
-		# Do not show the button to open this Object' scene if it is a Node3D
+		# Do not show the button to open this Object' scene if it is a Room
 		# Object (Prop, Hotspot, Region, Point)
 		_btn_open.hide()
 	
-	connect('gui_input',Callable(self,'_check_click'))
-	_menu_popup.connect('id_pressed',Callable(self,'_menu_item_pressed'))
-	_btn_open.connect('pressed',Callable(self,'_open'))
-	_btn_script.connect('pressed',Callable(self,'_open_script'))
-	_btn_state.connect('pressed',Callable(self,'_edit_state'))
-	_btn_state_script.connect('pressed',Callable(self,'_open_state_script'))
+	gui_input.connect(_check_click)
+	_menu_popup.id_pressed.connect(_menu_item_pressed)
+	_btn_open.pressed.connect(_open)
+	_btn_script.pressed.connect(_open_script)
+	_btn_state.pressed.connect(_edit_state)
+	_btn_state_script.pressed.connect(_open_state_script)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -220,11 +220,11 @@ func _menu_item_pressed(id: int) -> void:
 			
 			# Create the folder for the script
 			if main_dock.dir.make_dir_recursive(script_path.get_base_dir()) != OK:
-				push_error('[Popochiu] Could not create Prop folder for ' + name)
+				push_error('[Popochiu] Could not create Prop folder for ' + str(name))
 				return
 			
 			# Create the script
-			if ResourceSaver.save(script_path, prop_template) != OK:
+			if ResourceSaver.save(prop_template, script_path) != OK:
 				push_error('[Popochiu] Could not create script: %s.gd' % name)
 				return
 			
@@ -256,7 +256,7 @@ func _menu_item_pressed(id: int) -> void:
 			_remove_object()
 
 
-# Add this Object (Node3D, Character, InventoryItem, Dialog) to PopochiuData.cfg
+# Add this Object (Room, Character, InventoryItem, Dialog) to PopochiuData.cfg
 # so it can be used by Popochiu.
 func _add_object_to_core() -> void:
 	var target_array := ''
@@ -372,11 +372,9 @@ func _remove_object() -> void:
 		else ''
 	)
 	
-	_delete_dialog.connect('confirmed',Callable(self,'_remove_from_core'))
-	_delete_dialog.get_cancel_button().connect('pressed',Callable(self,'_disconnect_popup'))
-	_delete_dialog.get_close_button().connect(
-		'pressed', self, '_disconnect_popup'
-	)
+	_delete_dialog.confirmed.connect(_remove_from_core)
+	_delete_dialog.get_cancel_button().pressed.connect(_disconnect_popup)
+	_delete_dialog.cancelled.connect(_disconnect_popup)
 
 
 func _search_audio_files(dir: EditorFileSystemDirectory) -> Array:
@@ -419,13 +417,13 @@ func _remove_from_core() -> void:
 				
 				main_dock.ei.save_scene()
 			else:
-				# TODO: open the Node3D' scene, delete the node and save the Node3D
+				# TODO: open the Room' scene, delete the node and save the Room
 				pass
 			
 			# TODO: If it is a non-interactable Object, just delete the node from the
 			# scene, and maybe its sprite?
 			# TODO: Remove explicit exclusion, it's ugly
-			if not path:
+			if path.is_empty():
 				_disconnect_popup()
 				return
 	
@@ -433,7 +431,7 @@ func _remove_from_core() -> void:
 		_delete_from_file_system()
 	elif type in Constants.MAIN_TYPES:
 		show_add_to_core()
-	elif not path.get_extension():
+	elif path.get_extension().is_empty():
 		queue_free()
 	
 	_disconnect_popup()
@@ -446,15 +444,15 @@ func _delete_from_file_system() -> void:
 		main_dock.fs.get_filesystem_path(path.get_base_dir())
 	
 	# Remove files, sub folders and its files.
-	assert(
-		_recursive_delete(object_dir) == OK,
-		'[Popochiu] Error in recursive elimination of %s' % path.get_base_dir()
+	assert(\
+	_recursive_delete(object_dir) == OK,\
+	'[Popochiu] Error in recursive elimination of %s' % path.get_base_dir()\
 	)
 	
 	# Remove the object's folder
-	assert(
-		main_dock.dir.remove_at(path.get_base_dir()) == OK,
-		'[Popochiu] Could not delete folder: %s' % path.get_base_dir()
+	assert(\
+		main_dock.dir.remove_at(path.get_base_dir()) == OK,\
+		'[Popochiu] Could not delete folder: %s' % path.get_base_dir()\
 	)
 
 	# Update the file system structure in the EditorFileSystem.
@@ -512,13 +510,13 @@ func _delete_files(dir: EditorFileSystemDirectory) -> int:
 						)
 						if cues.has(resource.resource_path):
 							cues.erase(resource.resource_path)
-							assert(
+							assert(\
 								PopochiuResources.set_data_value(
 									'audio', arr, cues
-								) == OK,
+								) == OK,\
 								'[Popochiu] Could not save AudioManager after' +\
 								' attempting to delete AudioCue during deletion of' +\
-								' directory %s.' % dir.get_path()
+								' directory %s.' % dir.get_path()\
 							)
 							break
 		
@@ -545,11 +543,9 @@ func _delete_files(dir: EditorFileSystemDirectory) -> int:
 
 # Se desconecta de las señales del popup utilizado para configurar la eliminación.
 func _disconnect_popup() -> void:
-	_delete_dialog.disconnect('confirmed',Callable(self,'_remove_from_core'))
-	_delete_dialog.get_cancel_button().disconnect('pressed',Callable(self,'_disconnect_popup'))
-	_delete_dialog.get_close_button().disconnect(
-		'pressed', self, '_disconnect_popup'
-	)
+	_delete_dialog.confirmed.disconnect(_remove_from_core)
+	_delete_dialog.get_cancel_button().pressed.disconnect(_disconnect_popup)
+	_delete_dialog.cancelled.disconnect(_disconnect_popup)
 
 
 func _set_main_dock(value: Panel) -> void:
@@ -584,11 +580,11 @@ func _create_state_script() -> void:
 	
 	# Create the folder for the script
 	if main_dock.dir.make_dir_recursive(script_path.get_base_dir()) != OK:
-		push_error('[Popochiu] Could not create state script for ' + name)
+		push_error('[Popochiu] Could not create state script for ' + str(name))
 		return
 	
 	# Create the script
-	if ResourceSaver.save(script_path, template) != OK:
+	if ResourceSaver.save(template, script_path) != OK:
 		push_error('[Popochiu] Could not create script: %s.gd' % name)
 		return
 	
@@ -598,7 +594,7 @@ func _create_state_script() -> void:
 	state_resource.script_name = name
 	state_resource.scene = path
 	
-	if ResourceSaver.save(state_resource.resource_path, state_resource) != OK:
+	if ResourceSaver.save(state_resource, state_resource.resource_path) != OK:
 		push_error('[Popochiu] Could not create script: %s.gd' % name)
 		return
 	

@@ -22,7 +22,7 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
-func set_main_dock(node: PopochiuDock) -> void:
+func set_main_dock(node: Panel) -> void:
 	super.set_main_dock(node)
 
 
@@ -34,7 +34,7 @@ func room_opened(r: Node2D) -> void:
 
 
 func create() -> void:
-	if not _new_hotspot_name:
+	if _new_hotspot_name.is_empty():
 		_error_feedback.show()
 		return
 	
@@ -44,15 +44,15 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the folder for the Hotspot
-	assert(
-		_main_dock.dir.make_dir_recursive(_new_hotspot_path.get_base_dir()) == OK,
-		'[Popochiu] Could not create Hotspot folder for ' + _new_hotspot_name
+	assert(\
+		_main_dock.dir.make_dir_recursive(_new_hotspot_path.get_base_dir()) == OK,\
+		'[Popochiu] Could not create Hotspot folder for ' + _new_hotspot_name\
 	)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Crear el script de el hotspot (si tiene interacción)
 	var hotspot_template := load(SCRIPT_TEMPLATE)
-	if ResourceSaver.save(script_path, hotspot_template) != OK:
+	if ResourceSaver.save(hotspot_template, script_path) != OK:
 		push_error('[Popochiu] Could not create: %s.gd' % _new_hotspot_name)
 		# TODO: Show feedback in the popup
 		return
@@ -84,7 +84,7 @@ func create() -> void:
 	_main_dock.ei.save_scene()
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-	# Update the list of Hotspots in the Node3D tab
+	# Update the list of Hotspots in the Room tab
 	room_tab.add_to_list(
 		Constants.Types.HOTSPOT,
 		_new_hotspot_name,

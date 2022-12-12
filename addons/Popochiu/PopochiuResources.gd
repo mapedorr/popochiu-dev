@@ -6,7 +6,7 @@ enum Types {
 	CHARACTER,
 	INVENTORY_ITEM,
 	DIALOG,
-	# Node3D's object types
+	# Room's object types
 	PROP,
 	HOTSPOT,
 	REGION,
@@ -80,31 +80,28 @@ const IMPORTER_TEXTURE := 'importer_defaults/texture'
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 # Verify if the folders (where Popochiu's objects will be) exists
 static func init_file_structure() -> bool:
-	var directory := DirAccess.new()
-	var is_first_install := !directory.dir_exists(BASE_DIR)
+	var is_first_install := !DirAccess.dir_exists_absolute(BASE_DIR)
 	
 	# Create the folders that does not exist
 	for d in _get_directories().values():
-		if not directory.dir_exists(d):
-			directory.make_dir_recursive(d)
+		if not DirAccess.dir_exists_absolute(d):
+			DirAccess.make_dir_recursive_absolute(d)
 	
 	# Create config files
 	
 	# Create .cfg file
-	if not directory.file_exists(DATA):
+	if not FileAccess.file_exists(DATA):
 		_create_empty_file(DATA)
 	
 	# Create settings file
-	if not directory.file_exists(SETTINGS):
+	if not FileAccess.file_exists(SETTINGS):
 		if ResourceSaver.save(SETTINGS_CLASS.new(), SETTINGS) != OK:
 			prints('[Popochiu] Error %s creating PopochiuSettings.tres')
 	
 	# Create Globals file
-	if not directory.file_exists(GLOBALS_SNGL):
-		var file = FileAccess.new()
-		file.open(GLOBALS_SNGL, FileAccess.WRITE)
-		file.store_string('extends Node')
-		file.close()
+	if not FileAccess.file_exists(GLOBALS_SNGL):
+		var globals_file = FileAccess.open(GLOBALS_SNGL, FileAccess.WRITE)
+		globals_file.store_string('extends Node')
 	
 	return is_first_install
 

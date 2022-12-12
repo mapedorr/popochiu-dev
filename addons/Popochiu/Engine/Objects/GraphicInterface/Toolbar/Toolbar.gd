@@ -10,6 +10,7 @@ var is_disabled := false
 
 var _can_hide := true
 
+@onready var _tween := create_tween()
 @onready var _box: BoxContainer = find_child('Box')
 @onready var _btn_dialog_speed: ToolbarButton = find_child('BtnDialogSpeed')
 @onready var _btn_power: ToolbarButton = find_child('BtnPower')
@@ -22,14 +23,14 @@ func _ready() -> void:
 		position.y = _hide_y
 	
 		# Connect to self signals
-		connect('mouse_entered',Callable(self,'_open'))
-		connect('mouse_exited',Callable(self,'_close'))
+		mouse_entered.connect(_open)
+		mouse_exited.connect(_close)
 	
 	# Conectarse a señales de los hijos de la mamá
 	for b in _box.get_children():
-		(b as TextureButton).connect('mouse_entered',Callable(self,'_disable_hide'))
-		(b as TextureButton).connect('mouse_exited',Callable(self,'_enable_hide'))
-
+		(b as TextureButton).mouse_entered.connect(_disable_hide)
+		(b as TextureButton).mouse_exited.connect(_enable_hide)
+	
 	if not used_in_game:
 		hide()
 
@@ -42,12 +43,9 @@ func disable() -> void:
 		hide()
 		return
 	
-	$Tween.interpolate_property(
-		self, 'position:y',
-		_hide_y, _hide_y - 3.5,
-		0.3, Tween.TRANS_LINEAR, Tween.EASE_OUT
-	)
-	$Tween.start()
+	_tween.tween_property(self, 'position:y', _hide_y - 3.5, 0.3)\
+	.from(_hide_y).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
+	_tween.play()
 
 
 func enable() -> void:
@@ -57,12 +55,9 @@ func enable() -> void:
 		show()
 		return
 	
-	$Tween.interpolate_property(
-		self, 'position:y',
-		_hide_y - 3.5, _hide_y,
-		0.3, Tween.TRANS_SINE, Tween.EASE_OUT
-	)
-	$Tween.start()
+	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
+	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_tween.play()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -70,12 +65,10 @@ func _open() -> void:
 	if E.settings.toolbar_always_visible: return
 	if not is_disabled and position.y != _hide_y: return
 	
-	$Tween.interpolate_property(
-		self, 'position:y',
-		_hide_y if not is_disabled else position.y, 0.0,
-		0.5, Tween.TRANS_EXPO, Tween.EASE_OUT
-	)
-	$Tween.start()
+	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
+	.from(_hide_y if not is_disabled else position.y)\
+	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	_tween.play()
 
 
 func _close() -> void:
@@ -85,12 +78,12 @@ func _close() -> void:
 	
 	if not _can_hide: return
 	
-	$Tween.interpolate_property(
+	_tween.tween_property(
 		self, 'position:y',
-		0.0, _hide_y if not is_disabled else _hide_y - 3.5,
-		0.2, Tween.TRANS_SINE, Tween.EASE_IN
-	)
-	$Tween.start()
+		_hide_y if not is_disabled else _hide_y - 3.5,
+		0.2
+	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	_tween.play()
 
 
 func _disable_hide() -> void:

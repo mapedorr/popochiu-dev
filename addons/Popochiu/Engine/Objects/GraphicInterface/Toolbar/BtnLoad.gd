@@ -3,7 +3,7 @@ extends 'ToolbarButton.gd'
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	E.connect('game_saved',Callable(self,'show'))
+	E.game_saved.connect(show)
 	
 	if E.has_save():
 		show()

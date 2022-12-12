@@ -12,6 +12,8 @@ const INVENTORY_ITEM_SCRIPT_TEMPLATE := \
 const BASE_INVENTORY_ITEM_PATH := \
 'res://addons/Popochiu/Engine/Objects/InventoryItem/PopochiuInventoryItem.tscn'
 const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
+const PopochiuDock :=\
+preload('res://addons/Popochiu/Editor/MainDock/PopochiuDock.gd')
 
 var _new_item_name := ''
 var _new_item_path := ''
@@ -24,14 +26,14 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
-func set_main_dock(node: PopochiuDock) -> void:
+func set_main_dock(node: Panel) -> void:
 	super.set_main_dock(node)
 	# res://popochiu/InventoryItems/
 	_item_path_template = _main_dock.INVENTORY_ITEMS_PATH + '%s/Inventory%s'
 
 
 func create() -> void:
-	if not _new_item_name:
+	if _new_item_name.is_empty():
 		_error_feedback.show()
 		return
 	
@@ -46,7 +48,7 @@ func create() -> void:
 	# Create the state Resource for the item and a script so devs
 	# can add extra properties to that state
 	var state_template: Script = load(INVENTORY_ITEM_STATE_TEMPLATE)
-	if ResourceSaver.save(_new_item_path + 'State.gd', state_template) != OK:
+	if ResourceSaver.save(state_template, _new_item_path + 'State.gd') != OK:
 		push_error('[Popochiu] Could not create item state script: %s' %\
 		_new_item_name)
 		# TODO: Show feedback in the popup
@@ -58,8 +60,7 @@ func create() -> void:
 	item_resource.scene = _new_item_path + '.tscn'
 	item_resource.resource_name = _new_item_name
 	
-	if ResourceSaver.save(_new_item_path + '.tres',\
-	item_resource) != OK:
+	if ResourceSaver.save(item_resource, _new_item_path + '.tres') != OK:
 		push_error(\
 		'[Popochiu] Could not create PopochiuInventoryItemData for item: %s' %\
 		_new_item_name)
@@ -69,7 +70,7 @@ func create() -> void:
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the script for the item
 	var item_template := load(INVENTORY_ITEM_SCRIPT_TEMPLATE)
-	if ResourceSaver.save(_new_item_path + '.gd', item_template) != OK:
+	if ResourceSaver.save(item_template, _new_item_path + '.gd') != OK:
 		push_error('[Popochiu] Could not create script: %s.gd' % _new_item_name)
 		# TODO: Show feedback in the popup
 		return
@@ -80,7 +81,7 @@ func create() -> void:
 		'PopochiuInventoryItemData = null',
 		"PopochiuInventoryItemData = preload('Inventory%s.tres')" % _new_item_name
 	)
-	ResourceSaver.save(_new_item_path + '.gd', item_script)
+	ResourceSaver.save(item_script, _new_item_path + '.gd')
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the item instance
@@ -99,7 +100,7 @@ func create() -> void:
 	# Save the item scene (.tscn)
 	var new_item_packed_scene: PackedScene = PackedScene.new()
 	new_item_packed_scene.pack(new_item)
-	if ResourceSaver.save(_new_item_path + '.tscn', new_item_packed_scene) != OK:
+	if ResourceSaver.save(new_item_packed_scene, _new_item_path + '.tscn') != OK:
 		push_error('[Popochiu] Could not create item: %s.tscn' % _new_item_name)
 		# TODO: Show feedback in the popup
 		return

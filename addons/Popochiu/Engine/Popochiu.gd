@@ -48,6 +48,7 @@ var _config: ConfigFile = null
 var _loaded_game := {}
 var _hovered_queue := []
 
+@onready var _tween := create_tween()
 @onready var main_camera: Camera2D = find_child('MainCamera')
 @onready var _defaults := {
 	camera_limits = {
@@ -145,7 +146,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 func wait(time := 1.0, is_in_queue := true) -> void:
 #	if is_in_queue: yield()
 	if cutscene_skipped:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	await get_tree().create_timer(time).timeout
 
@@ -159,11 +160,11 @@ func wait(time := 1.0, is_in_queue := true) -> void:
 # Graphic Interface will appear once all instructions have ran.
 func run(instructions: Array, show_gi := true) -> void:
 	if instructions.is_empty():
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	if _running:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		await run(instructions, show_gi)
 		return
 	
@@ -192,7 +193,7 @@ func run(instructions: Array, show_gi := true) -> void:
 		stop_camera_shake()
 	
 	if instructions.is_empty():
-		await get_tree().idle_frame
+		await get_tree().process_frame
 	
 	_running = false
 
@@ -259,7 +260,7 @@ func goto_room(
 		return
 	
 	if Engine.get_process_frames() == 0:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 	
 	get_tree().change_scene_to_file(load(rp).scene)
 
@@ -270,7 +271,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	
 	# When running from the Editor the first time, use goto_room
 	if Engine.get_process_frames() == 0:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 
 		self.in_room = true
 		
@@ -328,7 +329,7 @@ func room_readied(room: PopochiuRoom) -> void:
 		await $TransitionLayer.transition_finished
 		await wait(0.3, false)
 	else:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 	
 	if not current_room.hide_gi:
 		G.done()
@@ -353,7 +354,7 @@ func camera_offset(offset := Vector2.ZERO, is_in_queue := true) -> void:
 	
 	main_camera.offset = offset
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 # Makes the camera shake with strength for duration seconds
@@ -379,7 +380,7 @@ func camera_shake_no_block(
 	_shake_timer = duration
 	_is_camera_shaking = true
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 
 # Changes the camera zoom. If target is larger than Vector2(1, 1) the camera
@@ -390,14 +391,11 @@ func camera_zoom(
 ) -> void:
 #	if is_in_queue: yield()
 	
-	$Tween.interpolate_property(
-		main_camera, 'zoom',
-		main_camera.zoom, target,
-		duration, Tween.TRANS_SINE, Tween.EASE_OUT
-	)
-	$Tween.start()
+	_tween.tween_property(main_camera, 'zoom', target, duration)\
+	.from(main_camera.zoom).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_tween.play()
 	
-	await $Tween.tween_all_completed
+	await _tween.tween_all_completed
 
 
 # Returns a String of a text that could be a position key
@@ -457,7 +455,7 @@ func runnable(
 		# TODO: What should happen if the skipped function was an animation that
 		# triggers calls during execution? What should happen if the skipped
 		# function has to change the state of the game?
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		return
 	
 	var f := Callable(node, method)
@@ -470,7 +468,7 @@ func runnable(
 			# TODO: How to do this in GDScript 2
 			# await node.yield_signal
 	else:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 
 
 # Checks if the room with script_name exists in the array of rooms of Popochiu
@@ -639,9 +637,9 @@ func _eval_string(text: String) -> void:
 				elif C.is_valid_character(character_name):
 					await C.character_say_no_block(character_name, dialogue, false)
 				else:
-					await get_tree().idle_frame
+					await get_tree().process_frame
 			else:
-				await get_tree().idle_frame
+				await get_tree().process_frame
 	
 	auto_continue_after = -1.0
 

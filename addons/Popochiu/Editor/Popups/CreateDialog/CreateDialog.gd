@@ -18,14 +18,14 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
-func set_main_dock(node: PopochiuDock) -> void:
+func set_main_dock(node: Panel) -> void:
 	super.set_main_dock(node)
 	# Por defecto: res://popochiu/Dialogs
 	_dialog_path_template = _main_dock.DIALOGS_PATH + '%s/Dialog%s'
 
 
 func create() -> void:
-	if not _new_dialog_name:
+	if _new_dialog_name.is_empty():
 		_error_feedback.show()
 		return
 	
@@ -39,7 +39,7 @@ func create() -> void:
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Crear el script del nuevo diálogo
 	var dialog_template := load(DIALOG_SCRIPT_TEMPLATE)
-	if ResourceSaver.save(_new_dialog_path + '.gd', dialog_template) != OK:
+	if ResourceSaver.save(dialog_template, _new_dialog_path + '.gd') != OK:
 		push_error('[Popochiu] Could not create script: %s.gd' % _new_dialog_name)
 		# TODO: Show feedback in the popup
 		return
@@ -50,7 +50,7 @@ func create() -> void:
 	dialog_resource.set_script(load(_new_dialog_path + '.gd'))
 	dialog_resource.script_name = _new_dialog_name
 	dialog_resource.resource_name = _new_dialog_name
-	if ResourceSaver.save(_new_dialog_path + '.tres', dialog_resource) != OK:
+	if ResourceSaver.save(dialog_resource, _new_dialog_path + '.tres') != OK:
 		push_error('[Popochiu] Could not create dialog: %s' %_new_dialog_name)
 		# TODO: Show feedback in the popup
 		return

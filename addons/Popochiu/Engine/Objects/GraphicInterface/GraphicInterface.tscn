@@ -4,12 +4,12 @@
 [ext_resource type="Theme" uid="uid://dpequqav4rjaf" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Resources/PopochiuTheme.tres" id="2"]
 [ext_resource type="PackedScene" uid="uid://cogbln3rqoqtm" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogText/DialogText.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://ciar5j7qm85bc" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Inventory/Inventory.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogMenu/DialogMenu.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Toolbar/Toolbar.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://dhsfl8ot4j5fj" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogMenu/DialogMenu.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://0cqerawlxb3o" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/Toolbar/Toolbar.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://bos3mruwiw4a5" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/History/History.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/SaveLoad/SaveLoad.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://cm3mcl2hp08ef" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/SaveLoad/SaveLoad.tscn" id="8"]
 [ext_resource type="PackedScene" uid="uid://cm34lgxbyi4bb" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/InfoBar/InfoBar.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DisplayBox/DisplayBox.tscn" id="11"]
+[ext_resource type="PackedScene" uid="uid://bvjq6ylvam48c" path="res://addons/Popochiu/Engine/Objects/GraphicInterface/DisplayBox/DisplayBox.tscn" id="11"]
 
 [node name="GraphicInterface" type="CanvasLayer"]
 layer = 10
@@ -23,12 +23,12 @@ offset_bottom = 180.0
 mouse_filter = 2
 
 [node name="InfoBar" parent="MainContainer" instance=ExtResource("9")]
-anchors_preset = 12
+layout_mode = 1
 offset_top = -26.0
 offset_bottom = 0.0
-grow_horizontal = 2
 
 [node name="DialogText" parent="MainContainer" instance=ExtResource("3")]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -42,6 +42,7 @@ grow_vertical = 2
 theme = ExtResource("2")
 
 [node name="DisplayBox" parent="MainContainer" instance=ExtResource("11")]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -53,21 +54,23 @@ offset_right = 120.0
 offset_bottom = 12.0
 
 [node name="Inventory" parent="MainContainer" instance=ExtResource("4")]
+layout_mode = 0
 offset_left = 4.0
 offset_right = 50.0
 
 [node name="DialogMenu" parent="MainContainer" instance=ExtResource("5")]
-anchors_preset = 15
+layout_mode = 1
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Toolbar" parent="MainContainer" instance=ExtResource("6")]
-anchors_preset = 1
+layout_mode = 1
 offset_left = -106.0
 offset_right = -4.0
 grow_horizontal = 0
 
 [node name="ClickHandler" type="Button" parent="MainContainer"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -77,12 +80,8 @@ mouse_filter = 2
 
 [node name="History" parent="." instance=ExtResource("7")]
 visible = false
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="SaveLoad" parent="." instance=ExtResource("8")]
 visible = false
-anchors_preset = 15
 grow_horizontal = 2
 grow_vertical = 2

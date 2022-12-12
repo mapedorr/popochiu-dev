@@ -16,7 +16,6 @@ const PopochiuObjectRow := preload('ObjectRow/PopochiuObjectRow.gd')
 
 var ei: EditorInterface
 var fs: EditorFileSystem
-var dir := DirAccess.new()
 var popochiu: Node = null
 var last_selected: PopochiuObjectRow = null
 
@@ -29,9 +28,9 @@ var _rows_paths := []
 @onready var delete_checkbox: CheckBox = delete_dialog.find_child('CheckBox')
 @onready var delete_extra: Container = delete_dialog.find_child('Extra')
 @onready var loading_dialog: Popup = find_child('Loading')
-@onready var setup_dialog: Popup = find_child('Setup')
+@onready var setup_dialog: AcceptDialog = find_child('Setup')
 @onready var _tab_container: TabContainer = find_child('TabContainer')
-@onready var _tab_room: VBoxContainer = _tab_container.get_node('Node3D')
+@onready var _tab_room: VBoxContainer = _tab_container.get_node('Room')
 @onready var _tab_audio: VBoxContainer = _tab_container.get_node('Audio')
 # ▨▨▨▨ FOOTER ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨
 @onready var _btn_docs: Button = find_child('BtnDocs')
@@ -43,7 +42,7 @@ var _rows_paths := []
 		path = ROOMS_PATH,
 		group = find_child('RoomsGroup'),
 		popup = find_child('CreateRoom'),
-		scene = ROOMS_PATH + ('%s/Node3D%s.tscn')
+		scene = ROOMS_PATH + ('%s/Room%s.tscn')
 	},
 	Constants.Types.CHARACTER: {
 		path = CHARACTERS_PATH,
@@ -70,9 +69,9 @@ var _rows_paths := []
 func _ready() -> void:
 	popochiu = load(POPOCHIU_SCENE).instantiate()
 	
-	_btn_setup.icon = get_icon("Edit", "EditorIcons")
-	_btn_settings.icon = get_icon('Tools', 'EditorIcons')
-	_btn_docs.icon = get_icon('HelpSearch', 'EditorIcons')
+	_btn_setup.icon = get_theme_icon("Edit", "EditorIcons")
+	_btn_settings.icon = get_theme_icon('Tools', 'EditorIcons')
+	_btn_docs.icon = get_theme_icon('HelpSearch', 'EditorIcons')
 	_version.text = 'v' + PopochiuResources.get_version()
 	
 	# Set the Main tab selected by default
@@ -81,21 +80,17 @@ func _ready() -> void:
 	# Connect to children signals
 	for t in _types:
 		_types[t].popup.set_main_dock(self)
-		_types[t].group.connect(
-			'create_clicked', self, '_open_popup', [_types[t].popup]
-		)
+		_types[t].group.create_clicked.connect(_open_popup.bind(_types[t].popup))
 	
 	_tab_room.main_dock = self
 	_tab_room.object_row = _object_row
 	_tab_audio.main_dock = self
 	
-	_tab_container.connect('tab_changed',Callable(self,'_on_tab_changed'))
-	
-	_btn_docs.connect('pressed',Callable(OS,'shell_open').bind(Constants.WIKI))
-	_btn_settings.connect('pressed',Callable(self,'_open_settings'))
-	_btn_setup.connect('pressed',Callable(self,'open_setup'))
-	
-	get_tree().connect('node_added',Callable(self,'_check_node'))
+	_tab_container.tab_changed.connect(_on_tab_changed)
+	_btn_docs.pressed.connect(OS.shell_open.bind(Constants.WIKI))
+	_btn_settings.pressed.connect(_open_settings)
+	_btn_setup.pressed.connect(open_setup)
+	get_tree().node_added.connect(_check_node)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -142,7 +137,7 @@ func fill_data() -> void:
 				# Check if the object in the list is in its corresponding array
 				# in Popochiu (Popochiu.tscn)
 				var is_in_core := true
-				var has_state_script: bool = dir.file_exists(
+				var has_state_script: bool = FileAccess.file_exists(
 					row.path.replace('.tscn', 'State.gd')
 				)
 				
@@ -262,7 +257,7 @@ func _create_object_row(type: int, name_to_add: String) -> PopochiuObjectRow:
 	new_obj.type = type
 	new_obj.path = _types[type].scene % [name_to_add, name_to_add]
 	new_obj.main_dock = self
-	new_obj.connect('clicked',Callable(self,'_select_object'))
+	new_obj.clicked.connect(_select_object)
 	
 	_rows_paths.append(new_obj.path)
 	

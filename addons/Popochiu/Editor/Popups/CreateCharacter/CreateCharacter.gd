@@ -12,6 +12,8 @@ const CHARACTER_SCRIPT_TEMPLATE :=\
 const CHARACTER_SCENE :=\
 'res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacter.tscn'
 const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
+const PopochiuDock :=\
+preload('res://addons/Popochiu/Editor/MainDock/PopochiuDock.gd')
 
 var _new_character_name := ''
 var _new_character_path := ''
@@ -24,14 +26,14 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
-func set_main_dock(node: PopochiuDock) -> void:
+func set_main_dock(node: Panel) -> void:
 	super.set_main_dock(node)
 	# res://popochiu/Characters
 	_character_path_template = _main_dock.CHARACTERS_PATH + '%s/Character%s'
 
 
 func create() -> void:
-	if not _new_character_name:
+	if _new_character_name.is_empty():
 		_error_feedback.show()
 		return
 	
@@ -46,7 +48,7 @@ func create() -> void:
 	# Create the state Resource for the character and a script so devs
 	# can add extra properties to that state
 	var state_template: Script = load(CHARACTER_STATE_TEMPLATE)
-	if ResourceSaver.save(_new_character_path + 'State.gd', state_template) != OK:
+	if ResourceSaver.save(state_template, _new_character_path + 'State.gd') != OK:
 		push_error('[Popochiu] Could not create character state script: %s' %\
 		_new_character_name)
 		# TODO: Show feedback in the popup
@@ -58,8 +60,7 @@ func create() -> void:
 	character_resource.scene = _new_character_path + '.tscn'
 	character_resource.resource_name = _new_character_name
 	
-	if ResourceSaver.save(_new_character_path + '.tres',\
-	character_resource) != OK:
+	if ResourceSaver.save(character_resource, _new_character_path + '.tres') != OK:
 		push_error('[Popochiu] Could not create PopochiuCharacterData for character: %s' %\
 		_new_character_name)
 		# TODO: Show feedback in the popup
@@ -68,7 +69,7 @@ func create() -> void:
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the script for the character
 	var character_template := load(CHARACTER_SCRIPT_TEMPLATE)
-	if ResourceSaver.save(_new_character_path + '.gd', character_template) != OK:
+	if ResourceSaver.save(character_template, _new_character_path + '.gd') != OK:
 		push_error('[Popochiu] Could not create script: %s.gd' % _new_character_name)
 		# TODO: Show feedback in the popup
 		return
@@ -79,7 +80,7 @@ func create() -> void:
 		'PopochiuCharacterData = null',
 		"PopochiuCharacterData = preload('Character%s.tres')" % _new_character_name
 	)
-	ResourceSaver.save(_new_character_path + '.gd', character_script)
+	ResourceSaver.save(character_script, _new_character_path + '.gd')
 
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the character instance
@@ -96,8 +97,9 @@ func create() -> void:
 	# Save the character scene (.tscn)
 	var new_character_packed_scene: PackedScene = PackedScene.new()
 	new_character_packed_scene.pack(new_character)
-	if ResourceSaver.save(_new_character_path + '.tscn',\
-	new_character_packed_scene) != OK:
+	if ResourceSaver.save(
+		new_character_packed_scene, _new_character_path + '.tscn'
+	) != OK:
 		push_error('[Popochiu] Could not create character: %s.tscn' % _new_character_name)
 		# TODO: Show feedback in the popup
 		return

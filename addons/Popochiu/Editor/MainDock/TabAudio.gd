@@ -44,8 +44,8 @@ var _created_audio_cues := 0
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	_btn_search_files.icon = get_icon('Search', 'EditorIcons')
-	_btn_search_files.connect('pressed',Callable(self,'search_audio_files'))
+	_btn_search_files.icon = get_theme_icon('Search', 'EditorIcons')
+	_btn_search_files.pressed.connect(search_audio_files)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -116,10 +116,10 @@ func _group_audio_cues() -> void:
 		)
 		entries_to_delete[d] = []
 		
-		if not group_data: continue
+		if group_data.is_empty(): continue
 		
 		for rp in group_data:
-			if not (main_dock.dir as DirAccess).file_exists(rp):
+			if not FileAccess.file_exists(rp):
 				entries_to_delete[d].append(rp)
 				continue
 			
@@ -143,8 +143,9 @@ func _group_audio_cues() -> void:
 		
 		for rp in entries_to_delete[dic]:
 			(_groups[dic].group as PopochiuGroup).remove_by_name(
-				rp.get_file().get_basename()\
-				super.capitalize().to_lower().replace(' ', '_')
+				rp.get_file().get_basename().capitalize().to_lower().replace(
+					' ', '_'
+				)
 			)
 			
 			paths.erase(rp)
@@ -163,7 +164,7 @@ func _create_audio_cue_row(audio_cue: AudioCue) -> HBoxContainer:
 	ar.audio_tab = self
 	ar.stream_player = _asp
 	
-	ar.connect('deleted',Callable(self,'_audio_cue_deleted'))
+	ar.deleted.connect(_audio_cue_deleted)
 	
 	return ar
 
@@ -225,7 +226,7 @@ func _create_audio_file_row(file_path: String) -> void:
 	ar.audio_tab = self
 	ar.stream_player = _asp
 	
-	ar.connect('target_clicked',Callable(self,'_create_audio_cue').bind(file_path, ar))
+	ar.target_clicked.connect(_create_audio_cue.bind(file_path, ar))
 	
 	_unassigned_group.add(ar)
 	_audio_files_to_assign.append(file_path)
@@ -245,8 +246,8 @@ type: String, path: String, audio_row: Container = null
 	ac.resource_name = cue_name.to_lower()
 	
 	var error: int = ResourceSaver.save(
-		'%s/%s' % [path.get_base_dir(), cue_file_name],
-		ac
+		ac,
+		'%s/%s' % [path.get_base_dir(), cue_file_name]
 	)
 	
 	assert(error == OK) #,"[Popochiu] Can't save AudioCue: %s" % cue_file_name)

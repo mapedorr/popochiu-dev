@@ -9,7 +9,6 @@ var main_dock: Panel
 
 var _editor_interface := get_editor_interface()
 var _editor_file_system := _editor_interface.get_resource_filesystem()
-var _directory := DirAccess.new()
 var _is_first_install := false
 var _input_actions :=\
 preload('res://addons/Popochiu/Engine/Others/InputActions.gd')
@@ -211,11 +210,11 @@ func _remove_input_actions() -> void:
 
 func _move_addon_folders() -> void:
 	# Move files and folders so developer can overwrite them
-#	_directory.rename(
+#	DirAccess.rename_absolute(
 #		PopochiuResources.GRAPHIC_INTERFACE_ADDON.get_base_dir(),
 #		PopochiuResources.GRAPHIC_INTERFACE_POPOCHIU.get_base_dir()
 #	)
-#	_directory.rename(
+#	DirAccess.rename_absolute(
 #		PopochiuResources.TRANSITION_LAYER_ADDON.get_base_dir(),
 #		PopochiuResources.TRANSITION_LAYER_POPOCHIU.get_base_dir()
 #	)
@@ -264,10 +263,9 @@ func _fix_dependencies(dir: EditorFileSystemDirectory) -> void:
 	for f in dir.get_file_count():
 		var path = dir.get_file_path(f)
 		var dependencies = ResourceLoader.get_dependencies(path)
-		var file = FileAccess.new()
 
 		for d in dependencies:
-			if file.file_exists(d):
+			if FileAccess.file_exists(d):
 				continue
 			_fix_dependency(d, res, path)
 
@@ -293,14 +291,13 @@ func _fix_dependency(dependency, directory, resource_path):
 	for f in directory.get_file_count():
 		if not directory.get_file(f) == dependency.get_file():
 			continue
-		var file = FileAccess.new()
-		file.open(resource_path, file.READ)
-		var text = file.get_as_text()
-		file.close()
+		var file_read = FileAccess.open(resource_path, FileAccess.READ)
+		var text = file_read.get_as_text()
+		
 		text = text.replace(dependency, directory.get_file_path(f))
-		file.open(resource_path, file.WRITE)
-		file.store_string(text)
-		file.close()
+		
+		var file_write = FileAccess.open(resource_path, FileAccess.WRITE)
+		file_write.store_string(text)
 
 
 func _on_sources_changed(exist: bool) -> void:

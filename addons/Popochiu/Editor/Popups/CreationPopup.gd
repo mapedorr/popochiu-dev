@@ -1,9 +1,7 @@
 extends ConfirmationDialog
 
-const PopochiuDock := preload('res://addons/Popochiu/Editor/MainDock/PopochiuDock.gd')
-
 var _name := ''
-var _main_dock: PopochiuDock : set = set_main_dock
+var _main_dock: Panel : set = set_main_dock
 
 @onready var _input: LineEdit = find_child('Input')
 @onready var _error_feedback: Label = find_child('ErrorFeedback')
@@ -20,7 +18,7 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
-func set_main_dock(node: PopochiuDock) -> void:
+func set_main_dock(node: Panel) -> void:
 	_main_dock = node
 
 
