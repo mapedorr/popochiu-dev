@@ -34,6 +34,7 @@ var _looking_dir: int = Looking.DOWN
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready():
+	super()
 	if not Engine.is_editor_hint():
 		idle(false)
 		set_process(follow_player)
@@ -103,7 +104,7 @@ func walk(target_pos: Vector2, is_in_queue := true) -> void:
 	play_walk(target_pos)
 	
 	# Trigger the signal for the room  to start moving the character
-	emit_signal('started_walk_to', self, position, target_pos)
+	started_walk_to.emit(self, position, target_pos)
 	
 	await C.character_move_ended
 	
@@ -115,7 +116,7 @@ func stop_walking(is_in_queue := true) -> void:
 	
 	is_moving = false
 	
-	emit_signal('stoped_walk')
+	stoped_walk.emit()
 	
 	await get_tree().process_frame
 
@@ -184,7 +185,7 @@ func say(dialog: String, is_in_queue := true) -> void:
 	if vo_name:
 		A.play_no_block(vo_name, false, global_position)
 	
-	C.emit_signal('character_spoke', self, dialog)
+	C.character_spoke.emit(self, dialog)
 	
 	await G.continue_clicked
 	

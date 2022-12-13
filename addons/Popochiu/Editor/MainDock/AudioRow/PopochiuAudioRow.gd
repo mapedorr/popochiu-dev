@@ -121,13 +121,13 @@ func _open_in_inspector(event: InputEvent) -> void:
 func _menu_item_pressed(id: int) -> void:
 	match id:
 		MenuOptions.ADD_TO_MUSIC:
-			emit_signal('target_clicked', 'music')
+			target_clicked.emit('music')
 		MenuOptions.ADD_TO_SFX:
-			emit_signal('target_clicked', 'sfx')
+			target_clicked.emit('sfx')
 		MenuOptions.ADD_TO_VOICE:
-			emit_signal('target_clicked', 'voice')
+			target_clicked.emit('voice')
 		MenuOptions.ADD_TO_UI:
-			emit_signal('target_clicked', 'ui')
+			target_clicked.emit('ui')
 		MenuOptions.DELETE:
 			_ask_basic_delete()
 
@@ -166,8 +166,8 @@ func _stop() -> void:
 	_label.add_theme_color_override('font_color', _dflt_font_color)
 	_btn_play.icon = _btn_play.get_theme_icon('MainPlay', 'EditorIcons')
 	
-	if stream_player.is_connected('finished',Callable(self,'_stop')):
-		stream_player.disconnect('finished',Callable(self,'_stop'))
+	if stream_player.finished.is_connected(_stop):
+		stream_player.finished.disconnect(_stop)
 	
 	audio_tab.last_played = null
 
@@ -202,7 +202,7 @@ func _ask_basic_delete() -> void:
 
 
 func _remove_in_audio_manager() -> void:
-	_confirmation_dialog.disconnect('confirmed',Callable(self,'_remove_in_audio_manager'))
+	_confirmation_dialog.confirmed.disconnect(_remove_in_audio_manager)
 	
 	# Remove the AudioCue from PopochiuData.cfg --------------------------------
 	var group_data: Array = PopochiuResources.get_data_value(
@@ -217,7 +217,7 @@ func _remove_in_audio_manager() -> void:
 			PopochiuResources.set_data_value('audio', cue_group, group_data)
 	
 	# Add the audio file to the "Not assigned" group
-	emit_signal('deleted', audio_cue.audio.resource_path)
+	deleted.emit(audio_cue.audio.resource_path)
 	
 	if _delete_all_checkbox.pressed:
 		_delete_from_file_system(audio_cue.resource_path)

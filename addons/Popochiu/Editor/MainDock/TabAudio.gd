@@ -271,7 +271,7 @@ type: String, path: String, audio_row: Container = null
 	
 	if not target_data.has(res.resource_path):
 		target_data.append(res.resource_path)
-		target_data.sort_custom(Callable(A,'_sort_resource_paths'))
+		target_data.sort_custom(A.sort_resource_paths)
 		PopochiuResources.set_data_value('audio', target, target_data)
 	else:
 		await get_tree().process_frame

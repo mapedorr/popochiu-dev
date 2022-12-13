@@ -126,8 +126,8 @@ func exit_room() -> void:
 func add_character(chr: PopochiuCharacter) -> void:
 	$Characters.add_child(chr)
 	#warning-ignore:return_value_discarded
-	chr.connect('started_walk_to',Callable(self,'_update_navigation_path'))
-	chr.connect('stoped_walk',Callable(self,'_clear_navigation_path'))
+	chr.started_walk_to.connect(_update_navigation_path)
+	chr.stoped_walk.connect(_clear_navigation_path)
 
 
 func remove_character(chr: PopochiuCharacter) -> void:
@@ -303,5 +303,5 @@ func _clear_navigation_path() -> void:
 		_path.clear()
 	
 	_moving_character.idle(false)
-	C.emit_signal('character_move_ended', _moving_character)
+	C.character_move_ended.emit(_moving_character)
 	_moving_character = null

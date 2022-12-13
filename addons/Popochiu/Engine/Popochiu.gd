@@ -654,4 +654,4 @@ func _set_in_room(value: bool) -> void:
 #func _set_language_idx(value: int) -> void:
 #	default_language = value
 #	TranslationServer.set_locale(languages[value])
-#	emit_signal('language_changed')
+#	language_changed.emit()

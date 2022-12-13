@@ -82,10 +82,10 @@ func _enter_tree() -> void:
 	_editor_interface.get_file_system_dock().files_moved.connect(_on_files_moved)
 	# TODO: This connection might be needed only by TabAudio.gd, so probably
 	# would be better if it is done there
-	_editor_file_system.connect('sources_changed',Callable(self,'_on_sources_changed'))
+	_editor_file_system.sources_changed.connect(_on_sources_changed)
 	
-	connect('scene_changed',Callable(main_dock,'scene_changed'))
-	connect('scene_closed',Callable(main_dock,'scene_closed'))
+	scene_changed.connect(main_dock.scene_changed)
+	scene_closed.connect(main_dock.scene_closed)
 	# ================================================== Connect to signals ====
 	
 	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
@@ -365,14 +365,14 @@ func _create_container_buttons() -> void:
 	_btn_baseline.toggle_mode = true
 	_btn_baseline.add_theme_stylebox_override('normal', _tool_btn_stylebox)
 	_btn_baseline.add_theme_stylebox_override('hover', _tool_btn_stylebox)
-	_btn_baseline.connect('pressed',Callable(self,'_select_baseline'))
+	_btn_baseline.pressed.connect(_select_baseline)
 	
 	_btn_walk_to.icon = preload('res://addons/Popochiu/icons/walk_to_point.png')
 	_btn_walk_to.tooltip_text = 'Walk to point'
 	_btn_walk_to.toggle_mode = true
 	_btn_walk_to.add_theme_stylebox_override('normal', _tool_btn_stylebox)
 	_btn_walk_to.add_theme_stylebox_override('hover', _tool_btn_stylebox)
-	_btn_walk_to.connect('pressed',Callable(self,'_select_walk_to'))
+	_btn_walk_to.pressed.connect(_select_walk_to)
 	
 	hbox.add_child(_vsep)
 	hbox.add_child(_btn_baseline)

@@ -12,7 +12,7 @@ const DFLT_SIZE := 'dflt_size'
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	G.connect('show_box_requested',Callable(self,'_show_box'))
+	G.show_box_requested.connect(_show_box)
 	set_meta(DFLT_SIZE, size)
 	
 	close()
@@ -41,7 +41,7 @@ func _show_box(msg := '') -> void:
 	# ==== Calculate the width of the node =====================================
 	var rt := RichTextLabel.new()
 	var lbl := Label.new()
-	rt.append_bbcode(msg)
+	rt.append_text(msg)
 	lbl.text = rt.text
 	add_child(lbl)
 	var size := lbl.size

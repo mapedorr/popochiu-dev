@@ -28,8 +28,6 @@ func _ready():
 	_dialog_menu.shown.connect(_disable_panels.bind({ blocking = false }))
 	_display_box.shown.connect(_enable_panels)
 	
-#	_display_box.connect('hidden',Callable(self,'_enable_panels'))
-	
 	# Connect to singleton signals
 	C.character_spoke.connect(_show_dialog_text)
 	G.blocked.connect(_disable_panels)
@@ -84,7 +82,7 @@ func _continue() -> void:
 		_dialog_text.hide()
 		_display_box.close()
 		
-		G.emit_signal('continue_clicked')
+		G.continue_clicked.emit()
 	else:
 		_dialog_text.stop()
 

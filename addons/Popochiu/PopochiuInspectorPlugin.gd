@@ -41,7 +41,7 @@ func _parse_navigation_polygon_instance(object: Object) -> void:
 	button.text = "Editing done"
 	button.size_flags_stretch_ratio = Button.SIZE_EXPAND
 	button.align = Button.ALIGNMENT_CENTER
-	button.connect("pressed",Callable(self,"_back_to_walkable_area").bind(object),CONNECT_DEFERRED)
+	button.pressed.connect(_back_to_walkable_area.bind(object), CONNECT_DEFERRED)
 	
 	hbox.add_child(button)
 	panel.add_child(hbox)
@@ -65,7 +65,7 @@ func _parse_walkable_area(object: Object) -> void:
 	button.text = "Edit Polygon"
 	button.size_flags_stretch_ratio = Button.SIZE_EXPAND
 	button.align = Button.ALIGNMENT_CENTER
-	button.connect("pressed",Callable(self,"_find_polygon_instance").bind(object),CONNECT_DEFERRED)
+	button.pressed.connect(_find_polygon_instance.bind(object), CONNECT_DEFERRED)
 	
 	hbox.add_child(button)
 	panel.add_child(hbox)

@@ -20,8 +20,9 @@ extends Area2D
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	add_to_group('regions')
-	connect('area_entered',Callable(self,'_check_area').bind(true))
-	connect('area_exited',Callable(self,'_check_area').bind(false))
+	
+	area_entered.connect(_check_area.bind(true))
+	area_exited.connect(_check_area.bind(false))
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░

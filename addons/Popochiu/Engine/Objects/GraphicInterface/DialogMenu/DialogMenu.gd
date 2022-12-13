@@ -75,8 +75,8 @@ func _create_options(options := [], autoshow := false) -> void:
 		
 		if dialog_option.used and not dialog_option.always_on:
 			btn.add_theme_color_override('font_color', used)
-
-		btn.connect('pressed',Callable(self,'_on_option_clicked').bind(dialog_option))
+		
+		btn.pressed.connect(_on_option_clicked.bind(dialog_option))
 
 		_options.add_child(btn)
 

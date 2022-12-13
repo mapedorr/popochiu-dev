@@ -23,7 +23,7 @@ func _ready() -> void:
 	_ok.disabled = true
 	
 	_dialog.confirmed.connect(_close)
-#	_dialog.connect('popup_hide',Callable(self,'_close'))
+	_dialog.close_requested.connect(_close)
 	_ok.pressed.connect(_confirmed)
 	
 	var saves: Dictionary = E.get_saves_descriptions()
@@ -86,7 +86,7 @@ func _show() -> void:
 	_dialog.popup_centered(Vector2(240.0, 120.0))
 	_cancel.grab_focus()
 	
-	G.emit_signal('blocked', { blocking = false })
+	G.blocked.emit({ blocking = false })
 	Cursor.set_cursor(Cursor.Type.USE)
 	Cursor.block()
 	

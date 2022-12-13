@@ -148,7 +148,7 @@ func _ready() -> void:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func select() -> void:
 	_label.add_theme_color_override('font_color', SELECTED_FONT_COLOR)
-	emit_signal('clicked', self)
+	clicked.emit(self)
 
 
 func deselect() -> void:

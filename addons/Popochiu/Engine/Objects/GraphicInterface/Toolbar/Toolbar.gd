@@ -43,10 +43,11 @@ func disable() -> void:
 		hide()
 		return
 	
-	_tween.stop()
-	_tween.tween_property(self, 'position:y', _hide_y - 3.5, 0.3)\
-	.from(_hide_y).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
-	_tween.play()
+#	_tween.stop()
+#	_tween.tween_property(self, 'position:y', _hide_y - 3.5, 0.3)\
+#		.from(_hide_y)\
+#		.set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
+#	_tween.play()
 
 
 func enable() -> void:
@@ -56,10 +57,10 @@ func enable() -> void:
 		show()
 		return
 	
-	_tween.stop()
-	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
-	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	_tween.play()
+#	_tween.stop()
+#	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
+#	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+#	_tween.play()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -68,10 +69,10 @@ func _open() -> void:
 	if not is_disabled and position.y != _hide_y: return
 	
 	_tween.stop()
-	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
-	.from(_hide_y if not is_disabled else position.y)\
-	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	_tween.play()
+#	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
+#	.from(_hide_y if not is_disabled else position.y)\
+#	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+#	_tween.play()
 
 
 func _close() -> void:
@@ -82,12 +83,12 @@ func _close() -> void:
 	if not _can_hide: return
 	
 	_tween.stop()
-	_tween.tween_property(
-		self, 'position:y',
-		_hide_y if not is_disabled else _hide_y - 3.5,
-		0.2
-	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	_tween.play()
+#	_tween.tween_property(
+#		self, 'position:y',
+#		_hide_y if not is_disabled else _hide_y - 3.5,
+#		0.2
+#	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+#	_tween.play()
 
 
 func _disable_hide() -> void:

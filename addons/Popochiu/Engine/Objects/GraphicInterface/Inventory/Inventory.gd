@@ -43,9 +43,9 @@ func disable(use_tween := true) -> void:
 	
 	if use_tween:
 		_tween.stop()
-		_tween.tween_property(self, 'position:y', _hide_y - 4.5, 0.3)\
-		.from_current().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
-		_tween.play()
+#		_tween.tween_property(self, 'position:y', _hide_y - 4.5, 0.3)\
+#		.from_current().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
+#		_tween.play()
 	else:
 		_tween.kill()
 		position.y = _hide_y - 4.5
@@ -59,9 +59,9 @@ func enable() -> void:
 		return
 	
 	_tween.stop()
-	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
-	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	_tween.play()
+#	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
+#	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+#	_tween.play()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -70,10 +70,10 @@ func _open() -> void:
 	if not is_disabled and position.y != _hide_y: return
 	
 	_tween.stop()
-	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
-	.from(_hide_y if not is_disabled else position.y)\
-	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	_tween.play()
+#	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
+#	.from(_hide_y if not is_disabled else position.y)\
+#	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+#	_tween.play()
 
 
 func _close() -> void:
@@ -84,12 +84,12 @@ func _close() -> void:
 	if not _can_hide_inventory: return
 	
 	_tween.stop()
-	_tween.tween_property(
-		self, 'position:y',
-		_hide_y if not is_disabled else _hide_y - 3.5,
-		0.2
-	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	_tween.play()
+#	_tween.tween_property(
+#		self, 'position:y',
+#		_hide_y if not is_disabled else _hide_y - 3.5,
+#		0.2
+#	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+#	_tween.play()
 
 
 func _show_item_info(description := '') -> void:
@@ -103,8 +103,8 @@ func _change_cursor(item: PopochiuInventoryItem) -> void:
 func _add_item(item: PopochiuInventoryItem, animate := true) -> void:
 	_box.add_child(item)
 	
-	item.connect('description_toggled',Callable(self,'_show_item_info'))
-	item.connect('selected',Callable(self,'_change_cursor'))
+	item.description_toggled.connect(_show_item_info)
+	item.selected.connect(_change_cursor)
 	
 	if not E.settings.inventory_always_visible and animate:
 		_open()

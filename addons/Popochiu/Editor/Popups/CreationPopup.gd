@@ -12,9 +12,10 @@ var _main_dock: Panel : set = set_main_dock
 func _ready() -> void:
 	register_text_enter(_input)
 	
-	connect('confirmed',Callable(self,'create'))
-	connect('popup_hide',Callable(self,'_clear_fields'))
-	_input.connect('text_changed',Callable(self,'_update_name'))
+	confirmed.connect(create)
+	cancelled.connect(_clear_fields)
+	close_requested.connect(_clear_fields)
+	_input.text_changed.connect(_update_name)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░

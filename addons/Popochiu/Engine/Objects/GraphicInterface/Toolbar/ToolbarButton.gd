@@ -11,9 +11,9 @@ extends TextureButton
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	connect('pressed',Callable(self,'on_pressed'))
-	connect('mouse_entered',Callable(self,'on_mouse_entered'))
-	connect('mouse_exited',Callable(self,'on_mouse_exited'))
+	pressed.connect(on_pressed)
+	mouse_entered.connect(on_mouse_entered)
+	mouse_exited.connect(on_mouse_exited)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░

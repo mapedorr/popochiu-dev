@@ -150,6 +150,18 @@ func semitone_to_pitch(pitch: float) -> float:
 	return pow(twelfth_root_of_two, pitch)
 
 
+func sort_cues(a: AudioCue, b: AudioCue) -> bool:
+	if a.resource_name < b.resource_name:
+		return true
+	return false
+
+
+func sort_resource_paths(a: String, b: String) -> bool:
+	if a.get_file() < b.get_file():
+		return true
+	return false
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 # Looks for an AudioCue and plays it if found. It also can wait until it
 # finishes playing.
@@ -275,7 +287,7 @@ func _play(cue: AudioCue, position := Vector2.ZERO, from_position := 0.0) -> Nod
 	
 	player.bus = cue.bus
 	player.play(from_position)
-	player.connect('finished',Callable(self,'_make_available').bind(player, cue_name, 0))
+	player.finished.connect(_make_available.bind(player, cue_name, 0))
 	
 	if _active.has(cue_name):
 		_active[cue_name].players.append(player)
@@ -309,7 +321,7 @@ func _make_available(stream_player: Node, cue_name: String, _debug_idx: int) -> 
 	if players.is_empty():
 		_active.erase(cue_name)
 	
-	stream_player.disconnect('finished',Callable(self,'_make_available'))
+	stream_player.finished.connect(_make_available)
 
 
 func _reparent(source: Node, target: Node, child_idx: int) -> Node:
@@ -365,8 +377,8 @@ func _fade_sound(cue_name: String, duration = 1, from = 0, to = 0) -> void:
 	if from > to :
 		_fading_sounds[stream_player.stream.get_instance_id()] = stream_player
 		
-		if not _tween.is_connected('finished',Callable(self,'_fadeout_finished')):
-			_tween.connect('finished',Callable(self,'_fadeout_finished'))
+		if not _tween.finished.is_connected(_fadeout_finished):
+			_tween.finished.connect(_fadeout_finished)
 
 
 func _fadeout_finished(obj: Node, _key: NodePath) -> void:
@@ -375,7 +387,7 @@ func _fadeout_finished(obj: Node, _key: NodePath) -> void:
 		obj.stop()
 		
 		if _fading_sounds.is_empty():
-			_tween.disconnect('finished',Callable(self,'_fadeout_finished'))
+			_tween.finished.disconnect(_fadeout_finished)
 
 
 func _stop(cue_name: String, fade_duration := 0.0) -> void:
@@ -394,16 +406,3 @@ func _stop(cue_name: String, fade_duration := 0.0) -> void:
 				stream_player.finished.emit()
 		else:
 			_active.erase(cue_name)
-
-
-
-func _sort_cues(a: AudioCue, b: AudioCue) -> bool:
-	if a.resource_name < b.resource_name:
-		return true
-	return false
-
-
-func _sort_resource_paths(a: String, b: String) -> bool:
-	if a.get_file() < b.get_file():
-		return true
-	return false

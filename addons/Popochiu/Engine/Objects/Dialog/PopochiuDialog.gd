@@ -29,7 +29,7 @@ func start() -> void:
 	
 	await D.dialog_finished
 	
-	D.disconnect('option_selected',Callable(self,'_on_option_selected'))
+	D.option_selected.disconnect(_on_option_selected)
 
 
 func stop() -> void:
@@ -82,10 +82,10 @@ func set_options(value: Array) -> void:
 func _show_options() -> void:
 	if not D.active: return
 	
-	D.emit_signal('dialog_options_requested', options)
+	D.dialog_options_requested.emit(options)
 	
-	if not D.is_connected('option_selected',Callable(self,'_on_option_selected')):
-		D.connect('option_selected',Callable(self,'_on_option_selected'))
+	if not D.option_selected.is_connected(_on_option_selected):
+		D.option_selected.connect(_on_option_selected)
 
 
 func _on_option_selected(opt: PopochiuDialogOption) -> void:

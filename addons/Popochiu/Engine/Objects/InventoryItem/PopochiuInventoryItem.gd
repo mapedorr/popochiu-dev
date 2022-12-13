@@ -20,9 +20,9 @@ var in_inventory := false : set = set_in_inventory
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready():
-	connect('mouse_entered',Callable(self,'_toggle_description').bind(true))
-	connect('mouse_exited',Callable(self,'_toggle_description').bind(false))
-	connect('gui_input',Callable(self,'_on_action_pressed'))
+	mouse_entered.connect(_toggle_description.bind(true))
+	mouse_exited.connect(_toggle_description.bind(false))
+	gui_input.connect(_on_action_pressed)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░

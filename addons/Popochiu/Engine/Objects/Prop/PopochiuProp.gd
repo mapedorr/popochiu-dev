@@ -21,6 +21,7 @@ signal linked_item_discarded(node)
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	super()
 	add_to_group('props')
 	
 	if not clickable:
@@ -44,9 +45,9 @@ func _ready() -> void:
 		z_index += 1
 	
 	if link_to_item:
-		I.connect('item_added',Callable(self,'_on_item_added'))
-		I.connect('item_removed',Callable(self,'_on_item_removed'))
-		I.connect('item_discarded',Callable(self,'_on_item_discarded'))
+		I.item_added.connect(_on_item_added)
+		I.item_removed.connect(_on_item_removed)
+		I.item_discarded.connect(_on_item_discarded)
 		
 		if I.is_item_in_inventory(link_to_item):
 			disable(false)
@@ -98,7 +99,7 @@ func _on_item_added(item: PopochiuInventoryItem, _animate: bool) -> void:
 func _on_item_removed(item: PopochiuInventoryItem, _animate: bool) -> void:
 	if item.script_name == link_to_item:
 		on_linked_item_removed()
-		emit_signal('linked_item_removed', self)
+		linked_item_removed.emit(self)
 
 
 func _on_item_discarded(item: PopochiuInventoryItem) -> void:
@@ -106,4 +107,4 @@ func _on_item_discarded(item: PopochiuInventoryItem) -> void:
 		enable(false)
 		
 		on_linked_item_discarded()
-		emit_signal('linked_item_discarded', self)
+		linked_item_discarded.emit(self)

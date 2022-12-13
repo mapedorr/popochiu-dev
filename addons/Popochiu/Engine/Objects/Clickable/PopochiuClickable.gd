@@ -45,14 +45,15 @@ func _ready():
 	_translate()
 
 
-func _unhandled_input(event):
+func _unhandled_input(event: InputEvent):
 	var mouse_event: = event as InputEventMouseButton 
 	if mouse_event and mouse_event.pressed:
 		if not E.hovered or E.hovered != self: return
 		
 		E.clicked = self
 		if event.is_action_pressed('popochiu-interact'):
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
+			
 			if I.active:
 				on_item_used(I.active)
 			else:
