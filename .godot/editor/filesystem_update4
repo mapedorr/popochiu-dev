@@ -1,6 +1,7 @@
+res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn
+res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacter.tscn
+res://addons/Popochiu/Engine/Objects/Room/PopochiuRoom.gd
+res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacter.gd
 res://popochiu/Rooms/101/Room101.tscn
-res://addons/Popochiu/Engine/Objects/GraphicInterface/DisplayBox/DisplayBox.gd
-res://addons/Popochiu/Engine/Objects/GraphicInterface/Toolbar/Toolbar.gd
-res://addons/Popochiu/Engine/Objects/GraphicInterface/Inventory/Inventory.gd
-res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogText/DialogText.gd
-res://addons/Popochiu/Engine/AudioManager/AudioManager.gd
+res://popochiu/Characters/Popsy/CharacterPopsy.tscn
+res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.gd

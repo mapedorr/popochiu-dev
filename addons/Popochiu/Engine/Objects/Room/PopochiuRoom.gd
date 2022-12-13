@@ -19,7 +19,7 @@ extends Node2D
 var is_current := false : set = set_is_current
 var characters_cfg := [] # Array of Dictionary
 
-var _path := []
+var _path: PackedVector2Array = PackedVector2Array()
 var _moving_character: PopochiuCharacter = null
 var _nav_path: PopochiuWalkableArea = null
 
@@ -54,15 +54,15 @@ func _ready():
 	
 	if not get_tree().get_nodes_in_group('walkable_areas').is_empty():
 		_nav_path = get_tree().get_nodes_in_group('walkable_areas')[0]
+		NavigationServer2D.map_set_active(_nav_path.map_rid, true)
 	
 	set_process_unhandled_input(false)
+	set_physics_process(false)
+	
 	E.room_readied(self)
 
 
-func _process(delta):
-	if Engine.is_editor_hint() or not is_instance_valid(C.player) or not has_player:
-		return
-	
+func _physics_process(delta):
 	if _path.is_empty(): return
 	
 	var walk_distance = _moving_character.walk_speed * delta
@@ -115,7 +115,7 @@ func on_entered_from_editor() -> void:
 # default, characters are removed only to keep their instances in the array
 # of characters in ICharacter.gd.
 func exit_room() -> void:
-	set_process(false)
+	set_physics_process(false)
 	
 	for c in $Characters.get_children():
 		$Characters.remove_child(c)
@@ -278,6 +278,8 @@ func _update_navigation_path(
 		prints('[Popochiu] No walkable areas in this room')
 		return
 	
+	_moving_character = character
+	
 	# TODO: Use a Dictionary so more than one character can move around at the
 	# same time. Or maybe each character should handle its own movement? (;￢＿￢)
 	if character.ignore_walkable_areas:
@@ -285,15 +287,24 @@ func _update_navigation_path(
 		_path = PackedVector2Array([start_position, end_position])
 	else:
 		# if the character is forced into WAs, delegate pathfinding to the active WA
-		_path = _nav_path.get_simple_path(start_position, end_position, true)
+		_path = NavigationServer2D.map_get_path(
+			_nav_path.map_rid, start_position, end_position, true
+		)
+		
+		# TODO: Use NavigationAgent2D target_location and get_next_location() to
+		#		maybe improve characters movement with obstacles avoidance?
+#		NavigationServer2D.agent_set_map(character.agent.get_rid(), _nav_path.map_rid)
+#		character.agent.target_location = end_position
+#		_path = character.agent.get_nav_path()
+#		set_physics_process(true)
+#		return
 	
 	if _path.is_empty():
 		return
 	
 	_path.remove_at(0)
-	_moving_character = character
 	
-	set_process(true)
+	set_physics_process(true)
 
 
 func _clear_navigation_path() -> void:

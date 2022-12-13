@@ -17,10 +17,24 @@ extends Node2D
 #export var scale_top := 1.0
 #export var scale_bottom := 1.0
 
+var map_rid: RID
+var rid: RID
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	add_to_group('walkable_areas')
+	
+	if Engine.is_editor_hint(): return
+	
+	map_rid = NavigationServer2D.map_create()
+	rid = ($Perimeter as NavigationRegion2D).get_region_rid()
+	NavigationServer2D.region_set_map(rid, map_rid)
+
+
+func _exit_tree():
+	NavigationServer2D.map_set_active(map_rid, false)
+	NavigationServer2D.free_rid(map_rid)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
