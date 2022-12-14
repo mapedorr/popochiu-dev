@@ -8,36 +8,24 @@ extends PopochiuProp
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-#	Replace the call to super.on_interact() to implement your code. This only makes
-#	the default behavior to happen.
-#	For example you can make the character walk to the Prop and then say
-#	something:
-#	E.run([
-#		C.walk_to_clicked(),
-#		C.face_clicked(),
-#		'Player: Not picking that up'
-#	])
-	super.on_interact()
+	E.run([
+		C.run_walk_to_clicked(),
+		C.run_face_clicked(),
+		'Player: My old toycar',
+		'...',
+		'Player: [wave]The memories...[/wave]',
+		I.run_add_item('ToyCar')
+	])
 
 
 # When the node is right clicked
 func on_look() -> void:
-#	Replace the call to super.on_look() to implement your code. This only makes
-#	the default behavior to happen.
-#	For example you can make the character walk to the Prop and then say
-#	something:
-#	E.run([
-#		C.face_clicked(),
-#		'Player: A deck of cards'
-#	])
-	super.on_look()
+	super()
 
 
 # When the node is clicked and there is an inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
-	# Replace the call to super.on_item_used(item) to implement your code. This only
-	# makes the default behavior to happen.
-	super.on_item_used(item)
+	super(item)
 
 
 # When an inventory item linked to this Prop (link_to_item) is removed from

@@ -1,10 +1,11 @@
 extends TextureButton
 # warning-ignore-all:return_value_discarded
 
-#const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
-#const Constants := preload('res://addons/Popochiu/PopochiuResources.gd')
+const CURSOR := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd')
+#const CONSTANTS := preload('res://addons/Popochiu/PopochiuResources.gd')
 
-#export var cursor := Constants.CursorType.USE # (Constants.CursorType)
+#@export var cursor: CONSTANTS.CursorType = CONSTANTS.CursorType.USE
+@export var cursor: CURSOR.Type = CURSOR.Type.USE
 @export var description := '' : get = get_description
 @export var script_name := ''
 

@@ -117,7 +117,7 @@ func load_game(slot := 1) -> Dictionary:
 	
 	# Load inventory items
 	for item in loaded_data.player.inventory:
-		I.add_item(item, false, false)
+		I.add_item(item, false)
 	
 	# Load main object states
 	for type in ['rooms', 'characters', 'inventory_items', 'dialogs']:

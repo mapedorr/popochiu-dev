@@ -47,7 +47,7 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _show_save(date: String) -> void:
-	_dialog.window_title = 'Save'
+	_dialog.title = 'Save'
 	_label.text = 'Choose a slot to save the game'
 	_date = date
 	
@@ -58,7 +58,7 @@ func _show_save(date: String) -> void:
 
 
 func _show_load() -> void:
-	_dialog.window_title = 'Load'
+	_dialog.title = 'Load'
 	_label.text = 'Choose the slot to load'
 	_date = ''
 	
@@ -81,7 +81,7 @@ func _show() -> void:
 	
 	if E.settings.scale_gui:
 		scale = Vector2.ONE * E.scale
-		_dialog.scale = Vector2.ONE * E.scale
+		_dialog.size = Vector2.ONE * E.scale
 	
 	_dialog.popup_centered(Vector2(240.0, 120.0))
 	_cancel.grab_focus()

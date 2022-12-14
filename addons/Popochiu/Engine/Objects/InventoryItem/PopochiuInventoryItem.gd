@@ -4,7 +4,7 @@ class_name PopochiuInventoryItem
 # An inventory item.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
+const CURSOR := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd')
 
 signal description_toggled(description)
 signal selected(item)
@@ -12,7 +12,7 @@ signal selected(item)
 @export var description := '' : get = get_description
 @export var stack := false
 @export var script_name := ''
-@export_enum(CURSOR_TYPE) var cursor := CURSOR_TYPE.USE
+@export var cursor: CURSOR.Type = CURSOR.Type.USE
 
 var amount := 1
 var in_inventory := false : set = set_in_inventory

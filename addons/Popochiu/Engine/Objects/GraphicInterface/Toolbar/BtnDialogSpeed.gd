@@ -6,6 +6,7 @@ extends 'ToolbarButton.gd'
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	super()
 	texture_normal = btn_states[E.current_text_speed_idx]
 
 

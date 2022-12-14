@@ -5,14 +5,15 @@ extends Area2D
 # and exiting.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-const CURSOR_TYPE := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd').Type
+const CURSOR := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd')
 
 @export var script_name := ''
 @export var description := ''
 @export var clickable := true
 @export var baseline := 0 : set = set_baseline
-@export var walk_to_point: Vector2 : get = get_walk_to_point, set = set_walk_to_point
-@export var cursor := CURSOR_TYPE.NONE
+@export var walk_to_point: Vector2 : set = set_walk_to_point
+#@export var walk_to_point: Vector2 : get = get_walk_to_point, set = set_walk_to_point
+@export var cursor: CURSOR.Type = CURSOR.Type.NONE
 @export var always_on_top := false
 
 var room: Node2D = null : set = set_room # It is a PopochiuRoom

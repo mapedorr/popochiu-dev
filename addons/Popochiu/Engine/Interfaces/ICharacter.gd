@@ -14,42 +14,54 @@ var camera_owner: PopochiuCharacter = null
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 # Makes a character (script_name) say something.
+func run_character_say(chr_name: String, dialog: String) -> Callable:
+	return func (): await character_say(chr_name, dialog)
+
+
 func character_say(chr_name: String, dialog: String) -> void:
-#	yield()
-	await _character_say(chr_name, dialog)
-
-
-func character_say_no_block(
-	chr_name: String, dialog: String, call_done := true
-) -> void:
-	await _character_say(chr_name, dialog)
+	if not E.in_run():
+		G.block()
 	
-	if call_done:
+	var talking_character: PopochiuCharacter = get_character(chr_name)
+	
+	if talking_character:
+		await talking_character.say(dialog)
+	else:
+		printerr(
+			'[Popochiu] ICharacter.character_say:',
+			'character %s not found' % chr_name
+		)
+		await get_tree().process_frame
+	
+	if not E.in_run():
 		G.done()
 
 
 # Makes the PC (player character) say something inside an E.run([])
-func player_say(dialog: String) -> void:
-#	yield()
-	await player.say(dialog, false)
+func run_player_say(dialog: String) -> Callable:
+	return func (): await player_say(dialog)
 
 
 # Makes the PC (player character) say something outside an E.run([])
-func player_say_no_block(dialog: String, call_done := true) -> void:
-	await player.say(dialog, false)
+func player_say(dialog: String) -> void:
+	if not E.in_run():
+		G.block()
 	
-	if call_done:
+	await player.say(dialog)
+	
+	if not E.in_run():
 		G.done()
 
 
+func run_character_walk_to(chr_name: String, position: Vector2) -> Callable:
+	return func (): await character_walk_to(chr_name, position)
+
+
 # Makes a character (script_name) walk to a position in the current room.
-func character_walk_to(\
-chr_name: String, position: Vector2, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func character_walk_to(chr_name: String, position: Vector2) -> void:
 	var walking_character: PopochiuCharacter = get_character(chr_name)
 	if walking_character:
-		await walking_character.walk(E.current_room.to_global(position), false)
+		await walking_character.walk(E.current_room.to_global(position))
 	else:
 		printerr(
 			'[Popochiu] ICharacter.character_walk_to:',
@@ -58,28 +70,37 @@ chr_name: String, position: Vector2, is_in_queue := true) -> void:
 		await get_tree().process_frame
 
 
+func run_player_walk_to(position: Vector2) -> Callable:
+	return func (): await player_walk_to(position)
+
+
 # Makes the PC (player character) walk to a position in the current room.
-func player_walk_to(position: Vector2, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
-	await player.walk(position, false)
+func player_walk_to(position: Vector2) -> void:
+	await player.walk(position)
+
+
+func run_walk_to_clicked() -> Callable:
+	return func (): await walk_to_clicked()
 
 
 # Makes the PC (player character) walk to the walk_to_point position of the last
 # clicked PopochiuClickable (e.g. a PopochiuProp, a PopochiuHotspot, another
 # PopochiuCharacter, etc.) in the room.
-func walk_to_clicked(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
-	await player_walk_to(E.clicked.walk_to_point, false)
+func walk_to_clicked() -> void:
+	await player_walk_to(
+		(E.clicked as PopochiuClickable).to_global(E.clicked.walk_to_point)
+	)
+#	await player_walk_to(E.clicked.walk_to_point)
+
+
+func run_face_clicked() -> Callable:
+	return func (): await face_clicked()
 
 
 # Makes the PC (player character) look at the last clicked PopochiuClickable.
 # E.g. a PopochiuProp, another PopochiuCharacter, etc.
-func face_clicked(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
-	await C.player.face_clicked(false)
+func face_clicked() -> void:
+	await C.player.face_clicked()
 
 
 # Checks if the character exists in the array of PopochiuCharacter instances.
@@ -110,9 +131,11 @@ func get_character(script_name: String) -> PopochiuCharacter:
 	return null
 
 
-func change_camera_owner(c: PopochiuCharacter, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_change_camera_owner(c: PopochiuCharacter) -> Callable:
+	return func (): await change_camera_owner(c)
+
+
+func change_camera_owner(c: PopochiuCharacter) -> void:
 	if E.cutscene_skipped:
 		camera_owner = c
 		await get_tree().process_frame
@@ -122,10 +145,11 @@ func change_camera_owner(c: PopochiuCharacter, is_in_queue := true) -> void:
 	await get_tree().process_frame
 
 
-func set_character_emotion(\
-chr_name: String, emotion: String, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_set_character_emotion(chr_name: String, emotion: String) -> Callable:
+	return func (): await set_character_emotion(chr_name, emotion)
+
+
+func set_character_emotion(chr_name: String, emotion: String) -> void:
 	if get_character(chr_name):
 		get_character(chr_name).emotion = emotion
 	
@@ -145,17 +169,3 @@ func get_character_ignore_walkable_areas(chr_name: String) -> bool:
 func set_player(value: PopochiuCharacter) -> void:
 	player = value
 	camera_owner = value
-
-
-# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
-func _character_say(chr_name: String, dialog: String) -> void:
-	var talking_character: PopochiuCharacter = get_character(chr_name)
-	
-	if talking_character:
-		await talking_character.say(dialog, false)
-	else:
-		printerr(
-			'[Popochiu] ICharacter.character_say:',
-			'character %s not found' % chr_name
-		)
-		await get_tree().process_frame

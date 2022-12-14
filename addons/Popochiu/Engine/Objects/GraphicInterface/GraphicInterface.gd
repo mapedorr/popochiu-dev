@@ -27,6 +27,7 @@ func _ready():
 	_click_handler.pressed.connect(_continue)
 	_dialog_menu.shown.connect(_disable_panels.bind({ blocking = false }))
 	_display_box.shown.connect(_enable_panels)
+	_dialog_text.auto_continue_finished.connect(_continue)
 	
 	# Connect to singleton signals
 	C.character_spoke.connect(_show_dialog_text)

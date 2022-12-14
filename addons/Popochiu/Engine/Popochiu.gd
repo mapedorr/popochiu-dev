@@ -98,7 +98,7 @@ func _ready() -> void:
 	
 	# Add inventory items checked start (ignore animations (3rd parameter))
 	for key in settings.items_on_start:
-		I.add_item(key, false, false)
+		I.add_item(key, false)
 	
 	set_process_input(false)
 	
@@ -180,11 +180,11 @@ func run(instructions: Array, show_gi := true) -> void:
 			await instruction.call()
 		elif instruction is String:
 			await _eval_string(instruction as String)
-		elif instruction is Dictionary:
-			if instruction.has('dialog'):
-				_eval_string(instruction.dialog)
-				await self.wait(instruction.time, false)
-				G.continue_clicked.emit()
+#		elif instruction is Dictionary:
+#			if instruction.has('dialog'):
+#				_eval_string(instruction.dialog)
+#				await self.wait(instruction.time, false)
+#				G.continue_clicked.emit()
 	
 	if not D.active and show_gi:
 		G.done()
@@ -311,7 +311,7 @@ func room_readied(room: PopochiuRoom) -> void:
 		if not current_room.has_character(C.player.script_name):
 			current_room.add_character(C.player)
 		
-		await C.player.idle(false)
+		await C.player.idle()
 	
 	for c in get_tree().get_nodes_in_group('PopochiuClickable'):
 		c.room = current_room
@@ -640,9 +640,9 @@ func _eval_string(text: String) -> void:
 				
 				if character_name == 'player'\
 				or C.player.script_name.to_lower() == character_name:
-					await C.player_say_no_block(dialogue, false)
+					await C.player_say(dialogue)
 				elif C.is_valid_character(character_name):
-					await C.character_say_no_block(character_name, dialogue, false)
+					await C.character_say(character_name, dialogue)
 				else:
 					await get_tree().process_frame
 			else:

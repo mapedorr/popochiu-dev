@@ -10,7 +10,12 @@ var state: PopochiuCharacterData = preload('CharacterPopsy.tres')
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	D.show_dialog('TestA')
+	E.run([
+		C.run_face_clicked(),
+		'Player: Hi',
+		'Popsy: Hi'
+	])
+#	D.show_dialog('TestA')
 #	if state.is_hungry:
 #		state.is_hungry = false
 #		E.run([

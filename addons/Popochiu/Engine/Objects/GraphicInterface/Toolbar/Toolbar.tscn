@@ -34,23 +34,18 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -320.0
-offset_right = -238.0
+offset_right = -218.0
 offset_bottom = 24.0
+grow_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxTexture_3b8bi")
 script = ExtResource("2")
 
 [node name="Box" type="HBoxContainer" parent="."]
-offset_left = 3.0
-offset_top = 1.0
-offset_right = 99.0
-offset_bottom = 19.0
-grow_horizontal = 0
-grow_vertical = 0
+layout_mode = 2
 mouse_filter = 2
 
 [node name="BtnSave" type="TextureButton" parent="Box"]
-offset_right = 16.0
-offset_bottom = 18.0
+layout_mode = 2
 texture_normal = ExtResource("8")
 script = ExtResource("16")
 description = "Save game"
@@ -58,18 +53,14 @@ script_name = "SaveGame"
 
 [node name="BtnLoad" type="TextureButton" parent="Box"]
 visible = false
-offset_left = 20.0
-offset_right = 36.0
-offset_bottom = 18.0
+layout_mode = 2
 texture_normal = ExtResource("15")
 script = ExtResource("17")
 description = "Load game"
 script_name = "LoadGame"
 
 [node name="BtnDialogSpeed" type="TextureButton" parent="Box"]
-offset_left = 20.0
-offset_right = 36.0
-offset_bottom = 18.0
+layout_mode = 2
 texture_normal = ExtResource("3")
 script = ExtResource("9")
 btn_states = [ExtResource("3"), ExtResource("5"), ExtResource("4")]
@@ -78,9 +69,7 @@ description = "Text speed"
 script_name = "TextSpeed"
 
 [node name="BtnDialogAuto" type="TextureButton" parent="Box"]
-offset_left = 40.0
-offset_right = 56.0
-offset_bottom = 18.0
+layout_mode = 2
 texture_normal = ExtResource("12")
 script = ExtResource("11")
 btn_states = [ExtResource("12"), ExtResource("13")]
@@ -89,18 +78,14 @@ description = "Continue mode"
 script_name = "ContinueMode"
 
 [node name="BtnDialogHistory" type="TextureButton" parent="Box"]
-offset_left = 60.0
-offset_right = 76.0
-offset_bottom = 18.0
+layout_mode = 2
 texture_normal = ExtResource("14")
 script = ExtResource("10")
 description = "History"
 script_name = "History"
 
 [node name="BtnQuit" type="TextureButton" parent="Box"]
-offset_left = 80.0
-offset_right = 96.0
-offset_bottom = 18.0
+layout_mode = 2
 texture_normal = ExtResource("7")
 script = ExtResource("1")
 description = "Quit"

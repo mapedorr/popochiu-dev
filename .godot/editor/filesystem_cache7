@@ -1,5 +1,5 @@
 0b7126e0c6e86d3ec295a72f5aa6e0bd
-::res://::1670984038
+::res://::1671014875
 default_env.tres::Environment::-1::1670334389::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1661703567::0::1::::<><>::
 hero.jpg::CompressedTexture2D::1684329012531223294::1667477107::1670334404::1::::<><>::
@@ -79,8 +79,8 @@ Setup.tscn::PackedScene::-1::1670334390::0::1::::<><>::res://addons/Popochiu/Edi
 ::res://addons/Popochiu/Editor/Resources/DynamicFonts/::1660305329
 NotoSansUIBold.tres::FontFile::-1::1670334390::0::1::::<><>::res://addons/Popochiu/Editor/Fonts/NotoSansUI_Bold.ttf
 NotoSansUIRegular.tres::FontFile::-1::1670334390::0::1::::<><>::res://addons/Popochiu/Editor/Fonts/NotoSansUI_Regular.ttf
-::res://addons/Popochiu/Engine/::1670983986
-Popochiu.gd::GDScript::-1::1670983986::0::1::::<>Node<>::
+::res://addons/Popochiu/Engine/::1670986622
+Popochiu.gd::GDScript::-1::1670986622::0::1::::<>Node<>::
 Popochiu.tscn::PackedScene::1199463571377574238::1670836030::0::1::::<><>::res://addons/Popochiu/Engine/Popochiu.gd
 ::res://addons/Popochiu/Engine/AudioManager/::1670981232
 AudioCue.gd::GDScript::-1::1670334390::0::1::::<>Resource<>::
@@ -258,10 +258,10 @@ toy_car.png::CompressedTexture2D::2246192998007162759::1658742640::1670833247::1
 ::res://popochiu/Popups/::1662917784
 PopupDocuments.tscn::PackedScene::-1::1670334389::0::1::::<><>::res://addons/Popochiu/Engine/Objects/GraphicInterface/Resources/DynamicFonts/MonkeyIsland-16.tres
 ::res://popochiu/Rooms/::1667467481
-::res://popochiu/Rooms/101/::1670984030
+::res://popochiu/Rooms/101/::1670986622
 Room101.gd::GDScript::-1::1670421823::0::1::::<>PopochiuRoom<>::
 Room101.tres::Resource::-1::1670334389::0::1::::<><>::res://popochiu/Rooms/101/Room101State.gd
-Room101.tscn::PackedScene::2509514981849333339::1670984030::0::1::::<><>::res://popochiu/Rooms/101/Room101.gd<>res://popochiu/Rooms/101/Hotspots/Door/HotspotDoor.gd<>uid://do1k681xt48cm<>res://popochiu/Rooms/101/Props/Blanket/PropBlanket.gd<>uid://dfs4mwls34yg2<>uid://dwurc22nw1rkx<>uid://cq7xaja0esx5m<>uid://ddvstx60w78gn<>res://popochiu/Rooms/101/Props/ToyCar/PropToyCar.gd<>uid://fs4wx6wfenu7<>uid://c134dicwujxcg<>res://popochiu/Rooms/101/WalkableAreas/Floor/WalkableAreaFloor.gd<>uid://b6g2r1h4qihe6<>res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.tscn<>res://popochiu/Rooms/101/Hotspots/Window/HotspotWindow.gd<>res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn<>res://popochiu/Rooms/101/Props/Drawer/PropDrawer.gd
+Room101.tscn::PackedScene::2509514981849333339::1670986622::0::1::::<><>::res://popochiu/Rooms/101/Room101.gd<>res://popochiu/Rooms/101/Hotspots/Door/HotspotDoor.gd<>uid://do1k681xt48cm<>res://popochiu/Rooms/101/Props/Blanket/PropBlanket.gd<>uid://dfs4mwls34yg2<>uid://dwurc22nw1rkx<>uid://cq7xaja0esx5m<>uid://ddvstx60w78gn<>res://popochiu/Rooms/101/Props/ToyCar/PropToyCar.gd<>uid://fs4wx6wfenu7<>uid://c134dicwujxcg<>res://popochiu/Rooms/101/WalkableAreas/Floor/WalkableAreaFloor.gd<>uid://b6g2r1h4qihe6<>res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.tscn<>res://popochiu/Rooms/101/Hotspots/Window/HotspotWindow.gd<>res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn<>res://popochiu/Rooms/101/Props/Drawer/PropDrawer.gd
 Room101State.gd::GDScript::-1::1670334389::0::1::::<>PopochiuRoomData<>::
 ::res://popochiu/Rooms/101/Hotspots/::1667465936
 ::res://popochiu/Rooms/101/Hotspots/Door/::1667465936

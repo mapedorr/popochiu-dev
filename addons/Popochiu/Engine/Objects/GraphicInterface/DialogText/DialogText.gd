@@ -6,6 +6,7 @@ extends RichTextLabel
 # warning-ignore-all:return_value_discarded
 
 signal animation_finished
+signal auto_continue_finished
 
 const DFLT_SIZE := 'dflt_size'
 
@@ -38,11 +39,7 @@ func _ready() -> void:
 	
 	_continue_icon.hide()
 	
-	# Conectarse a señales de los hijos
-#	_tween.finished.connect(_wait_input)
-#	_continue_icon_tween.finished.connect(_continue)
-	
-	# Conectarse a eventos del universo Chimpoko
+	# Connect to singletons events
 	E.text_speed_changed.connect(change_speed)
 	C.character_spoke.connect(_show_dialogue)
 
@@ -56,8 +53,9 @@ func play_text(props: Dictionary) -> void:
 	# ==== Calculate the width of the node =====================================
 	var rt := RichTextLabel.new()
 	var lbl := Label.new()
-	rt.append_bbcode(msg)
-	lbl.text = rt.text
+	rt.bbcode_enabled = true
+	rt.text = msg
+	lbl.text = rt.get_parsed_text()
 	add_child(lbl)
 	var size := lbl.size
 	if size.x > wrap_width:
@@ -68,6 +66,9 @@ func play_text(props: Dictionary) -> void:
 		size.y = rt.get_content_height()
 	elif size.x < get_meta(DFLT_SIZE).x:
 		size.x = get_meta(DFLT_SIZE).x
+	
+	var characters_count := lbl.get_total_character_count()
+	
 	lbl.free()
 	rt.free()
 	# ===================================== Calculate the width of the node ====
@@ -107,7 +108,7 @@ func play_text(props: Dictionary) -> void:
 			self, 'visible_ratio',
 			1,
 			_secs_per_character * get_total_character_count()
-		).from(0)
+		).from(0.0)
 		_tween.finished.connect(_wait_input)
 	else:
 		_wait_input()
@@ -122,7 +123,7 @@ func stop() ->void:
 	if _is_waiting_input:
 		_notify_completion()
 	else:
-		# Saltarse las animaciones
+		# Skip tweens
 		if is_instance_valid(_tween) and _tween.is_running():
 			_tween.kill()
 		
@@ -135,7 +136,7 @@ func hide() -> void:
 	if modulate.a == 0.0: return
 	
 	_auto_continue = false
-	modulate.a = 0.5
+	modulate.a = 0.0
 	_is_waiting_input = false
 	
 	if is_instance_valid(_tween) and _tween.is_running():
@@ -194,6 +195,7 @@ func _show_icon() -> void:
 		_continue_icon_tween.kill()
 	
 	_continue_icon_tween = create_tween()
+	_continue_icon.position.x = position.x + size.x
 	
 	if not E.settings.auto_continue_text:
 		# For manual continuation: make the continue icon jump
@@ -207,10 +209,12 @@ func _show_icon() -> void:
 		# For automatic continuation: Make the icon appear like a progress bar
 		# the time players wil have to read befor auto-continuing
 		_continue_icon.value = 0.0
+		_continue_icon.position.y = size.y + 3.0
 		_continue_icon_tween.tween_property(
 			_continue_icon, 'value',
 			100.0, 3.0,
-		).from_current().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		).from_current().set_ease(Tween.EASE_OUT)
+		_continue_icon_tween.finished.connect(_continue)
 	
 	_continue_icon_tween.pause()
 	
@@ -222,4 +226,4 @@ func _show_icon() -> void:
 
 func _continue(forced_continue := false) -> void:
 	if E.settings.auto_continue_text or forced_continue:
-		G.continue_clicked.emit()
+		auto_continue_finished.emit()

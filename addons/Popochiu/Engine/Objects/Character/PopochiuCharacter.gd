@@ -36,8 +36,9 @@ var _looking_dir: int = Looking.DOWN
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready():
 	super()
+	
 	if not Engine.is_editor_hint():
-		idle(false)
+		idle()
 		set_process(follow_player)
 	else:
 		hide_helpers()
@@ -62,21 +63,26 @@ func play_grab() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func idle(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
+func run_idle() -> Callable:
+	return func (): await idle()
 	
+	
+func idle() -> void:
 	if E.cutscene_skipped:
 		await get_tree().process_frame
 		return
 	
+	# Call the virtual that plays the idle animation
 	play_idle()
 	
 	await get_tree().create_timer(0.2).timeout
 
 
-func walk(target_pos: Vector2, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_walk(target_pos: Vector2) -> Callable:
+	return func (): await walk(target_pos)
+
+
+func walk(target_pos: Vector2) -> void:
 	is_moving = true
 	_looking_dir = Looking.LEFT if target_pos.x < position.x else Looking.RIGHT
 	
@@ -102,6 +108,7 @@ func walk(target_pos: Vector2, is_in_queue := true) -> void:
 		
 		return
 	
+	# Call the virtual that plays the walk animation
 	play_walk(target_pos)
 	
 	# Trigger the signal for the room  to start moving the character
@@ -112,9 +119,11 @@ func walk(target_pos: Vector2, is_in_queue := true) -> void:
 	is_moving = false
 
 
-func stop_walking(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
+func run_stop_walking() -> Callable:
+	return func (): await stop_walking()
 	
+	
+func stop_walking() -> void:
 	is_moving = false
 	
 	stoped_walk.emit()
@@ -122,64 +131,78 @@ func stop_walking(is_in_queue := true) -> void:
 	await get_tree().process_frame
 
 
-func face_up(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_face_up() -> Callable:
+	return func (): await face_up()
+
+
+func face_up() -> void:
 	_looking_dir = Looking.UP
-	await idle(false)
+	await idle()
 
 
-func face_up_right(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_face_up_right() -> Callable:
+	return func (): await face_up_right()
+
+
+func face_up_right() -> void:
 	_looking_dir = Looking.UP_RIGHT
-	await idle(false)
+	await idle()
 
 
-func face_down(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_face_down() -> Callable:
+	return func (): await face_down()
+
+
+func face_down() -> void:
 	_looking_dir = Looking.DOWN
-	await idle(false)
+	await idle()
 
 
-func face_left(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_face_left() -> Callable:
+	return func (): await face_left()
+
+
+func face_left() -> void:
 	_looking_dir = Looking.LEFT
-	
-	await idle(false)
+	await idle()
 
 
-func face_right(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_face_right() -> Callable:
+	return func (): await face_right()
+
+
+func face_right() -> void:
 	_looking_dir = Looking.RIGHT
-	await idle(false)
+	await idle()
 
 
-func face_clicked(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_face_clicked() -> Callable:
+	return func (): await face_clicked()
+
+
+func face_clicked() -> void:
 	if E.clicked.global_position < global_position:
 		if has_node('Sprite2D'):
 			$Sprite2D.flip_h = flips_when == FlipsWhen.MOVING_LEFT
 		
-		await face_left(false)
+		await face_left()
 	else:
 		if has_node('Sprite2D'):
 			$Sprite2D.flip_h = flips_when == FlipsWhen.MOVING_RIGHT
 		
-		await face_right(false)
+		await face_right()
 
 
-func say(dialog: String, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_say(dialog: String) -> Callable:
+	return func (): await say(dialog)
+
+
+func say(dialog: String) -> void:
 	if E.cutscene_skipped:
 		await get_tree().process_frame
 		return
 	
+	# Call the virtual that plays the talk animation
 	play_talk()
 	
 	var vo_name := _get_vo_cue(emotion)
@@ -191,21 +214,24 @@ func say(dialog: String, is_in_queue := true) -> void:
 	await G.continue_clicked
 	
 	emotion = ''
-	idle(false)
+	idle()
 
 
-func grab(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_grab() -> Callable:
+	return func (): await grab()
+
+
+func grab() -> void:
 	if E.cutscene_skipped:
 		await get_tree().process_frame
 		return
 	
+	# Call the virtual that plays the grab animation
 	play_grab()
 	
 	await C.character_grab_done
 	
-	idle(false)
+	idle()
 
 
 func hide_helpers() -> void:

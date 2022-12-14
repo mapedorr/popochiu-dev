@@ -6,6 +6,7 @@
 script = ExtResource("1")
 voices = []
 walk_to_point = Vector2(0, 0)
+cursor = 8
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-10, -10, 10, -10, 10, 10, -10, 10)
