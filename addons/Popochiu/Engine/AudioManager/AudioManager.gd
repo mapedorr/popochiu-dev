@@ -18,7 +18,7 @@ var _active := {}
 var _all_in_one := {}
 var _fading_sounds := {}
 
-@onready var _tween := create_tween()
+@onready var _tween: Tween = null
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░

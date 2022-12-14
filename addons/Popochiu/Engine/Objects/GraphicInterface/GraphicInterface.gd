@@ -78,7 +78,7 @@ func _enable_panels() -> void:
 
 
 func _continue() -> void:
-	if _dialog_text.percent_visible == 1.0:
+	if _dialog_text.visible_ratio == 1.0:
 		_dialog_text.hide()
 		_display_box.close()
 		

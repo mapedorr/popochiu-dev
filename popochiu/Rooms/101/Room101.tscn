@@ -4,19 +4,19 @@
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Hotspots/Door/HotspotDoor.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://do1k681xt48cm" path="res://addons/Popochiu/Engine/Objects/Prop/PopochiuProp.tscn" id="3"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Props/Blanket/PropBlanket.gd" id="4"]
-[ext_resource type="Texture2D" uid="uid://dfs4mwls34yg2" path="res://popochiu/Rooms/101/Props/_NoInteraction/background.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://dfs4mwls34yg2" path="res://popochiu/Rooms/101/Props/_NoInteraction/background.png" id="5_cfdwx"]
 [ext_resource type="PackedScene" uid="uid://dwurc22nw1rkx" path="res://popochiu/Characters/Popsy/CharacterPopsy.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://cq7xaja0esx5m" path="res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn" id="7"]
+[ext_resource type="Texture2D" uid="uid://ddvstx60w78gn" path="res://popochiu/Rooms/101/Props/Blanket/blanket.png" id="7_bts5h"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Props/ToyCar/PropToyCar.gd" id="8"]
-[ext_resource type="Texture2D" uid="uid://ddvstx60w78gn" path="res://popochiu/Rooms/101/Props/Blanket/blanket.png" id="9"]
-[ext_resource type="Texture2D" uid="uid://fs4wx6wfenu7" path="res://popochiu/Rooms/101/Props/ToyCar/toy_car.png" id="10"]
-[ext_resource type="Texture2D" uid="uid://c134dicwujxcg" path="res://popochiu/Rooms/101/Props/_NoInteraction/table.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://fs4wx6wfenu7" path="res://popochiu/Rooms/101/Props/ToyCar/toy_car.png" id="9_02vwx"]
+[ext_resource type="Texture2D" uid="uid://c134dicwujxcg" path="res://popochiu/Rooms/101/Props/_NoInteraction/table.png" id="10_qi03c"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/WalkableAreas/Floor/WalkableAreaFloor.gd" id="12"]
+[ext_resource type="Texture2D" uid="uid://b6g2r1h4qihe6" path="res://popochiu/Rooms/101/Props/Drawer/drawer.png" id="12_jmph8"]
 [ext_resource type="PackedScene" path="res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.tscn" id="13"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Hotspots/Window/HotspotWindow.gd" id="14"]
 [ext_resource type="PackedScene" path="res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn" id="15"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Props/Drawer/PropDrawer.gd" id="16"]
-[ext_resource type="Texture2D" uid="uid://b6g2r1h4qihe6" path="res://popochiu/Rooms/101/Props/Drawer/drawer.png" id="17"]
 
 [sub_resource type="NavigationPolygon" id="1"]
 vertices = PackedVector2Array(12, 44, 11, 34, 73, 9, 90, 13, 104, 24, 112, 38, 109, 54, 96, 63, 78, 68, 44, 72, -50, 7, -7, 29, -25, 32, -12, 48, -5, 73, -53, 71, -28, 41, -109, 36, -104, 25, -94, 17, -82, 13, -68, 9, -88, 65, -102, 58, -111, 49)
@@ -43,17 +43,12 @@ navpoly = SubResource("1")
 [node name="Background" parent="Props" instance=ExtResource("3")]
 z_index = -1
 position = Vector2(160, 90)
-texture = ExtResource("5")
+texture = ExtResource("5_cfdwx")
 
 [node name="Blanket" parent="Props" instance=ExtResource("3")]
 position = Vector2(92, 142)
 script = ExtResource("4")
-texture = ExtResource("9")
-script_name = "Blanket"
-description = "Blanket"
-baseline = -1
-walk_to_point = Vector2(24, -4)
-cursor = 1
+texture = ExtResource("7_bts5h")
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="Props/Blanket"]
 polygon = PackedVector2Array(-12, 5, -11, -4, -3, -7, 8, -6, 12, 0, 12, 5)
@@ -61,28 +56,20 @@ polygon = PackedVector2Array(-12, 5, -11, -4, -3, -7, 8, -6, 12, 0, 12, 5)
 [node name="ToyCar" parent="Props/Blanket" instance=ExtResource("3")]
 position = Vector2(0, -5)
 script = ExtResource("8")
-texture = ExtResource("10")
-script_name = "ToyCar"
-description = "ToyCar"
-walk_to_point = Vector2(24, 1)
-cursor = 1
+texture = ExtResource("9_02vwx")
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="Props/Blanket/ToyCar"]
 polygon = PackedVector2Array(-9, 3, -8, -3, -1, -6, 6, -5, 9, 1, 6, 5)
 
 [node name="Table" parent="Props" instance=ExtResource("3")]
 position = Vector2(153, 122)
-texture = ExtResource("11")
+texture = ExtResource("10_qi03c")
 
 [node name="Drawer" parent="Props" instance=ExtResource("3")]
 position = Vector2(63, 106)
 script = ExtResource("16")
-texture = ExtResource("17")
+texture = ExtResource("12_jmph8")
 frames = 2
-script_name = "Drawer"
-description = "Drawer"
-baseline = 3
-cursor = 1
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="Props/Drawer"]
 polygon = PackedVector2Array(-13, 15, -12, -6, -6, -16, 8, -15, 9, 3, 2, 15)
@@ -92,10 +79,7 @@ polygon = PackedVector2Array(-13, 15, -12, -6, -6, -16, 8, -15, 9, 3, 2, 15)
 [node name="Window" parent="Hotspots" instance=ExtResource("15")]
 position = Vector2(152, 62)
 script = ExtResource("14")
-script_name = "Window"
-description = "Window"
-walk_to_point = Vector2(24, 41)
-cursor = 1
+walk_to_point = Vector2(0, 0)
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="Hotspots/Window"]
 modulate = Color(0, 0, 1, 1)
@@ -104,10 +88,7 @@ polygon = PackedVector2Array(-26, 1, -24, -14, -9, -24, 14, -22, 24, -7, 20, 13,
 [node name="Door" parent="Hotspots" instance=ExtResource("15")]
 position = Vector2(98, 76)
 script = ExtResource("2")
-script_name = "Door"
-description = "Door"
-walk_to_point = Vector2(19, 27)
-cursor = 1
+walk_to_point = Vector2(0, 0)
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="Hotspots/Door"]
 modulate = Color(0, 0, 1, 1)

@@ -5,7 +5,7 @@ var is_disabled := false
 
 var _can_hide_inventory := true
 
-@onready var _tween := create_tween()
+@onready var _tween: Tween = null
 @onready var _hide_y := position.y - (size.y - 4)
 @onready var _box: BoxContainer = find_child('Box')
 
@@ -41,13 +41,14 @@ func disable(use_tween := true) -> void:
 		hide()
 		return
 	
-	if use_tween:
-		_tween.stop()
-#		_tween.tween_property(self, 'position:y', _hide_y - 4.5, 0.3)\
-#		.from_current().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
-#		_tween.play()
-	else:
+	if is_instance_valid(_tween) and _tween.is_running():
 		_tween.kill()
+	
+	if use_tween:
+		_tween = create_tween()
+		_tween.tween_property(self, 'position:y', _hide_y - 4.5, 0.3)\
+		.from_current().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
+	else:
 		position.y = _hide_y - 4.5
 
 
@@ -58,10 +59,12 @@ func enable() -> void:
 		show()
 		return
 	
-	_tween.stop()
-#	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
-#	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-#	_tween.play()
+	if is_instance_valid(_tween) and _tween.is_running():
+		_tween.kill()
+	
+	_tween = create_tween()
+	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
+	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -69,11 +72,13 @@ func _open() -> void:
 	if E.settings.inventory_always_visible: return
 	if not is_disabled and position.y != _hide_y: return
 	
-	_tween.stop()
-#	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
-#	.from(_hide_y if not is_disabled else position.y)\
-#	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-#	_tween.play()
+	if is_instance_valid(_tween) and _tween.is_running():
+		_tween.kill()
+	
+	_tween = create_tween()
+	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
+	.from(_hide_y if not is_disabled else position.y)\
+	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 
 func _close() -> void:
@@ -83,13 +88,15 @@ func _close() -> void:
 	
 	if not _can_hide_inventory: return
 	
-	_tween.stop()
-#	_tween.tween_property(
-#		self, 'position:y',
-#		_hide_y if not is_disabled else _hide_y - 3.5,
-#		0.2
-#	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-#	_tween.play()
+	if is_instance_valid(_tween) and _tween.is_running():
+		_tween.kill()
+	
+	_tween = create_tween()
+	_tween.tween_property(
+		self, 'position:y',
+		_hide_y if not is_disabled else _hide_y - 3.5,
+		0.2
+	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 
 
 func _show_item_info(description := '') -> void:
@@ -141,11 +148,11 @@ func _remove_item(item: PopochiuInventoryItem, animate := true) -> void:
 func _show_and_hide(time := 1.0) -> void:
 	_open()
 	
-	await _tween.tween_all_completed
+	await _tween.finished
 	await E.wait(time, false)
 	
 	_close()
 	
-	await _tween.tween_all_completed
+	await _tween.finished
 	
 	I.inventory_shown.emit()

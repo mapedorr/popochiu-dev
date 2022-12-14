@@ -11,7 +11,6 @@ signal redied
 
 const SaveLoad := preload('res://addons/Popochiu/Engine/Others/PopochiuSaveLoad.gd')
 
-var in_run := false
 # Used to prevent going to another room when there is one being loaded
 var in_room := false : set = _set_in_room
 var current_room: PopochiuRoom = null
@@ -48,7 +47,7 @@ var _config: ConfigFile = null
 var _loaded_game := {}
 var _hovered_queue := []
 
-@onready var _tween := create_tween()
+@onready var _tween: Tween = null
 @onready var main_camera: Camera2D = find_child('MainCamera')
 @onready var _defaults := {
 	camera_limits = {
@@ -176,17 +175,16 @@ func run(instructions: Array, show_gi := true) -> void:
 	
 	for idx in instructions.size():
 		var instruction = instructions[idx]
-	
-		if instruction is String:
+		
+		if instruction is Callable:
+			await instruction.call()
+		elif instruction is String:
 			await _eval_string(instruction as String)
 		elif instruction is Dictionary:
 			if instruction.has('dialog'):
 				_eval_string(instruction.dialog)
 				await self.wait(instruction.time, false)
 				G.continue_clicked.emit()
-#		elif instruction is GDScriptFunctionState and instruction.is_valid():
-#			instruction.resume()
-#			await instruction
 	
 	if not D.active and show_gi:
 		G.done()
@@ -393,11 +391,14 @@ func camera_zoom(
 ) -> void:
 #	if is_in_queue: yield()
 	
+	if is_instance_valid(_tween) and _tween.is_running():
+		_tween.kill()
+	
+	_tween = create_tween()
 	_tween.tween_property(main_camera, 'zoom', target, duration)\
 	.from(main_camera.zoom).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	_tween.play()
 	
-	await _tween.tween_all_completed
+	await _tween.finished
 
 
 # Returns a String of a text that could be a position key
@@ -558,6 +559,10 @@ func remove_hovered(node: PopochiuClickable) -> bool:
 		return false
 	
 	return true
+
+
+func in_run() -> bool:
+	return _running
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░

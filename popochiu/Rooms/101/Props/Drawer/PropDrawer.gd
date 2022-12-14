@@ -17,7 +17,7 @@ func on_interact() -> void:
 #		C.face_clicked(),
 #		'Player: Not picking that up'
 #	])
-	super.on_interact()
+	super()
 
 
 # When the node is right clicked
@@ -30,14 +30,14 @@ func on_look() -> void:
 #		C.face_clicked(),
 #		'Player: A deck of cards'
 #	])
-	super.on_look()
+	super()
 
 
 # When the node is clicked and there is an inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
 	# Replace the call to super.on_item_used(item) to implement your code. This only
 	# makes the default behavior to happen.
-	super.on_item_used(item)
+	super(item)
 
 
 # When an inventory item linked to this Prop (link_to_item) is removed from

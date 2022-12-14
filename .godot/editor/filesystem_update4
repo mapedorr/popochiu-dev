@@ -1,7 +1,2 @@
-res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn
-res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacter.tscn
-res://addons/Popochiu/Engine/Objects/Room/PopochiuRoom.gd
-res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacter.gd
 res://popochiu/Rooms/101/Room101.tscn
-res://popochiu/Characters/Popsy/CharacterPopsy.tscn
-res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.gd
+res://addons/Popochiu/Engine/Popochiu.gd

@@ -10,7 +10,7 @@ var is_disabled := false
 
 var _can_hide := true
 
-@onready var _tween := create_tween()
+@onready var _tween: Tween = null
 @onready var _box: BoxContainer = find_child('Box')
 @onready var _btn_dialog_speed: ToolbarButton = find_child('BtnDialogSpeed')
 @onready var _btn_power: ToolbarButton = find_child('BtnPower')
@@ -43,11 +43,12 @@ func disable() -> void:
 		hide()
 		return
 	
-#	_tween.stop()
-#	_tween.tween_property(self, 'position:y', _hide_y - 3.5, 0.3)\
-#		.from(_hide_y)\
-#		.set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
-#	_tween.play()
+	if is_instance_valid(_tween) and _tween.is_running():
+		_tween.kill()
+	
+	_tween = create_tween()
+	_tween.tween_property(self, 'position:y', _hide_y - 3.5, 0.3)\
+	.from(_hide_y).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_OUT)
 
 
 func enable() -> void:
@@ -57,10 +58,12 @@ func enable() -> void:
 		show()
 		return
 	
-#	_tween.stop()
-#	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
-#	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-#	_tween.play()
+	if is_instance_valid(_tween) and _tween.is_running():
+		_tween.kill()
+	
+	_tween = create_tween()
+	_tween.tween_property(self, 'position:y', _hide_y, 0.3)\
+	.from(_hide_y - 3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
@@ -68,11 +71,13 @@ func _open() -> void:
 	if E.settings.toolbar_always_visible: return
 	if not is_disabled and position.y != _hide_y: return
 	
-	_tween.stop()
-#	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
-#	.from(_hide_y if not is_disabled else position.y)\
-#	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-#	_tween.play()
+	if is_instance_valid(_tween) and _tween.is_running():
+		_tween.kill()
+	
+	_tween = create_tween()
+	_tween.tween_property(self, 'position:y', 0.0, 0.5)\
+	.from(_hide_y if not is_disabled else position.y)\
+	.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 
 func _close() -> void:
@@ -82,13 +87,15 @@ func _close() -> void:
 	
 	if not _can_hide: return
 	
-	_tween.stop()
-#	_tween.tween_property(
-#		self, 'position:y',
-#		_hide_y if not is_disabled else _hide_y - 3.5,
-#		0.2
-#	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-#	_tween.play()
+	if is_instance_valid(_tween) and _tween.is_running():
+		_tween.kill()
+	
+	_tween = create_tween()
+	_tween.tween_property(
+		self, 'position:y',
+		_hide_y if not is_disabled else _hide_y - 3.5,
+		0.2
+	).from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 
 
 func _disable_hide() -> void:

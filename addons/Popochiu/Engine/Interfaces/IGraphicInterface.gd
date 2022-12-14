@@ -21,9 +21,11 @@ var is_blocked := false
 # Shows a text in the center of the screen. Can be used as the narrator or to
 # give instructions to players. The visual style of the node that shows this text
 # can be modified in DisplayBox.tscn.
-func display(msg: String, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-
+func display(msg: String) -> void:
+	if not E.in_run():
+		# Show the click handler that blocks interactions
+		G.block()
+	
 	if E.cutscene_skipped:
 		await get_tree().process_frame
 		return
@@ -31,6 +33,10 @@ func display(msg: String, is_in_queue := true) -> void:
 	show_box_requested.emit(E.get_text(msg))
 	
 	await self.continue_clicked
+
+
+func run_display(msg: String) -> Callable:
+	return func (): await display(msg)
 
 
 # Shows a text at the bottom of the screen. It is used to show players the
