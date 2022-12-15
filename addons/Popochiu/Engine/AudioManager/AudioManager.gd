@@ -16,9 +16,9 @@ var _vo_cues := {}
 var _ui_cues := {}
 var _active := {}
 var _all_in_one := {}
+# Serves as a map that stores an AudioStreamPlayer/AudioStreamPlayer2D and the
+# tween used to fade its volume
 var _fading_sounds := {}
-
-@onready var _tween: Tween = null
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -33,15 +33,13 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func play(
+func run_play(
 	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
-) -> Node:
-#	yield()
-	
-	return await _play_sound_cue(cue_name, position_2d, wait_to_end)
+) -> Callable:
+	return func (): await play(cue_name, wait_to_end, position_2d)
 
 
-func play_no_block(
+func play(
 	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
 ) -> Node:
 	if wait_to_end:
@@ -50,45 +48,36 @@ func play_no_block(
 		return await _play_sound_cue(cue_name, position_2d)
 
 
-func play_music(\
-cue_name: String, fade_duration := 0.0, music_position := 0.0) -> Node:
+func run_play_music(
+	cue_name: String, fade_duration := 0.0, music_position := 0.0
+) -> Callable:
 	# TODO: Add a position: Vector2 parameter in case one want to play music coming
 	# out from a specific source (e.g. a radio in the room).
-#	yield()
-	
-	var stream_player: Node = _play_music_cue(
-		cue_name, fade_duration, music_position
-	)
-	
-	await get_tree().process_frame
-	
-	return stream_player
+	return func (): await play_music(cue_name, fade_duration, music_position)
 
 
-func play_music_no_block(\
-cue_name: String, fade_duration := 0.0, music_position := 0.0) -> Node:
+func play_music(
+	cue_name: String, fade_duration := 0.0, music_position := 0.0
+) -> Node:
 	# TODO: Add a position: Vector2 parameter in case one want to play music coming
 	# out from a specific source (e.g. a radio in the room).
-	
-	return _play_music_cue(cue_name, fade_duration, music_position)
+	return await _play_music_cue(cue_name, fade_duration, music_position)
 
 
-func play_fade(
+func run_play_fade(
 	cue_name := '',
 	duration := 1.0,
 	wait_to_end := false,
 	from := -80.0,
 	to := INF,
 	position_2d := Vector2.ZERO
-) -> Node:
-#	yield()
-	
-	return await _play_fade_cue(
-		cue_name, duration, from, to, position_2d, wait_to_end
+) -> Callable:
+	return func (): await play_fade(
+		cue_name, duration, wait_to_end, from, to, position_2d
 	)
 
 
-func play_fade_no_block(
+func play_fade(
 	cue_name := '',
 	duration := 1.0,
 	wait_to_end := false,
@@ -109,15 +98,13 @@ func play_fade_no_block(
 		return await _play_fade_cue(cue_name, duration, from, to, position_2d)
 
 
+func run_stop(cue_name: String, fade_duration := 0.0) -> Callable:
+	return func ():
+		stop(cue_name, fade_duration)
+		await get_tree().process_frame
+
+
 func stop(cue_name: String, fade_duration := 0.0) -> void:
-#	yield()
-	
-	_stop(cue_name, fade_duration)
-	
-	await get_tree().process_frame
-
-
-func stop_no_block(cue_name: String, fade_duration := 0.0) -> void:
 	_stop(cue_name, fade_duration)
 
 
@@ -168,8 +155,9 @@ func sort_resource_paths(a: String, b: String) -> bool:
 # If wait_to_end is not null, that means the call is comming from a play
 # inside a E.run([])
 # In this method the calls to play and play_no_block converge.
-func _play_sound_cue(\
-cue_name := '', position_2d := Vector2.ZERO, wait_to_end = null) -> Node:
+func _play_sound_cue(
+	cue_name := '', position_2d := Vector2.ZERO, wait_to_end = null
+) -> Node:
 	var stream_player: Node = null
 	
 	if _all_in_one.has(cue_name.to_lower()):
@@ -321,7 +309,8 @@ func _make_available(stream_player: Node, cue_name: String, _debug_idx: int) -> 
 	if players.is_empty():
 		_active.erase(cue_name)
 	
-	stream_player.finished.connect(_make_available)
+	if not stream_player.finished.is_connected(_make_available):
+		stream_player.finished.connect(_make_available)
 
 
 func _reparent(source: Node, target: Node, child_idx: int) -> Node:
@@ -344,11 +333,14 @@ to := 0.0,
 from_position := 0.0
 ) -> Node:
 	if cue.audio.get_instance_id() in _fading_sounds:
-		from = _fading_sounds[cue.audio.get_instance_id()].volume_db
+		from = _fading_sounds[cue.audio.get_instance_id()].stream.volume_db
 		
-		# TODO: Stop the tween only of the sound that is fading
-#		_tween.stop(_fading_sounds[cue.audio.get_instance_id()])
-		_tween.stop()
+		var tween: Tween = _fading_sounds[cue.audio.get_instance_id()].tween
+		# Stop the tween only of the sound that is fading
+		
+		if is_instance_valid(tween) and tween.is_running():
+			tween.kill()
+		
 		_fading_sounds[cue.audio.get_instance_id()].finished.emit()
 		_fading_sounds.erase(cue.audio.get_instance_id())
 	
@@ -367,27 +359,26 @@ from_position := 0.0
 func _fade_sound(cue_name: String, duration = 1, from = 0, to = 0) -> void:
 	var stream_player: Node = (_active[cue_name].players as Array).front()
 	
-	_tween.interpolate_property(
-		stream_player, 'volume_db',
-		from, to,
-		duration, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
-	)
-	_tween.start()
+	if _fading_sounds.has(stream_player.stream.get_instance_id()):
+		_fading_sounds[stream_player.stream.get_instance_id()].tween.kill()
+	
+	var t := create_tween()
+	t.finished.connect(_fadeout_finished.bind(stream_player, t))
+	t.tween_property(stream_player, 'volume_db', to, duration)\
+	.from(from).set_ease(Tween.EASE_IN_OUT)
 	
 	if from > to :
-		_fading_sounds[stream_player.stream.get_instance_id()] = stream_player
-		
-		if not _tween.finished.is_connected(_fadeout_finished):
-			_tween.finished.connect(_fadeout_finished)
+		_fading_sounds[stream_player.stream.get_instance_id()] = {
+			stream = stream_player,
+			tween = t
+		}
 
 
-func _fadeout_finished(obj: Node, _key: NodePath) -> void:
-	if obj.stream.get_instance_id() in _fading_sounds :
-		_fading_sounds.erase(obj.stream.get_instance_id())
-		obj.stop()
-		
-		if _fading_sounds.is_empty():
-			_tween.finished.disconnect(_fadeout_finished)
+func _fadeout_finished(stream_player: Node, tween: Tween) -> void:
+	if stream_player.stream.get_instance_id() in _fading_sounds :
+		_fading_sounds.erase(stream_player.stream.get_instance_id())
+		stream_player.stop()
+		tween.finished.disconnect(_fadeout_finished)
 
 
 func _stop(cue_name: String, fade_duration := 0.0) -> void:

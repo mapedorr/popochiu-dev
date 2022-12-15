@@ -44,7 +44,7 @@ func add_item(item_name: String, animate := true) -> void:
 		
 		return await self.item_add_done
 	
-	await get_tree().process_frame
+	await get_tree().get('process_frame')
 
 
 func run_add_item_as_active(item_name: String, animate := true) -> Callable:

@@ -50,7 +50,7 @@ func _ready() -> void:
 		I.item_discarded.connect(_on_item_discarded)
 		
 		if I.is_item_in_inventory(link_to_item):
-			disable(false)
+			disable()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -63,9 +63,11 @@ func on_linked_item_discarded() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
+func run_change_frame(new_frame: int) -> Callable:
+	return func (): await change_frame(new_frame)
+
+
 func change_frame(new_frame: int) -> void:
-#	yield()
-	
 	self.current_frame = new_frame
 	await get_tree().process_frame
 
@@ -93,7 +95,7 @@ func set_current_frame(value: int) -> void:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _on_item_added(item: PopochiuInventoryItem, _animate: bool) -> void:
 	if item.script_name == link_to_item:
-		disable(false)
+		disable()
 
 
 func _on_item_removed(item: PopochiuInventoryItem, _animate: bool) -> void:
@@ -104,7 +106,7 @@ func _on_item_removed(item: PopochiuInventoryItem, _animate: bool) -> void:
 
 func _on_item_discarded(item: PopochiuInventoryItem) -> void:
 	if item.script_name == link_to_item:
-		enable(false)
+		enable()
 		
 		on_linked_item_discarded()
 		linked_item_discarded.emit(self)

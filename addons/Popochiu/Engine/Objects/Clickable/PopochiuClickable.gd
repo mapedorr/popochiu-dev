@@ -111,19 +111,25 @@ func show_helpers() -> void:
 	$WalkToHelper.show()
 
 
+func run_disable() -> Callable:
+	return func (): await disable()
+
+
 # Hides the Node and disables its interaction
-func disable(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func disable() -> void:
 	self.visible = false
+	
 	await get_tree().process_frame
 
 
+func run_enable() -> Callable:
+	return func (): await enable()
+
+
 # Makes the Node visible and enables its interaction
-func enable(is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func enable() -> void:
 	self.visible = true
+	
 	await get_tree().process_frame
 
 

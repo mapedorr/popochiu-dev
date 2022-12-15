@@ -13,6 +13,7 @@ signal interface_shown
 signal history_opened
 signal save_requested(date) # The date in YYYY/MM/DD HH:MM:SS format
 signal load_requested
+signal continue_requested
 
 var is_blocked := false
 

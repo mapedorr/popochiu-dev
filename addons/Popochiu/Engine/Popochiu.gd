@@ -144,11 +144,15 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func wait(time := 1.0, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
+func run_wait(time := 1.0) -> Callable:
+	return func (): await wait(time)
+
+
+func wait(time := 1.0) -> void:
 	if cutscene_skipped:
 		await get_tree().process_frame
 		return
+	
 	await get_tree().create_timer(time).timeout
 
 
@@ -183,7 +187,7 @@ func run(instructions: Array, show_gi := true) -> void:
 #		elif instruction is Dictionary:
 #			if instruction.has('dialog'):
 #				_eval_string(instruction.dialog)
-#				await self.wait(instruction.time, false)
+#				await self.wait(instruction.time)
 #				G.continue_clicked.emit()
 	
 	if not D.active and show_gi:
@@ -327,7 +331,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	if _use_transition_on_room_change:
 		$TransitionLayer.play_transition($TransitionLayer.FADE_OUT)
 		await $TransitionLayer.transition_finished
-		await wait(0.3, false)
+		await wait(0.3)
 	else:
 		await get_tree().process_frame
 	
@@ -348,20 +352,23 @@ func room_readied(room: PopochiuRoom) -> void:
 	current_room.on_room_transition_finished()
 
 
+func run_camera_offset(offset := Vector2.ZERO) -> Callable:
+	return func (): await camera_offset(offset)
+
+
 # Changes the main camera's offset (useful when zooming the camera)
-func camera_offset(offset := Vector2.ZERO, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func camera_offset(offset := Vector2.ZERO) -> void:
 	main_camera.offset = offset
 	
 	await get_tree().process_frame
 
 
-# Makes the camera shake with strength for duration seconds
-func camera_shake(\
-strength := 1.0, duration := 1.0, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func run_camera_shake(strength := 1.0, duration := 1.0) -> Callable:
+	return func (): await camera_shake(strength, duration)
+
+
+# Makes the camera shake with `strength` for `duration` seconds
+func camera_shake(strength := 1.0, duration := 1.0) -> void:
 	_camera_shake_amount = strength
 	_shake_timer = duration
 	_is_camera_shaking = true
@@ -369,13 +376,13 @@ strength := 1.0, duration := 1.0, is_in_queue := true) -> void:
 	await get_tree().create_timer(duration).timeout
 
 
-# Makes the camera shake with strength for duration seconds without blocking
-# excecution
-func camera_shake_no_block(
-	strength := 1.0, duration := 1.0, is_in_queue := true
-) -> void:
-#	if is_in_queue: yield()
-	
+func run_camera_shake_bg(strength := 1.0, duration := 1.0) -> Callable:
+	return func (): await camera_shake_bg(strength, duration)
+
+
+# Makes the camera shake with `strength` for `duration` seconds without blocking
+# excecution (a.k.a. in the background)
+func camera_shake_bg(strength := 1.0, duration := 1.0) -> void:
 	_camera_shake_amount = strength
 	_shake_timer = duration
 	_is_camera_shaking = true
@@ -383,20 +390,20 @@ func camera_shake_no_block(
 	await get_tree().process_frame
 
 
-# Changes the camera zoom. If target is larger than Vector2(1, 1) the camera
-# will zoom out, smaller values make it zoom in. The effect will last duration
+func run_camera_zoom(target := Vector2.ONE, duration := 1.0) -> Callable:
+	return func (): await camera_zoom(target, duration)
+
+
+# Changes the camera zoom. If `target` is larger than Vector2(1, 1) the camera
+# will zoom out, smaller values make it zoom in. The effect will last `duration`
 # seconds
-func camera_zoom(
-	target := Vector2.ONE, duration := 1.0, is_in_queue := true
-) -> void:
-#	if is_in_queue: yield()
-	
+func camera_zoom(target := Vector2.ONE, duration := 1.0) -> void:
 	if is_instance_valid(_tween) and _tween.is_running():
 		_tween.kill()
 	
 	_tween = create_tween()
 	_tween.tween_property(main_camera, 'zoom', target, duration)\
-	.from(main_camera.zoom).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	.from_current().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	
 	await _tween.finished
 
@@ -450,28 +457,9 @@ func add_history(data: Dictionary) -> void:
 # can be passed with params, and yield_signal is the signal that will notify the
 # function has been completed (so run can continue with the next command in the queue)
 func runnable(
-	node: Object, method: String, params := [], yield_signal := ''
-) -> void:
-#	yield()
-	
-	if cutscene_skipped:
-		# TODO: What should happen if the skipped function was an animation that
-		# triggers calls during execution? What should happen if the skipped
-		# function has to change the state of the game?
-		await get_tree().process_frame
-		return
-	
-	var f := Callable(node, method)
-	var c = f.callv(params)
-	
-	if yield_signal:
-		if yield_signal == 'func_comp':
-			await c
-#		else:
-			# TODO: How to do this in GDScript 2
-			# await node.yield_signal
-	else:
-		await get_tree().process_frame
+	node: Object, method: String, params := [], signal_name := ''
+) -> Callable:
+	return func (): await _runnable(node, method, params, signal_name)
 
 
 # Checks if the room with script_name exists in the array of rooms of Popochiu
@@ -484,11 +472,13 @@ func room_exists(script_name: String) -> bool:
 	return false
 
 
+func run_play_transition(type: int, duration: float) -> Callable:
+	return func (): await play_transition(type, duration)
+
+
 # Plays the transition type animation in TransitionLayer.tscn that last duration
 # in seconds. Possible type values can be found in TransitionLayer
-func play_transition(type: int, duration: float, is_in_queue := true) -> void:
-#	if is_in_queue: yield()
-	
+func play_transition(type: int, duration: float) -> void:
 	$TransitionLayer.play_transition(type, duration)
 	
 	await $TransitionLayer.transition_finished
@@ -602,13 +592,13 @@ func clear_hovered() -> void:
 func _eval_string(text: String) -> void:
 	match text:
 		'.':
-			await wait(0.25, false)
+			await wait(0.25)
 		'..':
-			await wait(0.5, false)
+			await wait(0.5)
 		'...':
-			await wait(1.0, false)
+			await wait(1.0)
 		'....':
-			await wait(2.0, false)
+			await wait(2.0)
 		_:
 			var colon_idx: int = text.find(':')
 			if colon_idx:
@@ -616,9 +606,12 @@ func _eval_string(text: String) -> void:
 				
 				var emotion_idx := colon_prefix.find('(')
 				var auto_idx := colon_prefix.find('[')
-				var name_idx := emotion_idx\
-				if (emotion_idx > 0 and emotion_idx < auto_idx)\
-				else auto_idx
+				var name_idx := -1
+				
+				if emotion_idx > 0 or (auto_idx > 0 and auto_idx > emotion_idx):
+					name_idx = emotion_idx
+				elif auto_idx > 0:
+					name_idx = auto_idx
 				
 				var character_name: String = colon_prefix.substr(
 					0, name_idx
@@ -634,7 +627,8 @@ func _eval_string(text: String) -> void:
 						colon_prefix.substr(auto_idx + 1).rstrip(')')
 					)
 				
-				C.get_character(character_name).emotion = emotion
+				if not emotion.is_empty():
+					C.get_character(character_name).emotion = emotion
 				
 				var dialogue := text.substr(colon_idx + 1).trim_prefix(' ')
 				
@@ -660,3 +654,26 @@ func _set_in_room(value: bool) -> void:
 #	default_language = value
 #	TranslationServer.set_locale(languages[value])
 #	language_changed.emit()
+
+
+func _runnable(
+	node: Object, method: String, params := [], signal_name := ''
+) -> void:
+	if cutscene_skipped:
+		# TODO: What should happen if the skipped function was an animation that
+		# triggers calls during execution? What should happen if the skipped
+		# function has to change the state of the game?
+		await get_tree().process_frame
+		return
+	
+	var f := Callable(node, method)
+	var c = f.callv(params)
+	
+	if not signal_name.is_empty():
+		if signal_name == 'completed':
+			await c
+		else:
+			# TODO: How to do this in GDScript 2
+			await node.get(signal_name)
+	else:
+		await get_tree().process_frame

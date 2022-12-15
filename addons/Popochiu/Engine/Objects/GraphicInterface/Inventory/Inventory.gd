@@ -149,7 +149,7 @@ func _show_and_hide(time := 1.0) -> void:
 	_open()
 	
 	await _tween.finished
-	await E.wait(time, false)
+	await E.wait(time)
 	
 	_close()
 	

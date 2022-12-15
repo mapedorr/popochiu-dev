@@ -6,7 +6,6 @@ extends RichTextLabel
 # warning-ignore-all:return_value_discarded
 
 signal animation_finished
-signal auto_continue_finished
 
 const DFLT_SIZE := 'dflt_size'
 
@@ -226,4 +225,4 @@ func _show_icon() -> void:
 
 func _continue(forced_continue := false) -> void:
 	if E.settings.auto_continue_text or forced_continue:
-		auto_continue_finished.emit()
+		G.continue_requested.emit()

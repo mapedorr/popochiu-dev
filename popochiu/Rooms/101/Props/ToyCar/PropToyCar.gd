@@ -4,6 +4,8 @@ extends PopochiuProp
 # Use await E.run([]) if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
+signal cocoed
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked

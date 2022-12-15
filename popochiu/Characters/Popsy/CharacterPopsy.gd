@@ -12,8 +12,12 @@ var state: PopochiuCharacterData = preload('CharacterPopsy.tres')
 func on_interact() -> void:
 	E.run([
 		C.run_face_clicked(),
+		A.run_play_music('mx_two_popochius'),
+		A.run_play('vo_goddiu_01'),
 		'Player: Hi',
-		'Popsy: Hi'
+		'Popsy: Hi',
+		E.run_camera_shake_bg(1.0, 2.0),
+		'Player(happy): Whaaaaaat!'
 	])
 #	D.show_dialog('TestA')
 #	if state.is_hungry:

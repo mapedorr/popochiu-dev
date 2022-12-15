@@ -65,7 +65,7 @@ func search_audio_files() -> void:
 		var progress: ProgressBar = main_dock.loading_dialog.find_child('Progress')
 		
 		progress.max_value = _audio_cues_to_create.size()
-		(main_dock.loading_dialog as Popup).set_as_minsize()
+#		(main_dock.loading_dialog as Popup).set_as_minsize()
 		(main_dock.loading_dialog as Popup).popup_centered()
 		
 		await get_tree().process_frame
