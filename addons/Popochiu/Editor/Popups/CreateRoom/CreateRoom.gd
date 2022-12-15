@@ -27,6 +27,7 @@ var _room_path_template := ''
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	super()
 	about_to_popup.connect(_check_if_first_room)
 	
 	_clear_fields()
@@ -35,7 +36,7 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: Panel) -> void:
-	super.set_main_dock(node)
+	super(node)
 	
 	# res://popochiu/Rooms
 	_room_path_template = _main_dock.ROOMS_PATH + '%s/Room%s'
@@ -51,7 +52,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the folder for the room
-	_main_dock.dir.make_dir_recursive(_main_dock.ROOMS_PATH + _new_room_name)
+	DirAccess.make_dir_absolute(_main_dock.ROOMS_PATH + _new_room_name)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the state Resource for the room and a script so devs can add extra
@@ -143,7 +144,7 @@ func create() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	super._update_name(new_text)
+	super(new_text)
 
 	if _name:
 		_new_room_name = _name
@@ -163,7 +164,7 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	super._clear_fields()
+	super()
 	
 	_new_room_name = ''
 	_new_room_path = ''

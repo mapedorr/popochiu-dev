@@ -109,7 +109,7 @@ func scene_changed(scene_root: Node) -> void:
 					row_path = c.script.resource_path
 				else:
 					row_path = '%s/%s' % [
-						opened_room.filename.get_base_dir(),
+						opened_room.scene_file_path.get_base_dir(),
 						_types[t].parent
 					]
 				
@@ -138,7 +138,7 @@ func scene_changed(scene_root: Node) -> void:
 
 
 func scene_closed(filepath: String) -> void:
-	if is_instance_valid(opened_room) and opened_room.filename == filepath:
+	if is_instance_valid(opened_room) and opened_room.scene_file_path == filepath:
 		_clear_content()
 
 
@@ -209,7 +209,7 @@ func _select_in_tree(por: PopochiuObjectRow) -> void:
 
 
 func _select_file() -> void:
-	main_dock.ei.select_file(opened_room.filename)
+	main_dock.ei.select_file(opened_room.scene_file_path)
 
 
 func _open_script() -> void:

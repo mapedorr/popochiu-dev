@@ -10,16 +10,16 @@ var state: PopochiuCharacterData = preload('CharacterPopsy.tres')
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	E.run([
-		C.run_face_clicked(),
-		A.run_play_music('mx_two_popochius'),
-		A.run_play('vo_goddiu_01'),
-		'Player: Hi',
-		'Popsy: Hi',
-		E.run_camera_shake_bg(1.0, 2.0),
-		'Player(happy): Whaaaaaat!'
-	])
-#	D.show_dialog('TestA')
+#	E.run([
+#		C.run_face_clicked(),
+#		A.run_play_music('mx_two_popochius'),
+#		A.run_play('vo_goddiu_01'),
+#		'Player: Hi',
+#		'Popsy: Hi',
+#		E.run_camera_shake_bg(1.0, 2.0),
+#		'Player(happy): Whaaaaaat!'
+#	])
+	D.show_dialog('TestA')
 #	if state.is_hungry:
 #		state.is_hungry = false
 #		E.run([
@@ -36,7 +36,7 @@ func on_interact() -> void:
 
 # When the node is right clicked
 func on_look() -> void:
-	# Replace the call to super.on_look() to implement your code. This only makes
+	# Replace the call to super() to implement your code. This only makes
 	# the default behavior to happen.
 	C.player = self
 
@@ -63,7 +63,7 @@ func play_idle() -> void:
 # Use it to play the walk animation for the character
 # target_pos can be used to know the movement direction
 func play_walk(target_pos: Vector2) -> void:
-	super.play_walk(target_pos)
+	super(target_pos)
 
 
 # Use it to play the talk animation for the character

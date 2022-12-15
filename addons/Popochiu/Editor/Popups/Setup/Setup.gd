@@ -68,7 +68,7 @@ func appear(show_welcome := false) -> void:
 	_scale_msg.text = _get_scale_msg()
 	
 	_game_type.selected = 0
-	if ProjectSettings.get_setting(PopochiuResources.STRETCH_MODE) == '2d'\
+	if ProjectSettings.get_setting(PopochiuResources.STRETCH_MODE) == 'canvas_items'\
 	and ProjectSettings.get_setting(PopochiuResources.STRETCH_ASPECT) == 'keep':
 		_game_type.selected = 1
 		
@@ -78,7 +78,7 @@ func appear(show_welcome := false) -> void:
 			_game_type.selected = 2
 	
 	if show_welcome:
-		# Make Pixel the default game type checked first run
+		# Make Pixel the default game type checked during first run
 		_game_type.selected = 2
 	
 	popup_centered_clamped(Vector2(480.0, 180.0))
@@ -87,28 +87,40 @@ func appear(show_welcome := false) -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_project_settings() -> void:
-	ProjectSettings.set_setting('display/window/size/width', int(_game_width.value))
-	ProjectSettings.set_setting('display/window/size/height', int(_game_height.value))
-	ProjectSettings.set_setting('display/window/size/test_width', int(_test_width.value))
-	ProjectSettings.set_setting('display/window/size/test_height', int(_test_height.value))
+	ProjectSettings.set_setting(
+		PopochiuResources.DISPLAY_WIDTH,
+		int(_game_width.value)
+	)
+	ProjectSettings.set_setting(
+		PopochiuResources.DISPLAY_HEIGHT,
+		int(_game_height.value)
+	)
+	ProjectSettings.set_setting(
+		PopochiuResources.TEST_WIDTH,
+		int(_test_width.value)
+	)
+	ProjectSettings.set_setting(
+		PopochiuResources.TEST_HEIGHT,
+		int(_test_height.value)
+	)
 	
 	if _game_type.selected != 0:
-		ProjectSettings.set_setting('display/window/stretch/mode', '2d')
-		ProjectSettings.set_setting('display/window/stretch/aspect', 'keep')
+		ProjectSettings.set_setting(PopochiuResources.STRETCH_MODE, 'canvas_items')
+		ProjectSettings.set_setting(PopochiuResources.STRETCH_ASPECT, 'keep')
 
-		if _game_type.selected == 1:
-			ProjectSettings.set_setting(
-				'importer_defaults/texture',
-				null
-			)
-		else:
-			ProjectSettings.set_setting(
-				'importer_defaults/texture',
-				ImporterDefaults.PIXEL_TEXTURES
-			)
+#		if _game_type.selected == 1:
+#			ProjectSettings.set_setting(
+#				'importer_defaults/texture',
+#				null
+#			)
+#		else:
+#			ProjectSettings.set_setting(
+#				'importer_defaults/texture',
+#				ImporterDefaults.PIXEL_TEXTURES
+#			)
 	else:
-		ProjectSettings.set_setting('display/window/stretch/mode', 'disabled')
-		ProjectSettings.set_setting('display/window/stretch/aspect', 'ignore')
+		ProjectSettings.set_setting(PopochiuResources.STRETCH_MODE, 'disabled')
+		ProjectSettings.set_setting(PopochiuResources.STRETCH_ASPECT, 'ignore')
 	
 	assert(\
 		ProjectSettings.save() == OK,\

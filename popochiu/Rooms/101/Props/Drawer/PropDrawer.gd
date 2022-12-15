@@ -8,7 +8,7 @@ extends PopochiuProp
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-#	Replace the call to super.on_interact() to implement your code. This only makes
+#	Replace the call to super() to implement your code. This only makes
 #	the default behavior to happen.
 #	For example you can make the character walk to the Prop and then say
 #	something:
@@ -22,7 +22,7 @@ func on_interact() -> void:
 
 # When the node is right clicked
 func on_look() -> void:
-#	Replace the call to super.on_look() to implement your code. This only makes
+#	Replace the call to super() to implement your code. This only makes
 #	the default behavior to happen.
 #	For example you can make the character walk to the Prop and then say
 #	something:
@@ -35,7 +35,7 @@ func on_look() -> void:
 
 # When the node is clicked and there is an inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
-	# Replace the call to super.on_item_used(item) to implement your code. This only
+	# Replace the call to super(item) to implement your code. This only
 	# makes the default behavior to happen.
 	super(item)
 

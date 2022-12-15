@@ -71,7 +71,7 @@ func _create_options(options := [], autoshow := false) -> void:
 
 		btn.text = dialog_option.text
 		btn.add_theme_color_override('font_color', default)
-		btn.add_theme_color_override('font_color_hover', hover)
+		btn.add_theme_color_override('font_hover_color', hover)
 		
 		if dialog_option.used and not dialog_option.always_on:
 			btn.add_theme_color_override('font_color', used)
@@ -89,7 +89,7 @@ func _create_options(options := [], autoshow := false) -> void:
 	
 	await get_tree().process_frame
 
-	_panel.minimum_size.y = _options.size.y
+	_panel.custom_minimum_size.y = _options.size.y
 
 
 func remove_options() -> void:

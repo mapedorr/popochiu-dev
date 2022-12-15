@@ -42,7 +42,7 @@ func show_dialog(script_name: String) -> void:
 # PopochiuDialogOption of the selected option
 func show_inline_dialog(opts: Array) -> PopochiuDialogOption:
 	inline_dialog_requested.emit(opts)
-	return await self.option_selected
+	return await option_selected
 
 
 # Finishes the dialog currently in execution.

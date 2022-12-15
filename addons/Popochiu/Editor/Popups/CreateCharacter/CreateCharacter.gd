@@ -22,12 +22,14 @@ var _character_path_template: String
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	super()
 	_clear_fields()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: Panel) -> void:
-	super.set_main_dock(node)
+	super(node)
+	
 	# res://popochiu/Characters
 	_character_path_template = _main_dock.CHARACTERS_PATH + '%s/Character%s'
 
@@ -42,7 +44,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the folder for the character
-	_main_dock.dir.make_dir(_main_dock.CHARACTERS_PATH + _new_character_name)
+	DirAccess.make_dir_absolute(_main_dock.CHARACTERS_PATH + _new_character_name)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the state Resource for the character and a script so devs
@@ -128,9 +130,10 @@ func create() -> void:
 	# That's all!!!
 	hide()
 
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	super._update_name(new_text)
+	super(new_text)
 
 	if _name:
 		_new_character_name = _name
@@ -151,7 +154,7 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	super._clear_fields()
+	super()
 	
 	_new_character_name = ''
 	_new_character_path = ''

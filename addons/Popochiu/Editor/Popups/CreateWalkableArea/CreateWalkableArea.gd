@@ -18,17 +18,18 @@ var _room_dir: String
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	super()
 	_clear_fields()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: Panel) -> void:
-	super.set_main_dock(node)
+	super(node)
 
 
 func room_opened(r: Node2D) -> void:
 	_room = r
-	_room_path = _room.filename
+	_room_path = _room.scene_file_path
 	_room_dir = _room_path.get_base_dir()
 	_walkable_area_path_template = _room_dir + '/WalkableAreas/%s/WalkableArea%s'
 
@@ -45,7 +46,7 @@ func create() -> void:
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the folder for the WalkableArea
 	assert(\
-		_main_dock.dir.make_dir_recursive(_new_walkable_area_path.get_base_dir()) == OK,\
+		DirAccess.make_dir_recursive_absolute(_new_walkable_area_path.get_base_dir()) == OK,\
 		'[Popochiu] Could not create WalkableArea folder for ' + _new_walkable_area_name\
 	)
 	
@@ -84,8 +85,7 @@ func create() -> void:
 	# Attach the walkable area to the room
 	_room.get_node('WalkableAreas').add_child(walkable_area)
 	
-	# FIX: Make the room the owner of both the Node2D and its
-	# NavigationRegion2D
+	# Make the room the owner of both the Node2D and its NavigationRegion2D
 	walkable_area.owner = _room
 	perimeter.owner = _room
 	
@@ -113,9 +113,10 @@ func create() -> void:
 	# Fin
 	hide()
 
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	super._update_name(new_text)
+	super(new_text)
 
 	if _name:
 		_new_walkable_area_name = _name
@@ -134,7 +135,7 @@ func _update_name(new_text: String) -> void:
 
 		
 func _clear_fields() -> void:
-	super._clear_fields()
+	super()
 	
 	_new_walkable_area_name = ''
 	_new_walkable_area_path = ''

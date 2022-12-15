@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bb0vly7caqj44"]
+[gd_scene load_steps=21 format=3 uid="uid://bb0vly7caqj44"]
 
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Room101.gd" id="1"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Hotspots/Door/HotspotDoor.gd" id="2"]
@@ -14,7 +14,9 @@
 [ext_resource type="Script" path="res://popochiu/Rooms/101/WalkableAreas/Floor/WalkableAreaFloor.gd" id="12"]
 [ext_resource type="Texture2D" uid="uid://b6g2r1h4qihe6" path="res://popochiu/Rooms/101/Props/Drawer/drawer.png" id="12_uu3wq"]
 [ext_resource type="PackedScene" path="res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.tscn" id="13"]
+[ext_resource type="Script" path="res://popochiu/Rooms/101/Props/Apple/PropApple.gd" id="13_vhvtq"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Hotspots/Window/HotspotWindow.gd" id="14"]
+[ext_resource type="Texture2D" uid="uid://cn2jct7urbm46" path="res://popochiu/Rooms/101/Props/Apple/fruit.png" id="14_urxix"]
 [ext_resource type="PackedScene" uid="uid://hfvjxu5map27" path="res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.tscn" id="15"]
 [ext_resource type="Script" path="res://popochiu/Rooms/101/Props/Drawer/PropDrawer.gd" id="16"]
 
@@ -25,6 +27,7 @@ outlines = [PackedVector2Array(-82, 13, -68, 9, -50, 7, 73, 9, 90, 13, 104, 24, 
 
 [node name="Room101" type="Node2D"]
 script = ExtResource("1")
+script_name = "101"
 
 [node name="WalkableAreas" type="Node2D" parent="."]
 
@@ -69,6 +72,16 @@ polygon = PackedVector2Array(-9, 3, -8, -3, -1, -6, 6, -5, 9, 1, 6, 5)
 [node name="Table" parent="Props" instance=ExtResource("3")]
 position = Vector2(153, 122)
 texture = ExtResource("10_qi03c")
+
+[node name="Apple" parent="Props/Table" instance=ExtResource("3")]
+position = Vector2(-1, -5)
+script = ExtResource("13_vhvtq")
+texture = ExtResource("14_urxix")
+script_name = "Apple"
+description = "Apple"
+
+[node name="InteractionPolygon" type="CollisionPolygon2D" parent="Props/Table/Apple"]
+polygon = PackedVector2Array(-5, 5, -6, -3, 1, -7, 5, -2, 4, 6)
 
 [node name="Drawer" parent="Props" instance=ExtResource("3")]
 position = Vector2(63, 106)

@@ -246,7 +246,7 @@ func open_setup() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
-func _open_popup(popup: Popup) -> void:
+func _open_popup(popup: ConfirmationDialog) -> void:
 	popup.popup_centered_clamped(Vector2(640, 360))
 
 

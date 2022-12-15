@@ -33,6 +33,8 @@ func _ready() -> void:
 
 
 func _exit_tree():
+	if Engine.is_editor_hint(): return
+	
 	NavigationServer2D.map_set_active(map_rid, false)
 	NavigationServer2D.free_rid(map_rid)
 

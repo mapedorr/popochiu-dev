@@ -29,7 +29,7 @@ func start() -> void:
 	
 	await D.dialog_finished
 	
-	D.option_selected.disconnect(_on_option_selected)
+	await D.option_selected.disconnect(_on_option_selected)
 
 
 func stop() -> void:

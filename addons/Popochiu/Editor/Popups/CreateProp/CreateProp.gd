@@ -22,6 +22,7 @@ var _room_dir: String
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	super()
 	_clear_fields()
 	
 	_interaction_checkbox.toggled.connect(_interaction_toggled)
@@ -29,12 +30,12 @@ func _ready() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: Panel) -> void:
-	super.set_main_dock(node)
+	super(node)
 
 
 func room_opened(r: Node2D) -> void:
 	_room = r
-	_room_path = _room.filename
+	_room_path = _room.scene_file_path
 	_room_dir = _room_path.get_base_dir()
 	_prop_path_template = _room_dir + '/Props/%s/Prop%s'
 
@@ -52,14 +53,14 @@ func create() -> void:
 	if _interaction_checkbox.button_pressed:
 		# Create the folder for the Prop
 		assert(\
-		_main_dock.dir.make_dir_recursive(_new_prop_path.get_base_dir()) == OK,\
+		DirAccess.make_dir_recursive_absolute(_new_prop_path.get_base_dir()) == OK,\
 		'[Popochiu] Could not create Prop folder for ' + _new_prop_name\
 		)
-	elif not _main_dock.dir.dir_exists(_room_dir + '/Props/'):
+	elif not DirAccess.dir_exists_absolute(_room_dir + '/Props/'):
 		# If the Prop doesn't have interaction, just try to create the Props
 		# folder to store there the assets that will be used by the Prop
 		assert(\
-		_main_dock.dir.make_dir_recursive(_room_dir + '/Props/_NoInteraction') == OK,\
+		DirAccess.make_dir_recursive_absolute(_room_dir + '/Props/_NoInteraction') == OK,\
 		'[Popochiu] Could not create Props folder for ' + _room_path.get_file()\
 		)
 	
@@ -132,9 +133,10 @@ func create() -> void:
 	# Fin
 	hide()
 
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	super._update_name(new_text)
+	super(new_text)
 
 	if _name:
 		_new_prop_name = _name
@@ -147,7 +149,7 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	super._clear_fields()
+	super()
 	
 	_new_prop_name = ''
 	_new_prop_path = ''

@@ -8,3 +8,4 @@ offset_bottom = 14.0
 theme = ExtResource("1")
 text = "asdasd"
 flat = true
+alignment = 0

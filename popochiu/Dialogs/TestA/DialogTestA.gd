@@ -13,25 +13,25 @@ func option_selected(opt: PopochiuDialogOption) -> void:
 	await D.say_selected()
 	
 	match opt.id:
-		# 'Opt1':
-		# 	yield(E.run([
-		# 		'Popsy: Hi!'
-		# 	]), 'completed')
-			
-		# 	opt.turn_off_forever()
-		# 	turn_on_options(['Opt2'])
-		# 'Opt2':
-		# 	if opt.used_times == 1:
-		# 		yield(E.run([
-		# 			'Popsy: Fine. Thanks!'
-		# 		]), 'completed')
-		# 	else:
-		# 		yield(E.run([
-		# 			'Popsy: ...',
-		# 			'Popsy: You already asked that......',
-		# 		]), 'completed')
-			
-		# 	turn_on_options(['Opt1'])
+		'Opt1':
+			await E.run([
+				'Popsy: Hi!'
+			])
+
+			opt.turn_off_forever()
+			turn_on_options(['Opt2'])
+		'Opt2':
+			if opt.used_times == 1:
+				await E.run([
+					'Popsy: Fine. Thanks!'
+				])
+			else:
+				await E.run([
+					'Popsy: ...',
+					'Popsy: You already asked that......',
+				])
+
+			turn_on_options(['Opt1'])
 		_:
 			# By default close the dialog
 			stop()

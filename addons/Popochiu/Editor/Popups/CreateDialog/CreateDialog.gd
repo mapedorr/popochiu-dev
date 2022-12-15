@@ -14,12 +14,13 @@ var _dialog_path_template: String
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
+	super()
 	_clear_fields()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func set_main_dock(node: Panel) -> void:
-	super.set_main_dock(node)
+	super(node)
 	# Por defecto: res://popochiu/Dialogs
 	_dialog_path_template = _main_dock.DIALOGS_PATH + '%s/Dialog%s'
 
@@ -34,7 +35,7 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Crear el directorio donde se guardará el nuevo diálogo
-	_main_dock.dir.make_dir(_main_dock.DIALOGS_PATH + _new_dialog_name)
+	DirAccess.make_dir_absolute(_main_dock.DIALOGS_PATH + _new_dialog_name)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Crear el script del nuevo diálogo
@@ -79,9 +80,10 @@ func create() -> void:
 	# Fin
 	hide()
 
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _update_name(new_text: String) -> void:
-	super._update_name(new_text)
+	super(new_text)
 
 	if _name:
 		_new_dialog_name = _name
@@ -100,7 +102,7 @@ func _update_name(new_text: String) -> void:
 
 
 func _clear_fields() -> void:
-	super._clear_fields()
+	super()
 	
 	_new_dialog_name = ''
 	_new_dialog_path = ''

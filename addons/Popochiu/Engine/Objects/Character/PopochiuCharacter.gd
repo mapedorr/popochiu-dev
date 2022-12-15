@@ -235,13 +235,13 @@ func grab() -> void:
 
 
 func hide_helpers() -> void:
-	super.hide_helpers()
+	super()
 	
 	if is_instance_valid(dialog_pos): dialog_pos.hide()
 
 
 func show_helpers() -> void:
-	super.show_helpers()
+	super()
 	if is_instance_valid(dialog_pos): dialog_pos.show()
 
 
