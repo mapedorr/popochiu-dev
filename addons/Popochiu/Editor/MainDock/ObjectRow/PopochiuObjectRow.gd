@@ -32,7 +32,7 @@ const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd
 var type := -1
 var path := ''
 var node_path := ''
-var main_dock: Panel = null : set = _set_main_dock
+var main_dock: Panel : set = _set_main_dock
 var is_main := false : set = _set_is_main
 var is_on_start := false : set = set_is_on_start
 
@@ -91,7 +91,7 @@ var _delete_all_checkbox: CheckBox
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
-	_label.text = name
+	_label.text = str(name)
 	tooltip_text = path
 	
 	# Assign icons
@@ -395,25 +395,26 @@ func _remove_from_core() -> void:
 	# Eliminar el objeto de Popochiu -------------------------------------------
 	match type:
 		Constants.Types.ROOM:
-			PopochiuResources.erase_data_value('rooms', name)
+			PopochiuResources.erase_data_value('rooms', str(name))
 		Constants.Types.CHARACTER:
-			PopochiuResources.erase_data_value('characters', name)
+			PopochiuResources.erase_data_value('characters', str(name))
 		Constants.Types.INVENTORY_ITEM:
-			PopochiuResources.erase_data_value('inventory_items', name)
+			PopochiuResources.erase_data_value('inventory_items', str(name))
 		Constants.Types.DIALOG:
-			PopochiuResources.erase_data_value('dialogs', name)
-		Constants.Types.PROP, Constants.Types.HOTSPOT, Constants.Types.REGION, Constants.Types.WALKABLE_AREA:
+			PopochiuResources.erase_data_value('dialogs', str(name))
+		Constants.Types.PROP, Constants.Types.HOTSPOT, Constants.Types.REGION,\
+		Constants.Types.WALKABLE_AREA:
 			var opened_room: PopochiuRoom = main_dock.get_opened_room()
 			if opened_room:
 				match type:
 					Constants.Types.PROP:
-						opened_room.get_prop(name).queue_free()
+						opened_room.get_prop(str(name)).queue_free()
 					Constants.Types.HOTSPOT:
-						opened_room.get_hotspot(name).queue_free()
+						opened_room.get_hotspot(str(name)).queue_free()
 					Constants.Types.REGION:
-						opened_room.get_region(name).queue_free()
+						opened_room.get_region(str(name)).queue_free()
 					Constants.Types.WALKABLE_AREA:
-						opened_room.get_walkable_area(name).queue_free()
+						opened_room.get_walkable_area(str(name)).queue_free()
 				
 				main_dock.ei.save_scene()
 			else:

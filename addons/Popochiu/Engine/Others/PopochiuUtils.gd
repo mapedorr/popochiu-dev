@@ -24,7 +24,7 @@ func get_random_array_idx(arr: Array) -> int:
 	return idx
 
 
-# https://gist.github.com/me2beats/443b40ba79d5b589a96a16c565952419 ❱❱❱❱❱❱❱❱❱❱❱❱❱❱❱❱
+# https://gist.github.com/me2beats/443b40ba79d5b589a96a16c565952419 ❱❱❱❱❱❱❱❱❱❱❱❱
 func snake2camel(string:String)->String:
 	var result = PackedStringArray()
 	var prev_is_underscore = false
@@ -68,4 +68,4 @@ func pascal2snake(string:String)->String:
 			result.append('_'+ch.to_lower())
 	result[0] = result[0][1]
 	return ''.join(result)
-# ❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰
+# ❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰❰

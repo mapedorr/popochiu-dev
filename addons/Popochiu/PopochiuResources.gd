@@ -80,6 +80,7 @@ const IMPORTER_TEXTURE := 'importer_defaults/texture'
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 # Verify if the folders (where Popochiu's objects will be) exists
 static func init_file_structure() -> bool:
+	prints('init_file_structure')
 	var is_first_install := !DirAccess.dir_exists_absolute(BASE_DIR)
 	
 	# Create the folders that does not exist
@@ -193,10 +194,8 @@ static func get_version() -> String:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 static func _create_empty_file(path):
-	var file = FileAccess.new()
-	file.open(path, FileAccess.WRITE)
+	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_string('')
-	file.close()
 
 
 static func _get_directories() -> Dictionary:

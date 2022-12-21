@@ -33,13 +33,13 @@ func on_interact() -> void:
 
 # When the item is right clicked in the Inventory
 func on_look() -> void:
-	await E.run([await G.display('Nothing to see in this item')])
+	await E.run([G.run_display('Nothing to see in this item')])
 
 
 # When the item is clicked and there is another inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
 	await E.run([
-		await G.display('Nothing happens when using %s in this item' % item.description)
+		G.run_display('Nothing happens when using %s in this item' % item.description)
 	])
 
 

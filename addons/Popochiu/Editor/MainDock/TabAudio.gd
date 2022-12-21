@@ -5,6 +5,8 @@ extends VBoxContainer
 
 const SEARCH_PATH := 'res://popochiu/'
 const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd')
+const PopochiuUtils := preload('res://addons/Popochiu/Engine/Others/PopochiuUtils.gd')
+const AudioManager := preload('res://addons/Popochiu/Engine/AudioManager/AudioManager.gd')
 
 var main_dock: Panel : set = _set_main_dock
 var last_played: Control = null
@@ -18,6 +20,8 @@ var _audio_files_in_group := []
 var _audio_files_to_assign := []
 var _audio_cues_to_create := []
 var _created_audio_cues := 0
+var _utils := PopochiuUtils.new()
+var _audio_manager := AudioManager.new()
 
 @onready var _unassigned_group: PopochiuGroup = find_child('UnassignedGroup')
 @onready var _groups := {
@@ -236,7 +240,7 @@ func _create_audio_cue(\
 type: String, path: String, audio_row: Container = null
 ) -> void:
 	var cue_name := path.get_file().get_basename()
-	var cue_file_name := U.snake2pascal(cue_name)
+	var cue_file_name := _utils.snake2pascal(cue_name)
 	cue_file_name += '.tres'
 	
 	# Create the AudioCue and save it in the file system
@@ -271,7 +275,7 @@ type: String, path: String, audio_row: Container = null
 	
 	if not target_data.has(res.resource_path):
 		target_data.append(res.resource_path)
-		target_data.sort_custom(A.sort_resource_paths)
+		target_data.sort_custom(_audio_manager.sort_resource_paths)
 		PopochiuResources.set_data_value('audio', target, target_data)
 	else:
 		await get_tree().process_frame

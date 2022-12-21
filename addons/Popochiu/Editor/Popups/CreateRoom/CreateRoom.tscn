@@ -22,11 +22,19 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="InputContainer" type="HBoxContainer" parent="VBoxContainer"]
+offset_right = 436.0
+offset_bottom = 31.0
 
 [node name="Label" type="Label" parent="VBoxContainer/InputContainer"]
+offset_top = 2.0
+offset_right = 94.0
+offset_bottom = 28.0
 text = "Room name"
 
 [node name="Input" type="LineEdit" parent="VBoxContainer/InputContainer"]
+offset_left = 98.0
+offset_right = 436.0
+offset_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 context_menu_enabled = false
@@ -38,9 +46,15 @@ visible = false
 text = "A room name is mandatory!"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+offset_top = 35.0
+offset_right = 436.0
+offset_bottom = 39.0
 
 [node name="Guide" type="Label" parent="VBoxContainer"]
 modulate = Color(1, 1, 1, 0.698039)
+offset_top = 43.0
+offset_right = 436.0
+offset_bottom = 69.0
 text = "Use PascalCase. No spaces. i.e. Garage or CasinoInterior."
 
 [node name="SetAsMainContainer" type="PanelContainer" parent="VBoxContainer"]
@@ -58,6 +72,9 @@ scroll_active = false
 [node name="CheckBox" type="CheckBox" parent="VBoxContainer/SetAsMainContainer/HBoxContainer"]
 
 [node name="Info" type="RichTextLabel" parent="VBoxContainer"]
+offset_top = 73.0
+offset_right = 436.0
+offset_bottom = 146.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true

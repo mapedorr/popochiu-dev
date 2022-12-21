@@ -25,8 +25,11 @@ _editor_interface.get_base_control().get_theme_stylebox("normal", "Button")
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
+func _get_plugin_name():
+	return 'Popochiu 2.0'
+
+
 func _init():
-	# Thanks Dialogic ;)
 	if Engine.is_editor_hint():
 		_is_first_install = PopochiuResources.init_file_structure()
 	
@@ -88,7 +91,9 @@ func _enter_tree() -> void:
 	scene_closed.connect(main_dock.scene_closed)
 	# ================================================== Connect to signals ====
 	
-	main_dock.scene_changed(_editor_interface.get_edited_scene_root())
+	if _editor_interface.get_edited_scene_root():
+		main_dock.scene_changed(_editor_interface.get_edited_scene_root())
+	
 	main_dock.setup_dialog.es = _editor_interface.get_editor_settings()
 	
 	if PopochiuResources.get_section('setup').is_empty():
@@ -98,10 +103,6 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	remove_control_from_docks(main_dock)
-	remove_control_from_container(
-		EditorPlugin.CONTAINER_CANVAS_EDITOR_MENU,
-		_btn_baseline
-	)
 	main_dock.queue_free()
 	
 	if is_instance_valid(_export_plugin):
@@ -112,41 +113,20 @@ func _exit_tree() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
-func enable_plugin() -> void:
+func _enable_plugin() -> void:
 	_create_input_actions()
 	
 	if _is_first_install:
-		# Mostrar la ventana de diálogo para pedirle a la desarrolladora que reinicie
-		# el motor.
+		# Show the window that asks devs to reload the project
 		var ad := AcceptDialog.new()
 		
 		# TODO: Localize
-		ad.window_title = 'Popochiu'
+		ad.title = 'Popochiu'
 		ad.dialog_text =\
 		'[es] Reinicia el motor para completar la instalación:\n' +\
 		'Proyecto > Volver a Cargar el Proyecto Actual\n\n' + \
 		'[en] Restart Godot to complete the instalation:\n' +\
 		'Project > Reload Current Project'
-#		var rtl := RichTextLabel.new()
-		
-#		rtl.minimum_size = Vector2(640.0, 128.0)
-#		rtl.offset_left = 0.0
-#		rtl.offset_top = 0.0
-#		rtl.offset_right = 0.0
-#		rtl.offset_bottom = 0.0
-#		rtl.bbcode_enabled = true
-#		rtl.fit_content_height = true
-#		rtl.add_theme_stylebox_override('normal', rtl.get_theme_stylebox("Content", "EditorStyles"))
-#		rtl.append_bbcode(\
-#		'[es] Reinicia el motor para completar la instalación ([b]Proyecto > Volver a Cargar el Proyecto Actual[/b]).\n' + \
-#		'[en] Restart Godot to complete the instalation ([b]Project > Reload Current Project[/b]).'
-#		)
-#
-#		ad.add_child(rtl)
-#		prints('>>>', rtl.get_font('main', 'EditorFonts'))
-#		rtl.add_theme_font_override('normal_font', rtl.get_font('main', 'EditorFonts'))
-#		rtl.add_theme_font_override('bold_font', rtl.get_font("doc_source", 'EditorFonts'))
-#		ad.set_as_minsize()
 		
 		_editor_interface.get_base_control().add_child(ad)
 		ad.popup_centered()
@@ -271,16 +251,20 @@ func _fix_dependencies(dir: EditorFileSystemDirectory) -> void:
 
 	for subdir in dir.get_subdir_count():
 		subdir = dir.get_subdir(subdir)
+		
 		for f in subdir.get_file_count():
 			var path = subdir.get_file_path(f)
 			var dependencies = ResourceLoader.get_dependencies(path)
+			
 			if dependencies.size() < 1:
 				continue
-			var file = FileAccess.new()
+			
 			for d in dependencies:
-				if file.file_exists(d):
+				if FileAccess.file_exists(d):
 					continue
+				
 				_fix_dependency(d, res, path)
+	
 	_editor_file_system.scan()
 
 

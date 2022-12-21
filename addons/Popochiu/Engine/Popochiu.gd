@@ -52,9 +52,9 @@ var _hovered_queue := []
 @onready var _defaults := {
 	camera_limits = {
 		left = main_camera.limit_left,
-		right = E.width,
+		right = get_viewport().get_visible_rect().end.x,
 		top = main_camera.limit_top,
-		bottom = E.height
+		bottom = get_viewport().get_visible_rect().end.y
 	}
 }
 @onready var _saveload := SaveLoad.new()
@@ -82,7 +82,7 @@ func _ready() -> void:
 		tl = load(PopochiuResources.TRANSITION_LAYER_ADDON).instantiate()
 	
 	# Scale GI and TL
-	scale = Vector2(E.width, E.height) / Vector2(320.0, 180.0)
+	scale = Vector2(self.width, self.height) / Vector2(320.0, 180.0)
 	
 	add_child(gi)
 	add_child(tl)
@@ -129,7 +129,7 @@ func _input(event: InputEvent) -> void:
 		cutscene_skipped = true
 		$TransitionLayer.play_transition(
 			TransitionLayer.PASS_DOWN_IN,
-			E.settings.skip_cutscene_time
+			settings.skip_cutscene_time
 		)
 		
 		await $TransitionLayer.transition_finished
@@ -211,7 +211,7 @@ func run_cutscene(instructions: Array) -> void:
 	if cutscene_skipped:
 		$TransitionLayer.play_transition(
 			$TransitionLayer.PASS_DOWN_OUT,
-			E.settings.skip_cutscene_time
+			settings.skip_cutscene_time
 		)
 		await $TransitionLayer.transition_finished
 	
@@ -342,7 +342,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	
 	if _loaded_game:
 		game_loaded.emit(_loaded_game)
-		E.run([await G.display('Game loaded')])
+		await run([G.run_display('Game loaded')])
 		
 		_loaded_game = {}
 	
@@ -410,7 +410,7 @@ func camera_zoom(target := Vector2.ONE, duration := 1.0) -> void:
 
 # Returns a String of a text that could be a position key
 func get_text(msg: String) -> String:
-	return tr(msg) if E.settings.use_translations else msg
+	return tr(msg) if settings.use_translations else msg
 
 
 # Gets the PopochiuCharacter with script_name
@@ -511,7 +511,7 @@ func save_game(slot := 1, description := '') -> void:
 	if _saveload.save_game(slot, description):
 		game_saved.emit()
 		
-		E.run([await G.display('Game saved')])
+		await run([G.run_display('Game saved')])
 
 
 func load_game(slot := 1) -> void:
