@@ -4,7 +4,9 @@ var ei: EditorInterface
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func can_handle(object: Object) -> bool:
+	prints('can_handle')
 	if object is PopochiuCharacter:
+		prints('Oh sí!!!')
 		return true
 	if object is PopochiuWalkableArea:
 		return true
@@ -14,7 +16,9 @@ func can_handle(object: Object) -> bool:
 
 
 func parse_begin(object: Object) -> void:
+	prints('parse_begin')
 	if object is PopochiuCharacter:
+		prints('un personaje')
 		_parse_character(object)
 	if object is PopochiuWalkableArea:
 		_parse_walkable_area(object)
@@ -73,6 +77,7 @@ func _parse_walkable_area(object: Object) -> void:
 
 
 func _parse_character(object: Object) -> void:
+	prints('Mi papaito', object.get_parent().get_class())
 	if not object.get_parent() is Node2D: return
 	
 	var panel := PanelContainer.new()

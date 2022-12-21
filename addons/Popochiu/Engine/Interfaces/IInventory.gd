@@ -20,12 +20,12 @@ var _item_instances := []
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func run_add_item(item_name: String, animate := true) -> Callable:
-	return func (): await add_item(item_name, animate)
+func add_item(item_name: String, animate := true) -> Callable:
+	return func (): await add_item_no_run(item_name, animate)
 
 # Adds an item to the inventory. The item is added based checked its script_name
 # property.
-func add_item(item_name: String, animate := true) -> void:
+func add_item_no_run(item_name: String, animate := true) -> void:
 	if E.settings.inventory_limit > 0\
 	and items.size() == E.settings.inventory_limit:
 		prints(
@@ -44,20 +44,20 @@ func add_item(item_name: String, animate := true) -> void:
 		
 		return await self.item_add_done
 	
-	await get_tree().get('process_frame')
+	await get_tree().process_frame
 
 
-func run_add_item_as_active(item_name: String, animate := true) -> Callable:
-	return func (): await add_item_as_active(item_name, animate)
+func add_item_as_active(item_name: String, animate := true) -> Callable:
+	return func (): await add_item_as_active_no_run(item_name, animate)
 
 
 # Adds an item to the inventory and make it the current selected item. That is,
 # the cursor will thake the item's texture as its texture.
-func add_item_as_active(item_name: String, animate := true) -> void:
+func add_item_as_active_no_run(item_name: String, animate := true) -> void:
 	var item: PopochiuInventoryItem = await add_item(item_name, animate)
 	
 	if is_instance_valid(item):
-		set_active_item(item, E.in_run())
+		set_active_item(item, E.in_no_run())
 	
 	return item
 
@@ -75,13 +75,13 @@ func set_active_item(
 		Cursor.remove_cursor_texture()
 
 
-func run_remove_item(item_name: String, animate := true) -> Callable:
-	return func (): await remove_item(item_name, animate)
+func remove_item(item_name: String, animate := true) -> Callable:
+	return func (): await remove_item_no_run(item_name, animate)
 
 
 # Removes an item from the inventory. Its instance will be kept in the
 # _item_instances array.
-func remove_item(item_name: String, animate := true) -> void:
+func remove_item_no_run(item_name: String, animate := true) -> void:
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 	if is_instance_valid(i):
 		i.in_inventory = false
@@ -105,11 +105,11 @@ func is_full() -> bool:
 	and E.settings.inventory_limit == items.size()
 
 
-func run_discard_item(item_name: String) -> Callable:
-	return func (): await discard_item(item_name)
+func discard_item(item_name: String) -> Callable:
+	return func (): await discard_item_no_run(item_name)
 
 
-func discard_item(item_name: String) -> void:
+func discard_item_no_run(item_name: String) -> void:
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 	
 	if is_instance_valid(i):
@@ -133,12 +133,12 @@ func clean_inventory() -> void:
 		remove_item(ii.script_name, false)
 
 
-func run_show_inventory(time := 1.0) -> Callable:
-	return func (): await show_inventory(time)
+func show_inventory(time := 1.0) -> Callable:
+	return func (): await show_inventory_no_run(time)
 
 
 # Notifies that the inventory should appear.
-func show_inventory(time := 1.0) -> void:
+func show_inventory_no_run(time := 1.0) -> void:
 	if E.cutscene_skipped:
 		await get_tree().process_frame
 		return
@@ -148,11 +148,11 @@ func show_inventory(time := 1.0) -> void:
 	await self.inventory_shown
 
 
-func run_hide_inventory(use_anim := true) -> Callable:
-	return func (): await hide_inventory(use_anim)
+func hide_inventory(use_anim := true) -> Callable:
+	return func (): await hide_inventory_no_run(use_anim)
 
 
-func hide_inventory(use_anim := true) -> void:
+func hide_inventory_no_run(use_anim := true) -> void:
 	inventory_hide_requested.emit(use_anim)
 	
 	await get_tree().process_frame

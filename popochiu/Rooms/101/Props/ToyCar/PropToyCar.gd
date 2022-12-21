@@ -11,12 +11,12 @@ signal cocoed
 # When the node is clicked
 func on_interact() -> void:
 	E.run([
-		C.run_walk_to_clicked(),
-		C.run_face_clicked(),
+		C.walk_to_clicked(),
+		C.face_clicked(),
 		'Player: My old toycar',
 		'...',
 		'Player: [wave]The memories...[/wave]',
-		I.run_add_item('ToyCar')
+		I.add_item('ToyCar')
 	])
 
 

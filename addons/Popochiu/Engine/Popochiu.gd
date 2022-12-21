@@ -144,11 +144,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func run_wait(time := 1.0) -> Callable:
-	return func (): await wait(time)
+func wait(time := 1.0) -> Callable:
+	return func (): await wait_no_run(time)
 
 
-func wait(time := 1.0) -> void:
+func wait_no_run(time := 1.0) -> void:
 	if cutscene_skipped:
 		await get_tree().process_frame
 		return
@@ -315,7 +315,7 @@ func room_readied(room: PopochiuRoom) -> void:
 		if not current_room.has_character(C.player.script_name):
 			current_room.add_character(C.player)
 		
-		await C.player.idle()
+		await C.player.idle_no_run()
 	
 	for c in get_tree().get_nodes_in_group('PopochiuClickable'):
 		c.room = current_room
@@ -331,7 +331,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	if _use_transition_on_room_change:
 		$TransitionLayer.play_transition($TransitionLayer.FADE_OUT)
 		await $TransitionLayer.transition_finished
-		await wait(0.3)
+		await wait_no_run(0.3)
 	else:
 		await get_tree().process_frame
 	
@@ -342,7 +342,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	
 	if _loaded_game:
 		game_loaded.emit(_loaded_game)
-		await run([G.run_display('Game loaded')])
+		await run([G.display('Game loaded')])
 		
 		_loaded_game = {}
 	
@@ -352,23 +352,23 @@ func room_readied(room: PopochiuRoom) -> void:
 	current_room.on_room_transition_finished()
 
 
-func run_camera_offset(offset := Vector2.ZERO) -> Callable:
-	return func (): await camera_offset(offset)
+func camera_offset(offset := Vector2.ZERO) -> Callable:
+	return func (): await camera_offset_no_run(offset)
 
 
 # Changes the main camera's offset (useful when zooming the camera)
-func camera_offset(offset := Vector2.ZERO) -> void:
+func camera_offset_no_run(offset := Vector2.ZERO) -> void:
 	main_camera.offset = offset
 	
 	await get_tree().process_frame
 
 
-func run_camera_shake(strength := 1.0, duration := 1.0) -> Callable:
-	return func (): await camera_shake(strength, duration)
+func camera_shake(strength := 1.0, duration := 1.0) -> Callable:
+	return func (): await camera_shake_no_run(strength, duration)
 
 
 # Makes the camera shake with `strength` for `duration` seconds
-func camera_shake(strength := 1.0, duration := 1.0) -> void:
+func camera_shake_no_run(strength := 1.0, duration := 1.0) -> void:
 	_camera_shake_amount = strength
 	_shake_timer = duration
 	_is_camera_shaking = true
@@ -376,13 +376,13 @@ func camera_shake(strength := 1.0, duration := 1.0) -> void:
 	await get_tree().create_timer(duration).timeout
 
 
-func run_camera_shake_bg(strength := 1.0, duration := 1.0) -> Callable:
-	return func (): await camera_shake_bg(strength, duration)
+func camera_shake_bg(strength := 1.0, duration := 1.0) -> Callable:
+	return func (): await camera_shake_bg_no_run(strength, duration)
 
 
 # Makes the camera shake with `strength` for `duration` seconds without blocking
 # excecution (a.k.a. in the background)
-func camera_shake_bg(strength := 1.0, duration := 1.0) -> void:
+func camera_shake_bg_no_run(strength := 1.0, duration := 1.0) -> void:
 	_camera_shake_amount = strength
 	_shake_timer = duration
 	_is_camera_shaking = true
@@ -390,14 +390,14 @@ func camera_shake_bg(strength := 1.0, duration := 1.0) -> void:
 	await get_tree().process_frame
 
 
-func run_camera_zoom(target := Vector2.ONE, duration := 1.0) -> Callable:
-	return func (): await camera_zoom(target, duration)
+func camera_zoom(target := Vector2.ONE, duration := 1.0) -> Callable:
+	return func (): await camera_zoom_no_run(target, duration)
 
 
 # Changes the camera zoom. If `target` is larger than Vector2(1, 1) the camera
 # will zoom out, smaller values make it zoom in. The effect will last `duration`
 # seconds
-func camera_zoom(target := Vector2.ONE, duration := 1.0) -> void:
+func camera_zoom_no_run(target := Vector2.ONE, duration := 1.0) -> void:
 	if is_instance_valid(_tween) and _tween.is_running():
 		_tween.kill()
 	
@@ -472,13 +472,13 @@ func room_exists(script_name: String) -> bool:
 	return false
 
 
-func run_play_transition(type: int, duration: float) -> Callable:
-	return func (): await play_transition(type, duration)
+func play_transition(type: int, duration: float) -> Callable:
+	return func (): await play_transition_no_run(type, duration)
 
 
 # Plays the transition type animation in TransitionLayer.tscn that last duration
 # in seconds. Possible type values can be found in TransitionLayer
-func play_transition(type: int, duration: float) -> void:
+func play_transition_no_run(type: int, duration: float) -> void:
 	$TransitionLayer.play_transition(type, duration)
 	
 	await $TransitionLayer.transition_finished
@@ -511,7 +511,7 @@ func save_game(slot := 1, description := '') -> void:
 	if _saveload.save_game(slot, description):
 		game_saved.emit()
 		
-		await run([G.run_display('Game saved')])
+		await run([G.display('Game saved')])
 
 
 func load_game(slot := 1) -> void:
@@ -592,13 +592,13 @@ func clear_hovered() -> void:
 func _eval_string(text: String) -> void:
 	match text:
 		'.':
-			await wait(0.25)
+			await wait_no_run(0.25)
 		'..':
-			await wait(0.5)
+			await wait_no_run(0.5)
 		'...':
-			await wait(1.0)
+			await wait_no_run(1.0)
 		'....':
-			await wait(2.0)
+			await wait_no_run(2.0)
 		_:
 			var colon_idx: int = text.find(':')
 			if colon_idx:
@@ -608,8 +608,11 @@ func _eval_string(text: String) -> void:
 				var auto_idx := colon_prefix.find('[')
 				var name_idx := -1
 				
-				if emotion_idx > 0 or (auto_idx > 0 and auto_idx > emotion_idx):
-					name_idx = emotion_idx
+				if emotion_idx > 0:
+					if auto_idx > 0 and auto_idx > emotion_idx:
+						name_idx = emotion_idx
+					elif auto_idx > 0:
+						name_idx = auto_idx
 				elif auto_idx > 0:
 					name_idx = auto_idx
 				
@@ -634,9 +637,9 @@ func _eval_string(text: String) -> void:
 				
 				if character_name == 'player'\
 				or C.player.script_name.to_lower() == character_name:
-					await C.player_say(dialogue)
+					await C.player_say_no_run(dialogue)
 				elif C.is_valid_character(character_name):
-					await C.character_say(character_name, dialogue)
+					await C.character_say_no_run(character_name, dialogue)
 				else:
 					await get_tree().process_frame
 			else:

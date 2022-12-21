@@ -5,25 +5,18 @@
 
 [node name="CharacterGoddiu" type="Area2D"]
 script = ExtResource("1")
-is_player = true
 flips_when = 2
 voices = []
-script_name = "Goddiu"
-description = "Goddiu"
-clickable = false
 walk_to_point = Vector2(0, 0)
-cursor = 8
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-9, -45, -1, -47, 17, -39, 22, -34, 23, -26, 19, -18, 10, -13, -4, -12, -17, -14, -22, -20, -22, -28)
 
 [node name="BaselineHelper" type="Line2D" parent="."]
-visible = false
 points = PackedVector2Array(-10000, 0, 10000, 0)
 width = 1.0
 
 [node name="WalkToHelper" type="Marker2D" parent="."]
-visible = false
 
 [node name="ColorRect" type="ColorRect" parent="WalkToHelper"]
 offset_left = -2.5
@@ -39,7 +32,6 @@ texture = ExtResource("2")
 hframes = 6
 
 [node name="DialogPos" type="Marker2D" parent="."]
-visible = false
 position = Vector2(-3, -48)
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]

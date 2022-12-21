@@ -63,11 +63,11 @@ func play_grab() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func run_idle() -> Callable:
-	return func (): await idle()
+func idle() -> Callable:
+	return func (): await idle_no_run()
 	
 	
-func idle() -> void:
+func idle_no_run() -> void:
 	if E.cutscene_skipped:
 		await get_tree().process_frame
 		return
@@ -78,11 +78,11 @@ func idle() -> void:
 	await get_tree().create_timer(0.2).timeout
 
 
-func run_walk(target_pos: Vector2) -> Callable:
-	return func (): await walk(target_pos)
+func walk(target_pos: Vector2) -> Callable:
+	return func (): await walk_no_run(target_pos)
 
 
-func walk(target_pos: Vector2) -> void:
+func walk_no_run(target_pos: Vector2) -> void:
 	is_moving = true
 	_looking_dir = Looking.LEFT if target_pos.x < position.x else Looking.RIGHT
 	
@@ -119,11 +119,11 @@ func walk(target_pos: Vector2) -> void:
 	is_moving = false
 
 
-func run_stop_walking() -> Callable:
-	return func (): await stop_walking()
+func stop_walking() -> Callable:
+	return func (): await stop_walking_no_run()
 	
 	
-func stop_walking() -> void:
+func stop_walking_no_run() -> void:
 	is_moving = false
 	
 	stoped_walk.emit()
@@ -131,73 +131,73 @@ func stop_walking() -> void:
 	await get_tree().process_frame
 
 
-func run_face_up() -> Callable:
-	return func (): await face_up()
+func face_up() -> Callable:
+	return func (): await face_up_no_run()
 
 
-func face_up() -> void:
+func face_up_no_run() -> void:
 	_looking_dir = Looking.UP
-	await idle()
+	await idle_no_run()
 
 
-func run_face_up_right() -> Callable:
-	return func (): await face_up_right()
+func face_up_right() -> Callable:
+	return func (): await face_up_right_no_run()
 
 
-func face_up_right() -> void:
+func face_up_right_no_run() -> void:
 	_looking_dir = Looking.UP_RIGHT
-	await idle()
+	await idle_no_run()
 
 
-func run_face_down() -> Callable:
-	return func (): await face_down()
+func face_down() -> Callable:
+	return func (): await face_down_no_run()
 
 
-func face_down() -> void:
+func face_down_no_run() -> void:
 	_looking_dir = Looking.DOWN
-	await idle()
+	await idle_no_run()
 
 
-func run_face_left() -> Callable:
-	return func (): await face_left()
+func face_left() -> Callable:
+	return func (): await face_left_no_run()
 
 
-func face_left() -> void:
+func face_left_no_run() -> void:
 	_looking_dir = Looking.LEFT
-	await idle()
+	await idle_no_run()
 
 
-func run_face_right() -> Callable:
-	return func (): await face_right()
+func face_right() -> Callable:
+	return func (): await face_right_no_run()
 
 
-func face_right() -> void:
+func face_right_no_run() -> void:
 	_looking_dir = Looking.RIGHT
-	await idle()
+	await idle_no_run()
 
 
-func run_face_clicked() -> Callable:
-	return func (): await face_clicked()
+func face_clicked() -> Callable:
+	return func (): await face_clicked_no_run()
 
 
-func face_clicked() -> void:
+func face_clicked_no_run() -> void:
 	if E.clicked.global_position < global_position:
 		if has_node('Sprite2D'):
 			$Sprite2D.flip_h = flips_when == FlipsWhen.MOVING_LEFT
 		
-		await face_left()
+		await face_left_no_run()
 	else:
 		if has_node('Sprite2D'):
 			$Sprite2D.flip_h = flips_when == FlipsWhen.MOVING_RIGHT
 		
-		await face_right()
+		await face_right_no_run()
 
 
-func run_say(dialog: String) -> Callable:
-	return func (): await say(dialog)
+func say(dialog: String) -> Callable:
+	return func (): await say_no_run(dialog)
 
 
-func say(dialog: String) -> void:
+func say_no_run(dialog: String) -> void:
 	if E.cutscene_skipped:
 		await get_tree().process_frame
 		return
@@ -214,14 +214,14 @@ func say(dialog: String) -> void:
 	await G.continue_clicked
 	
 	emotion = ''
-	idle()
+	idle_no_run()
 
 
-func run_grab() -> Callable:
-	return func (): await grab()
+func grab() -> Callable:
+	return func (): await grab_no_run()
 
 
-func grab() -> void:
+func grab_no_run() -> void:
 	if E.cutscene_skipped:
 		await get_tree().process_frame
 		return
@@ -231,7 +231,7 @@ func grab() -> void:
 	
 	await C.character_grab_done
 	
-	idle()
+	idle_no_run()
 
 
 func hide_helpers() -> void:

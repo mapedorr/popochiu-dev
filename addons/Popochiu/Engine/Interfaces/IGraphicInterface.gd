@@ -19,10 +19,14 @@ var is_blocked := false
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
+func display(msg: String) -> Callable:
+	return func (): await display_no_run(msg)
+
+
 # Shows a text in the center of the screen. Can be used as the narrator or to
 # give instructions to players. The visual style of the node that shows this text
 # can be modified in DisplayBox.tscn.
-func display(msg: String) -> void:
+func display_no_run(msg: String) -> void:
 	if not E.in_run():
 		# Show the click handler that blocks interactions
 		G.block()
@@ -34,10 +38,6 @@ func display(msg: String) -> void:
 	show_box_requested.emit(E.get_text(msg))
 	
 	await self.continue_clicked
-
-
-func run_display(msg: String) -> Callable:
-	return func (): await display(msg)
 
 
 # Shows a text at the bottom of the screen. It is used to show players the

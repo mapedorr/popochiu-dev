@@ -50,19 +50,20 @@ func _enter_tree() -> void:
 	
 	prints('[es] Estás usando Popochiu, un plugin para crear juegos point n\' click')
 	prints('[en] You\'re using Popochiu, a plugin for making point n\' click games')
-	prints('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ \\( o )3(o)/ ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒')
+	print_rich(\
+	'[wave]▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ \\( o )3(o)/ ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒[/wave]')
 	
 	_editor_file_system.scan_sources()
 	
 	_types_helper =\
 	load('res://addons/Popochiu/Editor/Helpers/PopochiuTypesHelper.gd')
 	
-	_export_plugin = preload('PopochiuExportPlugin.gd').new()
-	add_export_plugin(_export_plugin)
-	
 	_inspector_plugin = load('res://addons/Popochiu/PopochiuInspectorPlugin.gd').new()
 	_inspector_plugin.ei = _editor_interface
 	add_inspector_plugin(_inspector_plugin)
+	
+	_export_plugin = preload('PopochiuExportPlugin.gd').new()
+	add_export_plugin(_export_plugin)
 	
 	main_dock = load(PopochiuResources.MAIN_DOCK_PATH).instantiate()
 	main_dock.ei = _editor_interface

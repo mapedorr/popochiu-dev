@@ -83,17 +83,17 @@ func _process(delta):
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	await E.run([G.run_display("Can't INTERACT with it")])
+	await E.run([G.display("Can't INTERACT with it")])
 
 
 # When the node is right clicked
 func on_look() -> void:
-	await E.run([G.run_display("Can't EXAMINE it")])
+	await E.run([G.display("Can't EXAMINE it")])
 
 
 # When the node is clicked and there is an inventory item selected
 func on_item_used(item: PopochiuInventoryItem) -> void:
-	await E.run([G.run_display("Can't USE %s here" % item.description)])
+	await E.run([G.display("Can't USE %s here" % item.description)])
 
 
 func on_room_set() -> void:
@@ -111,23 +111,23 @@ func show_helpers() -> void:
 	$WalkToHelper.show()
 
 
-func run_disable() -> Callable:
-	return func (): await disable()
+func disable() -> Callable:
+	return func (): await disable_no_run()
 
 
 # Hides the Node and disables its interaction
-func disable() -> void:
+func disable_no_run() -> void:
 	self.visible = false
 	
 	await get_tree().process_frame
 
 
-func run_enable() -> Callable:
-	return func (): await enable()
+func enable() -> Callable:
+	return func (): await enable_no_run()
 
 
 # Makes the Node visible and enables its interaction
-func enable() -> void:
+func enable_no_run() -> void:
 	self.visible = true
 	
 	await get_tree().process_frame

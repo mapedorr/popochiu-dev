@@ -13,8 +13,8 @@ func on_interact() -> void:
 #	For example you can make the character walk to the Hotspot and then say
 #	something:
 	await E.run([
-		C.run_walk_to_clicked(),
-		C.run_face_clicked(),
+		C.walk_to_clicked(),
+		C.face_clicked(),
 	])
 	
 	E.goto_room('101')

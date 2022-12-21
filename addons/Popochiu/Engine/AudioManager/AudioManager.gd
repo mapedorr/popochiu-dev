@@ -4,7 +4,7 @@ extends Node
 # TODO: Create AudioHandle so each AudioCue has its own AudioStreamPlayer...
 # http://www.powerhoof.com/public/powerquestdocs/class_power_tools_1_1_quest_1_1_audio_handle.html
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-# warning-ignore-all:return_value_discarded
+@warning_ignore(return_value_discarded)
 
 const AudioCue := preload('AudioCue.gd')
 
@@ -33,13 +33,13 @@ func _ready() -> void:
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
-func run_play(
+func play(
 	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
 ) -> Callable:
-	return func (): await play(cue_name, wait_to_end, position_2d)
+	return func (): await play_no_run(cue_name, wait_to_end, position_2d)
 
 
-func play(
+func play_no_run(
 	cue_name := '', wait_to_end := false, position_2d := Vector2.ZERO
 ) -> Node:
 	if wait_to_end:
@@ -48,15 +48,17 @@ func play(
 		return await _play_sound_cue(cue_name, position_2d)
 
 
-func run_play_music(
+func play_music(
 	cue_name: String, fade_duration := 0.0, music_position := 0.0
 ) -> Callable:
 	# TODO: Add a position: Vector2 parameter in case one want to play music coming
 	# out from a specific source (e.g. a radio in the room).
-	return func (): await play_music(cue_name, fade_duration, music_position)
+	return func (): await play_music_no_run(
+		cue_name, fade_duration, music_position
+	)
 
 
-func play_music(
+func play_music_no_run(
 	cue_name: String, fade_duration := 0.0, music_position := 0.0
 ) -> Node:
 	# TODO: Add a position: Vector2 parameter in case one want to play music coming
@@ -64,7 +66,7 @@ func play_music(
 	return await _play_music_cue(cue_name, fade_duration, music_position)
 
 
-func run_play_fade(
+func play_fade(
 	cue_name := '',
 	duration := 1.0,
 	wait_to_end := false,
@@ -72,12 +74,12 @@ func run_play_fade(
 	to := INF,
 	position_2d := Vector2.ZERO
 ) -> Callable:
-	return func (): await play_fade(
+	return func (): await play_fade_no_run(
 		cue_name, duration, wait_to_end, from, to, position_2d
 	)
 
 
-func play_fade(
+func play_fade_no_run(
 	cue_name := '',
 	duration := 1.0,
 	wait_to_end := false,
@@ -98,13 +100,13 @@ func play_fade(
 		return await _play_fade_cue(cue_name, duration, from, to, position_2d)
 
 
-func run_stop(cue_name: String, fade_duration := 0.0) -> Callable:
+func stop(cue_name: String, fade_duration := 0.0) -> Callable:
 	return func ():
-		stop(cue_name, fade_duration)
+		stop_no_run(cue_name, fade_duration)
 		await get_tree().process_frame
 
 
-func stop(cue_name: String, fade_duration := 0.0) -> void:
+func stop_no_run(cue_name: String, fade_duration := 0.0) -> void:
 	_stop(cue_name, fade_duration)
 
 
