@@ -2,6 +2,10 @@ extends EditorInspectorPlugin
 
 var ei: EditorInterface
 
+var _types_helper: Resource =\
+load('res://addons/Popochiu/Editor/Helpers/PopochiuTypesHelper.gd')
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func can_handle(object: Object) -> bool:
 	prints('can_handle')
@@ -32,7 +36,7 @@ func _parse_navigation_polygon_instance(object: Object) -> void:
 	var panel := PanelContainer.new()
 	var hbox := HBoxContainer.new()
 	var button := Button.new() # Adding a button to edit polygon
-	
+
 	panel.add_theme_stylebox_override(
 		'panel',
 		panel.get_theme_stylebox("sub_inspector_bg11", "Editor")
@@ -41,12 +45,11 @@ func _parse_navigation_polygon_instance(object: Object) -> void:
 	hbox.minimum_size.y = 42.0
 	hbox.alignment = HBoxContainer.ALIGNMENT_CENTER
 
-
 	button.text = "Editing done"
 	button.size_flags_stretch_ratio = Button.SIZE_EXPAND
-	button.align = Button.ALIGNMENT_CENTER
+	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.pressed.connect(_back_to_walkable_area.bind(object), CONNECT_DEFERRED)
-	
+
 	hbox.add_child(button)
 	panel.add_child(hbox)
 	add_custom_control(panel)
@@ -56,7 +59,7 @@ func _parse_walkable_area(object: Object) -> void:
 	var panel := PanelContainer.new()
 	var hbox := HBoxContainer.new()
 	var button := Button.new() # Adding a button to edit polygon
-	
+
 	panel.add_theme_stylebox_override(
 		'panel',
 		panel.get_theme_stylebox("sub_inspector_bg11", "Editor")
@@ -68,9 +71,9 @@ func _parse_walkable_area(object: Object) -> void:
 
 	button.text = "Edit Polygon"
 	button.size_flags_stretch_ratio = Button.SIZE_EXPAND
-	button.align = Button.ALIGNMENT_CENTER
+	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.pressed.connect(_find_polygon_instance.bind(object), CONNECT_DEFERRED)
-	
+
 	hbox.add_child(button)
 	panel.add_child(hbox)
 	add_custom_control(panel)
@@ -92,7 +95,7 @@ func _parse_character(object: Object) -> void:
 	label.text = "* Open Node' scene to edit its properties"
 	label.autowrap = true
 	label.size_flags_horizontal = label.SIZE_EXPAND_FILL
-	label.align = Label.ALIGNMENT_CENTER
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_color_override('font_color', Color('c46c71'))
 	
 	hbox.add_child(label)

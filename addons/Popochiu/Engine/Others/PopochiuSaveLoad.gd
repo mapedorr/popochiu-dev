@@ -92,7 +92,7 @@ func save_game(slot := 1, description := '') -> bool:
 	if Globals.has_method('on_save'):
 		data.globals.custom_data = Globals.on_save()
 	
-	if not data.globals: data.erase('globals')
+	if data.globals.is_empty(): data.erase('globals')
 	
 	# Write the JSON -----------------------------------------------------------
 	var json_string := JSON.stringify(data)
@@ -117,11 +117,12 @@ func load_game(slot := 1) -> Dictionary:
 	
 	# Load inventory items
 	for item in loaded_data.player.inventory:
-		I.add_item(item, false)
+		I.add_item_no_run(item, false)
 	
 	# Load main object states
 	for type in ['rooms', 'characters', 'inventory_items', 'dialogs']:
-		_load_state(type, loaded_data)
+		if loaded_data.has(type):
+			_load_state(type, loaded_data)
 	
 	# Load globals
 	if loaded_data.has('globals'):
@@ -157,10 +158,10 @@ func _store_data(type: String, save: Dictionary) -> void:
 					['id']
 				)
 		
-		if not save[type][data.script_name]:
+		if save[type][data.script_name].is_empty():
 			save[type].erase(data.script_name)
 	
-	if not save[type]:
+	if save[type].is_empty():
 		save.erase(type)
 
 
@@ -188,7 +189,7 @@ target: Dictionary, source: Object, ignore_too := []
 	# ---- Call custom function to store extra data ----------------------------
 	if source.has_method('on_save'):
 		target.custom_data = source.on_save()
-		if not target.custom_data: target.erase('custom_data')
+		if target.custom_data.is_empty(): target.erase('custom_data')
 
 
 func _load_state(type: String, loaded_game: Dictionary) -> void:

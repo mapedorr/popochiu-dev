@@ -39,7 +39,7 @@ description = "Floor"
 
 [node name="Perimeter" type="NavigationRegion2D" parent="WalkableAreas/Floor"]
 modulate = Color(0, 1, 0, 1)
-navpoly = SubResource("1")
+navigation_polygon = SubResource("1")
 
 [node name="Props" type="Node2D" parent="."]
 

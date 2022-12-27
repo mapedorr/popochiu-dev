@@ -58,7 +58,8 @@ func _enter_tree() -> void:
 	_types_helper =\
 	load('res://addons/Popochiu/Editor/Helpers/PopochiuTypesHelper.gd')
 	
-	_inspector_plugin = load('res://addons/Popochiu/PopochiuInspectorPlugin.gd').new()
+	var x := load('res://addons/Popochiu/PopochiuInspectorPlugin.gd')
+	_inspector_plugin = x.new()
 	_inspector_plugin.ei = _editor_interface
 	add_inspector_plugin(_inspector_plugin)
 	

@@ -1,3 +1,2 @@
 res://popochiu/Rooms/101/Room101.tscn
-res://popochiu/Characters/Popsy/CharacterPopsy.gd
-res://popochiu/Characters/Goddiu/CharacterGoddiu.tscn
+res://addons/Popochiu/PopochiuInspectorPlugin.gd

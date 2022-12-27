@@ -24,6 +24,7 @@ func _ready() -> void:
 	
 	_dialog.confirmed.connect(_close)
 	_dialog.close_requested.connect(_close)
+	_dialog.get_cancel_button().pressed.connect(_close)
 	_ok.pressed.connect(_confirmed)
 	
 	var saves: Dictionary = E.get_saves_descriptions()
