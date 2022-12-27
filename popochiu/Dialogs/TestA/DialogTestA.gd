@@ -4,7 +4,16 @@ extends PopochiuDialog
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func on_start() -> void:
-	yield(E.run([]), 'completed')
+	var op: PopochiuDialogOption = yield(D.show_inline_dialog([
+		'Hi',
+		'Oñiiii',
+		'Prrrrrrrr'
+	]), 'completed')
+	
+	yield(E.run([
+		'Player: ' + op.text,
+		'Popsy: ???'
+	]), 'completed')
 
 
 func option_selected(opt: PopochiuDialogOption) -> void:

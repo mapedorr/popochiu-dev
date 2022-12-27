@@ -74,6 +74,7 @@ description = "ToyCar"
 walk_to_point = Vector2( 24, 1 )
 cursor = 1
 texture = ExtResource( 10 )
+link_to_item = "ToyCar"
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="Props/Blanket/ToyCar"]
 polygon = PoolVector2Array( -9, 3, -8, -3, -1, -6, 6, -5, 9, 1, 6, 5 )
