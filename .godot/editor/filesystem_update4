@@ -1,2 +1,4 @@
+res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogText/DialogText.tscn
 res://popochiu/Rooms/101/Room101.tscn
-res://addons/Popochiu/PopochiuInspectorPlugin.gd
+res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogText/DialogText.gd
+res://addons/Popochiu/Engine/Objects/GraphicInterface/GraphicInterface.gd

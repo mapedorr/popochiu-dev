@@ -56,15 +56,15 @@ func play_text(props: Dictionary) -> void:
 	rt.text = msg
 	lbl.text = rt.get_parsed_text()
 	add_child(lbl)
-	var size := lbl.size
-	if size.x > wrap_width:
-		size.x = wrap_width
+	var _size := lbl.size
+	if _size.x > wrap_width:
+		_size.x = wrap_width
 		rt.fit_content_height = true
-		rt.size = Vector2(size.x, 0.0)
+		rt.size = Vector2(_size.x, 0.0)
 		add_child(rt)
-		size.y = rt.get_content_height()
-	elif size.x < get_meta(DFLT_SIZE).x:
-		size.x = get_meta(DFLT_SIZE).x
+		_size.y = rt.get_content_height()
+	elif _size.x < get_meta(DFLT_SIZE).x:
+		_size.x = get_meta(DFLT_SIZE).x
 	
 	var characters_count := lbl.get_total_character_count()
 	
@@ -72,7 +72,7 @@ func play_text(props: Dictionary) -> void:
 	rt.free()
 	# ===================================== Calculate the width of the node ====
 	# Define default position (before calculating overflow)
-	size = size
+	size = _size
 	position = props.position - size / 2.0
 	position.y -= size.y / 2.0
 	
@@ -111,7 +111,7 @@ func play_text(props: Dictionary) -> void:
 		_tween.finished.connect(_wait_input)
 	else:
 		_wait_input()
-
+	
 	modulate.a = 1.0
 
 
@@ -131,7 +131,7 @@ func stop() ->void:
 		_wait_input()
 
 
-func hide() -> void:
+func disappear() -> void:
 	if modulate.a == 0.0: return
 	
 	_auto_continue = false
@@ -184,7 +184,7 @@ func _wait_input() -> void:
 
 
 func _notify_completion() -> void:
-	self.hide()
+	disappear()
 	animation_finished.emit()
 
 

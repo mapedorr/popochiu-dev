@@ -33,7 +33,8 @@ func add_item_no_run(item_name: String, animate := true) -> void:
 			item_name
 		)
 		
-		return await get_tree().process_frame
+		await get_tree().process_frame
+		return
 	
 	var i: PopochiuInventoryItem = _get_item_instance(item_name)
 	if is_instance_valid(i) and not i.in_inventory:
@@ -42,7 +43,8 @@ func add_item_no_run(item_name: String, animate := true) -> void:
 		item_added.emit(i, animate)
 		i.in_inventory = true
 		
-		return await self.item_add_done
+		await self.item_add_done
+		return
 	
 	await get_tree().process_frame
 
@@ -53,7 +55,9 @@ func add_item_as_active(item_name: String, animate := true) -> Callable:
 
 # Adds an item to the inventory and make it the current selected item. That is,
 # the cursor will thake the item's texture as its texture.
-func add_item_as_active_no_run(item_name: String, animate := true) -> void:
+func add_item_as_active_no_run(
+	item_name: String, animate := true
+) -> PopochiuInventoryItem:
 	var item: PopochiuInventoryItem = await add_item(item_name, animate)
 	
 	if is_instance_valid(item):

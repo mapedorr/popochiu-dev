@@ -68,7 +68,7 @@ func _enable_panels() -> void:
 	_click_handler.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	_display_box.close()
-	_dialog_text.hide()
+	_dialog_text.disappear()
 	
 	_info_bar.show()
 	_inventory.show()
@@ -80,7 +80,7 @@ func _enable_panels() -> void:
 
 func _continue() -> void:
 	if _dialog_text.visible_ratio == 1.0:
-		_dialog_text.hide()
+		_dialog_text.disappear()
 		_display_box.close()
 		
 		G.continue_clicked.emit()
