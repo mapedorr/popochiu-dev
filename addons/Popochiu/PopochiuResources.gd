@@ -66,6 +66,10 @@ const DATA := 'res://popochiu//PopochiuData.cfg'
 const SETTINGS := 'res://popochiu//PopochiuSettings.tres'
 const SETTINGS_CLASS :=\
 preload('res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd')
+const VALID_TYPES := [
+	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING,
+	TYPE_ARRAY, TYPE_STRING_ARRAY, TYPE_RAW_ARRAY, TYPE_INT_ARRAY
+]
 # ════ GODOT PROJECT SETTINGS ══════════════════════════════════════════════════
 const DISPLAY_WIDTH := 'display/window/size/width'
 const DISPLAY_HEIGHT := 'display/window/size/height'
@@ -161,6 +165,33 @@ static func get_section(section: String) -> Array:
 			resource_paths.append(config.get_value(section, key))
 	
 	return resource_paths
+
+
+static func store_properties(
+	target: Dictionary, source: Object, ignore_too := []
+) -> void:
+	var props_to_ignore := ['script_name', 'scene']
+	
+	if not ignore_too.empty():
+		props_to_ignore.append_array(ignore_too)
+	
+	# ---- Store basic type properties -----------------------------------------
+	# prop = {class_name, hint, hint_string, name, type, usage}
+	for prop in source.get_script().get_script_property_list():
+		if prop.name in props_to_ignore: continue
+		if not prop.type in VALID_TYPES: continue
+		
+		# Check if the property is a script variable (8192)
+		# or a export variable (8199)
+		if prop.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or prop.usage == (
+			PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
+		):
+			target[prop.name] = source[prop.name]
+	
+	# ---- Call custom function to store extra data ----------------------------
+	if source.has_method('on_save'):
+		target.custom_data = source.on_save()
+		if not target.custom_data: target.erase('custom_data')
 
 
 # ▨▨▨▨ SETTINGS ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨

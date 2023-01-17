@@ -4,20 +4,15 @@ extends PopochiuProp
 # Use yield(E.run([]), 'completed') if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
+var opened := false
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-#	Replace the call to .on_interact() to implement your code. This only makes
-#	the default behavior to happen.
-#	For example you can make the character walk to the Prop and then say
-#	something:
-#	E.run([
-#		C.walk_to_clicked(),
-#		C.face_clicked(),
-#		'Player: Not picking that up'
-#	])
-	.on_interact()
+	opened = !opened
+	
+	self.current_frame = 1 if opened else 0
 
 
 # When the node is right clicked
@@ -50,3 +45,7 @@ func on_linked_item_removed() -> void:
 # the inventory (i.e. when the player throws the object out of the inventory).
 func on_linked_item_discarded() -> void:
 	pass
+
+
+func on_room_set() -> void:
+	self.current_frame = 1 if opened else 0

@@ -142,22 +142,31 @@ func load_game(slot := 1) -> Dictionary:
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _store_data(type: String, save: Dictionary) -> void:
 	for path in PopochiuResources.get_section(type):
+		# Read the State resource file
 		var data := load(path)
 		
 		save[type][data.script_name] = {}
 		
-		_check_and_store_properties(save[type][data.script_name], data)
+		# Read the State resource for each object to store its data
+		PopochiuResources.store_properties(save[type][data.script_name], data)
 		
-		if type == 'dialogs':
-			save[type][data.script_name].options = {}
-			
-			for opt in (data as PopochiuDialog).options:
-				save[type][data.script_name].options[opt.id] = {}
-				_check_and_store_properties(
-					save[type][data.script_name].options[opt.id],
-					opt,
-					['id']
-				)
+		match type:
+			'rooms':
+				# TODO: Save the state of Props and Hotspots?
+				var props_states := {}
+				save[type][data.script_name]['props'] = data.props
+				
+				data.save_props_states()
+			'dialogs':
+				save[type][data.script_name].options = {}
+				
+				for opt in (data as PopochiuDialog).options:
+					save[type][data.script_name].options[opt.id] = {}
+					PopochiuResources.store_properties(
+						save[type][data.script_name].options[opt.id],
+						opt,
+						['id']
+					)
 		
 		if not save[type][data.script_name]:
 			save[type].erase(data.script_name)
@@ -167,7 +176,7 @@ func _store_data(type: String, save: Dictionary) -> void:
 
 
 func _check_and_store_properties(
-target: Dictionary, source: Object, ignore_too := []
+	target: Dictionary, source: Object, ignore_too := []
 ) -> void:
 	var props_to_ignore := ['script_name', 'scene']
 	

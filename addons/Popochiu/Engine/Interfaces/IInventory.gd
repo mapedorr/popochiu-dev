@@ -123,15 +123,18 @@ func discard_item(item_name: String, is_in_queue := true) -> void:
 		yield(remove_item(item_name, is_in_queue), 'completed')
 
 
-func clean_inventory() -> void:
+func clean_inventory(in_bg := false) -> void:
 	items.clear()
 	
 	for ii in _item_instances:
-		ii.on_discard()
+		if not ii.in_inventory: continue
+		
+		if not in_bg:
+			ii.on_discard()
 		
 		emit_signal('item_discarded', ii)
 		
-		remove_item(ii.script_name, false)
+		remove_item(ii.script_name, false, !in_bg)
 
 
 # Notifies that the inventory should appear.

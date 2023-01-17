@@ -4,20 +4,14 @@ extends PopochiuHotspot
 # Use yield(E.run([]), 'completed') if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
+var opened := false
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-#	Replace the call to .on_interact() to implement your code. This only makes
-#	the default behavior to happen.
-#	For example you can make the character walk to the Hotspot and then say
-#	something:
-#	E.run([
-#		C.walk_to_clicked(),
-#		C.face_clicked(),
-#		"Player: Can't open it"
-#	])
-	.on_interact()
+	opened = true
+	E.goto_room('Outside')
 
 
 # When the node is right clicked

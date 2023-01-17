@@ -4,20 +4,18 @@ extends PopochiuProp
 # Use yield(E.run([]), 'completed') if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
+var touched := false
+
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
+func on_room_set() -> void:
+	modulate = Color.red if touched else Color.white
+
+
 # When the node is clicked
 func on_interact() -> void:
-#	Replace the call to .on_interact() to implement your code. This only makes
-#	the default behavior to happen.
-#	For example you can make the character walk to the Prop and then say
-#	something:
-#	E.run([
-#		C.walk_to_clicked(),
-#		C.face_clicked(),
-#		'Player: Not picking that up'
-#	])
-	.on_interact()
+	touched = true
+	modulate = Color.red if touched else Color.white
 
 
 # When the node is right clicked

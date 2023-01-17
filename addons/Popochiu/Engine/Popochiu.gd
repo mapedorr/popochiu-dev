@@ -103,6 +103,12 @@ func _ready() -> void:
 	if settings.scale_gui:
 		Cursor.scale_cursor(scale)
 	
+	# Save the default state for the objects in the game
+	for room_tres in PopochiuResources.get_section('rooms'):
+		var res: PopochiuRoomData = load(room_tres)
+		E.rooms_states[res.script_name] = res
+		res.save_props_states()
+	
 	emit_signal('redied')
 
 
@@ -233,6 +239,7 @@ func goto_room(
 	# Store the room state
 	if store_state:
 		rooms_states[current_room.script_name] = current_room.state
+		current_room.state.save_props_states()
 	
 	# Remove PopochiuCharacter nodes from the room so they are not deleted
 	if Engine.get_idle_frames() > 0:
@@ -277,13 +284,12 @@ func room_readied(room: PopochiuRoom) -> void:
 	current_room.setup_camera()
 	
 	# Update the core state
-	if not _loaded_game:
+	if _loaded_game:
+		C.set_player(C.get_character(_loaded_game.player.id))
+	else:
 		current_room.state.visited = true
 		current_room.state.visited_times += 1
 		current_room.state.visited_first_time = current_room.state.visited_times == 1
-	
-	if _loaded_game:
-		C.set_player(C.get_character(_loaded_game.player.id))
 	
 	# Add the PopochiuCharacter instances to the room
 	for c in current_room.characters_cfg:
@@ -305,6 +311,17 @@ func room_readied(room: PopochiuRoom) -> void:
 			current_room.add_character(C.player)
 		
 		yield(C.player.idle(false), 'completed')
+	
+	# Load the state of Props, Hotspots, Regions and WalkableAreas
+	if rooms_states.has(room.script_name):
+		for type in ['props', 'hotspots', 'walkable_areas', 'regions']:
+			for prop_name in rooms_states[room.script_name][type]:
+				var prop: PopochiuProp = current_room.get_prop(prop_name)
+				var prop_dic: Dictionary =\
+				rooms_states[room.script_name][type][prop_name]
+				
+				for property in prop_dic:
+					prop[property] = prop_dic[property]
 	
 	for c in get_tree().get_nodes_in_group('PopochiuClickable'):
 		c.room = current_room
@@ -515,6 +532,8 @@ func save_game(slot := 1, description := '') -> void:
 
 
 func load_game(slot := 1) -> void:
+	I.clean_inventory(true)
+	
 	_loaded_game = _saveload.load_game(slot)
 	
 	if not _loaded_game: return

@@ -18,8 +18,10 @@ func on_room_entered() -> void:
 # What happens when the room changing transition finishes. At this point the room
 # is visible.
 func on_room_transition_finished() -> void:
-	# You can use yield(E.run([]), 'completed') to excecute a queue of instructions
-	pass
+	if E.rooms_states['101'].props.Drawer.opened:
+		E.run([
+			"Player: I shouldn't have left that drawer open"
+		])
 
 
 # What happens before Popochiu unloads the room.
