@@ -119,6 +119,9 @@ func exit_room() -> void:
 	for c in $Characters.get_children():
 		$Characters.remove_child(c)
 	
+	for p in get_hotspots():
+		(p as PopochiuHotspot).disable_input()
+	
 	on_room_exited()
 
 

@@ -66,9 +66,36 @@ const DATA := 'res://popochiu//PopochiuData.cfg'
 const SETTINGS := 'res://popochiu//PopochiuSettings.tres'
 const SETTINGS_CLASS :=\
 preload('res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd')
+const ROOM_CHILDS := ['props', 'hotspots', 'walkable_areas', 'regions']
 const VALID_TYPES := [
 	TYPE_BOOL, TYPE_INT, TYPE_REAL, TYPE_STRING,
 	TYPE_ARRAY, TYPE_STRING_ARRAY, TYPE_RAW_ARRAY, TYPE_INT_ARRAY
+]
+const PROPS_IGNORE := [
+	'description',
+	'baseline',
+	'clickable',
+	'cursor',
+	'always_on_top',
+	'frames',
+	'link_to_item',
+	'_description_code',
+]
+const HOTSPOTS_IGNORE := [
+	'description',
+	'baseline',
+	'clickable',
+	'cursor',
+	'always_on_top',
+	'_description_code',
+]
+const WALKABLE_AREAS_IGNORE := [
+	'description',
+	'tint'
+]
+const REGIONS_IGNORE := [
+	'description',
+	'tint'
 ]
 # ════ GODOT PROJECT SETTINGS ══════════════════════════════════════════════════
 const DISPLAY_WIDTH := 'display/window/size/width'

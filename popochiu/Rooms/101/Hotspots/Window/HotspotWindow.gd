@@ -8,16 +8,7 @@ extends PopochiuHotspot
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-#	Replace the call to .on_interact() to implement your code. This only makes
-#	the default behavior to happen.
-#	For example you can make the character walk to the Hotspot and then say
-#	something:
-#	E.run([
-#		C.walk_to_clicked(),
-#		C.face_clicked(),
-#		"Player: Can't open it"
-#	])
-	.on_interact()
+	prints('Clicked %d times' % (times_clicked + 1))
 
 
 # When the node is right clicked

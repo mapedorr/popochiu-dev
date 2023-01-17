@@ -22,6 +22,9 @@ func on_room_transition_finished() -> void:
 		E.run([
 			"Player: I shouldn't have left that drawer open"
 		])
+	
+	prints('101 Window have been clicked %d times'\
+	% E.rooms_states['101'].hotspots.Window.times_clicked)
 
 
 # What happens before Popochiu unloads the room.

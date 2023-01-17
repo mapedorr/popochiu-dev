@@ -1,6 +1,7 @@
 extends Node
 # Class for saving and loading game data.
-# Thanks GDQuest for this! (https://github.com/GDQuest/godot-demos-2022/tree/main/save-game)
+# Thanks for this GDQuest! ↴↴↴ 
+# (https://github.com/GDQuest/godot-demos-2022/tree/main/save-game)
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # TODO: This could be in PopochiuSettings for devs to change the path
@@ -153,10 +154,10 @@ func _store_data(type: String, save: Dictionary) -> void:
 		match type:
 			'rooms':
 				# TODO: Save the state of Props and Hotspots?
-				var props_states := {}
-				save[type][data.script_name]['props'] = data.props
+				data.save_childs_states()
 				
-				data.save_props_states()
+				for category in PopochiuResources.ROOM_CHILDS:
+					save[type][data.script_name][category] = data[category]
 			'dialogs':
 				save[type][data.script_name].options = {}
 				
@@ -173,33 +174,6 @@ func _store_data(type: String, save: Dictionary) -> void:
 	
 	if not save[type]:
 		save.erase(type)
-
-
-func _check_and_store_properties(
-	target: Dictionary, source: Object, ignore_too := []
-) -> void:
-	var props_to_ignore := ['script_name', 'scene']
-	
-	if not ignore_too.empty():
-		props_to_ignore.append_array(ignore_too)
-	
-	# ---- Store basic type properties -----------------------------------------
-	# prop = {class_name, hint, hint_string, name, type, usage}
-	for prop in source.get_script().get_script_property_list():
-		if prop.name in props_to_ignore: continue
-		if not prop.type in VALID_TYPES: continue
-		
-		# Check if the property is a script variable (8192)
-		# or a export variable (8199)
-		if prop.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or prop.usage == (
-			PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
-		):
-			target[prop.name] = source[prop.name]
-	
-	# ---- Call custom function to store extra data ----------------------------
-	if source.has_method('on_save'):
-		target.custom_data = source.on_save()
-		if not target.custom_data: target.erase('custom_data')
 
 
 func _load_state(type: String, loaded_game: Dictionary) -> void:
@@ -223,7 +197,9 @@ func _load_state(type: String, loaded_game: Dictionary) -> void:
 			state.on_load(loaded_game[type][id].custom_data)
 
 
-func _load_dialog_options(dialog: PopochiuDialog, loaded_options: Dictionary) -> void:
+func _load_dialog_options(
+	dialog: PopochiuDialog, loaded_options: Dictionary
+) -> void:
 	for opt in dialog.options:
 		if not loaded_options.has(opt.id): continue
 		

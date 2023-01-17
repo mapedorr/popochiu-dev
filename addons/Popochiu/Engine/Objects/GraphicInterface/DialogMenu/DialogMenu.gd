@@ -98,8 +98,8 @@ func remove_options() -> void:
 		current_options.clear()
 
 		for btn in _options.get_children():
-#			(btn as Button).call_deferred('queue_free')
 			_options.remove_child(btn as Button)
+#			(btn as Button).call_deferred('free')
 #		hide()
 	
 	yield(get_tree(), 'idle_frame')
