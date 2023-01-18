@@ -29,7 +29,7 @@ func display(msg: String) -> Callable:
 func display_no_run(msg: String) -> void:
 	if not E.in_run():
 		# Show the click handler that blocks interactions
-		G.block()
+		block()
 	
 	if E.cutscene_skipped:
 		await get_tree().process_frame

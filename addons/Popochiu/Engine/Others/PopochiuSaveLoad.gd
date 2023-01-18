@@ -1,4 +1,4 @@
-extends Node
+extends Resource
 # Class for saving and loading game data.
 # Thanks GDQuest for this! (https://github.com/GDQuest/godot-demos-2022/tree/main/save-game)
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

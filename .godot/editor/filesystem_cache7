@@ -1,5 +1,5 @@
 0b7126e0c6e86d3ec295a72f5aa6e0bd
-::res://::1674031321
+::res://::1674032670
 default_bus_layout.tres::AudioBusLayout::3252517570870475508::1673991566::0::1::::<><>::
 default_env.tres::Environment::-1::1673991566::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1661703567::0::1::::<><>::
@@ -72,8 +72,8 @@ godot_tools_dark.png::CompressedTexture2D::394278639247861455::1662921296::16739
 godot_tools_light.png::CompressedTexture2D::5456292513294658563::1662920157::1673991563::1::::<><>::
 Setup.gd::GDScript::-1::1673991563::0::1::::<>AcceptDialog<>::
 Setup.tscn::PackedScene::7263419225278434642::1673991563::0::1::::<><>::res://addons/Popochiu/Editor/Popups/Setup/Setup.gd
-::res://addons/Popochiu/Engine/::1674029614
-Popochiu.gd::GDScript::-1::1674029614::0::1::::<>Node<>::
+::res://addons/Popochiu/Engine/::1674032216
+Popochiu.gd::GDScript::-1::1674032216::0::1::::<>Node<>::
 Popochiu.tscn::PackedScene::1199463571377574238::1673991565::0::1::::<><>::res://addons/Popochiu/Engine/Popochiu.gd
 ::res://addons/Popochiu/Engine/AudioManager/::1673991563
 AudioCue.gd::GDScript::-1::1673991563::0::1::::<>Resource<>::
@@ -85,10 +85,10 @@ Cursor.gd::GDScript::-1::1673991564::0::1::::<>CanvasLayer<>::
 Cursor.tscn::PackedScene::6699891465533181097::1673991564::0::1::::<><>::uid://bgwuxe0qm0kvk<>res://addons/Popochiu/Engine/Cursor/Cursor.gd
 ::res://addons/Popochiu/Engine/Cursor/sprites/::1673991564
 cursor.png::CompressedTexture2D::2854225718683260996::1651148533::1673991564::1::::<><>::
-::res://addons/Popochiu/Engine/Interfaces/::1673991564
+::res://addons/Popochiu/Engine/Interfaces/::1674031593
 ICharacter.gd::GDScript::-1::1673991564::0::1::::<>Node<>::
 IDialog.gd::GDScript::-1::1673991564::0::1::::<>Node<>::
-IGraphicInterface.gd::GDScript::-1::1673991564::0::1::::<>Node<>::
+IGraphicInterface.gd::GDScript::-1::1674031593::0::1::::<>Node<>::
 IInventory.gd::GDScript::-1::1673991564::0::1::::<>Node<>::
 ::res://addons/Popochiu/Engine/Objects/::1673991565
 PopochiuSettings.gd::GDScript::-1::1673991565::0::1::::PopochiuSettings<>Resource<>::
@@ -96,8 +96,8 @@ PopochiuSettings.gd::GDScript::-1::1673991565::0::1::::PopochiuSettings<>Resourc
 PopochiuCharacter.gd::GDScript::-1::1674030408::0::1::::PopochiuCharacter<>PopochiuClickable<>res://addons/Popochiu/icons/character.png::
 PopochiuCharacter.tscn::PackedScene::6357153204263316988::1673991564::0::1::::<><>::res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacter.gd
 PopochiuCharacterData.gd::GDScript::-1::1674030408::0::1::::PopochiuCharacterData<>Resource<>res://addons/Popochiu/icons/character.png::
-::res://addons/Popochiu/Engine/Objects/Clickable/::1674029614
-PopochiuClickable.gd::GDScript::-1::1674029614::0::1::::PopochiuClickable<>Area2D<>::
+::res://addons/Popochiu/Engine/Objects/Clickable/::1674032326
+PopochiuClickable.gd::GDScript::-1::1674032326::0::1::::PopochiuClickable<>Area2D<>::
 ::res://addons/Popochiu/Engine/Objects/Dialog/::1674030408
 PopochiuDialog.gd::GDScript::-1::1674030408::0::1::::PopochiuDialog<>Resource<>res://addons/Popochiu/icons/dialog.png::
 PopochiuDialogOption.gd::GDScript::-1::1673991564::0::1::::PopochiuDialogOption<>Resource<>::
@@ -180,10 +180,10 @@ TransitionLayer.tscn::PackedScene::4243597909174137792::1673991565::0::1::::<><>
 ::res://addons/Popochiu/Engine/Objects/WalkableArea/::1674030409
 PopochiuWalkableArea.gd::GDScript::-1::1674030409::0::1::::PopochiuWalkableArea<>Node2D<>res://addons/Popochiu/icons/walkable_area.png::
 PopochiuWalkableArea.tscn::PackedScene::-1::1673946647::0::1::::<><>::res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.gd
-::res://addons/Popochiu/Engine/Others/::1673991565
+::res://addons/Popochiu/Engine/Others/::1674032047
 ImporterDefaults.gd::GDScript::-1::1670334389::0::1::::<>RefCounted<>::
 InputActions.gd::GDScript::-1::1673991565::0::1::::<>RefCounted<>::
-PopochiuSaveLoad.gd::GDScript::-1::1673991565::0::1::::<>Node<>::
+PopochiuSaveLoad.gd::GDScript::-1::1674032047::0::1::::<>Resource<>::
 PopochiuUtils.gd::GDScript::-1::1673991565::0::1::::<>Node<>::
 ::res://addons/Popochiu/Engine/Templates/::1673991566
 CharacterStateTemplate.gd::GDScript::-1::1670334389::0::1::::<>PopochiuCharacterData<>::
@@ -249,10 +249,10 @@ InventoryToyCar.tscn::PackedScene::-1::1673991566::0::1::::<><>::res://popochiu/
 InventoryToyCarState.gd::GDScript::-1::1673991566::0::1::::<>PopochiuInventoryItemData<>::
 toy_car.png::CompressedTexture2D::2246192998007162759::1658742640::1673991566::1::::<><>::
 ::res://popochiu/Rooms/::1673991567
-::res://popochiu/Rooms/101/::1674031301
+::res://popochiu/Rooms/101/::1674032439
 Room101.gd::GDScript::-1::1673991567::0::1::::<>PopochiuRoom<>::
 Room101.tres::Resource::-1::1673952993::0::1::::<><>::res://popochiu/Rooms/101/Room101State.gd
-Room101.tscn::PackedScene::2509514981849333339::1674031301::0::1::::<><>::res://popochiu/Rooms/101/Room101.gd<>res://popochiu/Rooms/101/Hotspots/Door/HotspotDoor.gd<>uid://do1k681xt48cm<>res://popochiu/Rooms/101/Props/Blanket/PropBlanket.gd<>uid://dfs4mwls34yg2<>uid://dwurc22nw1rkx<>uid://cq7xaja0esx5m<>uid://ddvstx60w78gn<>res://popochiu/Rooms/101/Props/ToyCar/PropToyCar.gd<>uid://fs4wx6wfenu7<>uid://c134dicwujxcg<>res://popochiu/Rooms/101/WalkableAreas/Floor/WalkableAreaFloor.gd<>uid://cn2jct7urbm46<>res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.tscn<>res://popochiu/Rooms/101/Props/Apple/PropApple.gd<>res://popochiu/Rooms/101/Hotspots/Window/HotspotWindow.gd<>uid://b6g2r1h4qihe6<>uid://hfvjxu5map27<>res://popochiu/Rooms/101/Props/Drawer/PropDrawer.gd
+Room101.tscn::PackedScene::2509514981849333339::1674032439::0::1::::<><>::res://popochiu/Rooms/101/Room101.gd<>res://popochiu/Rooms/101/Hotspots/Door/HotspotDoor.gd<>uid://do1k681xt48cm<>res://popochiu/Rooms/101/Props/Blanket/PropBlanket.gd<>uid://dfs4mwls34yg2<>uid://dwurc22nw1rkx<>uid://cq7xaja0esx5m<>uid://ddvstx60w78gn<>res://popochiu/Rooms/101/Props/ToyCar/PropToyCar.gd<>uid://fs4wx6wfenu7<>uid://c134dicwujxcg<>res://popochiu/Rooms/101/WalkableAreas/Floor/WalkableAreaFloor.gd<>uid://cn2jct7urbm46<>res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.tscn<>res://popochiu/Rooms/101/Props/Apple/PropApple.gd<>res://popochiu/Rooms/101/Hotspots/Window/HotspotWindow.gd<>uid://b6g2r1h4qihe6<>uid://hfvjxu5map27<>res://popochiu/Rooms/101/Props/Drawer/PropDrawer.gd
 Room101State.gd::GDScript::-1::1670334389::0::1::::<>PopochiuRoomData<>::
 ::res://popochiu/Rooms/101/audio/::1673991567
 MxTwoPopochius.tres::Resource::1754353564562521438::1673991567::0::1::::<><>::uid://ccmxw3hlb3u04<>res://addons/Popochiu/Engine/AudioManager/AudioCue.gd

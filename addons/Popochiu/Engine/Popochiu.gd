@@ -9,7 +9,7 @@ signal game_saved
 signal game_loaded(data)
 signal redied
 
-const SaveLoad := preload('res://addons/Popochiu/Engine/Others/PopochiuSaveLoad.gd')
+const SAVELOAD_PATH := 'res://addons/Popochiu/Engine/Others/PopochiuSaveLoad.gd'
 
 # Used to prevent going to another room when there is one being loaded
 var in_room := false : set = _set_in_room
@@ -46,6 +46,7 @@ var _use_transition_on_room_change := true
 var _config: ConfigFile = null
 var _loaded_game := {}
 var _hovered_queue := []
+var _saveload: Resource = null
 
 @onready var _tween: Tween = null
 @onready var main_camera: Camera2D = find_child('MainCamera')
@@ -57,13 +58,13 @@ var _hovered_queue := []
 		bottom = get_viewport().get_visible_rect().end.y
 	}
 }
-@onready var _saveload := SaveLoad.new()
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
 func _ready() -> void:
 	if Engine.is_editor_hint(): return
 	
+	_saveload = load(SAVELOAD_PATH).new()
 	_config = PopochiuResources.get_data_cfg()
 	
 	var gi: CanvasLayer = null
