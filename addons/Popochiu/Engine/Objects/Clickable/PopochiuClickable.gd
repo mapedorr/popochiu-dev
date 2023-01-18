@@ -29,8 +29,8 @@ func _ready():
 		hide_helpers()
 		return
 	else:
-		remove_child($BaselineHelper)
-		remove_child($WalkToHelper)
+		$BaselineHelper.free()
+		$WalkToHelper.free()
 	
 	visibility_changed.connect(_toggle_input)
 

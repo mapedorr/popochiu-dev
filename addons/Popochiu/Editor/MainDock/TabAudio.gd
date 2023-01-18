@@ -62,7 +62,13 @@ func search_audio_files() -> void:
 	# Look PopochiuData.cfg to remove_at entries for AudioCue files that don't
 	# exists in the project anymore
 	_group_audio_cues()
-	_read_directory(main_dock.fs.get_filesystem_path(SEARCH_PATH))
+	
+	var fs_directory: EditorFileSystemDirectory =\
+	main_dock.fs.get_filesystem_path(SEARCH_PATH)
+	
+	if not fs_directory: return
+	
+	_read_directory(fs_directory)
 	
 	if not _audio_cues_to_create.is_empty():
 		_created_audio_cues = 0

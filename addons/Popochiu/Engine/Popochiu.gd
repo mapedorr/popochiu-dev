@@ -190,7 +190,7 @@ func run(instructions: Array, show_gi := true) -> void:
 #				await self.wait(instruction.time)
 #				G.continue_clicked.emit()
 	
-	if not D.active and show_gi:
+	if show_gi:
 		G.done()
 	
 	if _is_camera_shaking:
@@ -229,7 +229,6 @@ func goto_room(
 	if not in_room: return
 	
 	self.in_room = false
-	clear_hovered()
 	
 	G.block()
 	
@@ -266,6 +265,7 @@ func goto_room(
 	if Engine.get_process_frames() == 0:
 		await get_tree().process_frame
 	
+	clear_hovered()
 	get_tree().change_scene_to_file(load(rp).scene)
 
 
