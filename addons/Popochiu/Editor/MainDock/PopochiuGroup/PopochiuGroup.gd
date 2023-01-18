@@ -1,7 +1,7 @@
 @tool
+@icon('res://addons/Popochiu/Editor/MainDock/PopochiuGroup/popochiu_group.svg')
 class_name PopochiuGroup
 extends PanelContainer
-@icon('res://addons/Popochiu/Editor/MainDock/PopochiuGroup/popochiu_group.svg')
 
 signal create_clicked
 

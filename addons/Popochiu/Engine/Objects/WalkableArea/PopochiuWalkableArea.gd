@@ -1,7 +1,7 @@
 @tool
+@icon('res://addons/Popochiu/icons/walkable_area.png')
 class_name PopochiuWalkableArea
 extends Node2D
-@icon('res://addons/Popochiu/icons/walkable_area.png')
 # Areas players can walk upon.
 # No specific behavior at the moment, the area is defined by a polygon.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

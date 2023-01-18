@@ -1,6 +1,6 @@
+@icon('res://addons/Popochiu/icons/inventory_item.png')
 extends TextureRect
 class_name PopochiuInventoryItem
-@icon('res://addons/Popochiu/icons/inventory_item.png')
 # An inventory item.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

@@ -42,13 +42,11 @@ baseline = -90
 
 [node name="Hotspots" type="Node2D" parent="."]
 
-[node name="To101" type="Area2D" parent="Hotspots" instance=ExtResource("6_x1gi8")]
+[node name="To101" parent="Hotspots" instance=ExtResource("6_x1gi8")]
 position = Vector2(47, 120)
 script = ExtResource("7_lr5cl")
 script_name = "To101"
 description = "To101"
-walk_to_point = Vector2(0, 0)
-cursor = 1
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="Hotspots/To101"]
 modulate = Color(0, 0, 1, 1)

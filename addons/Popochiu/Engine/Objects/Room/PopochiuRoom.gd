@@ -1,7 +1,7 @@
 @tool
+@icon('res://addons/Popochiu/icons/room.png')
 class_name PopochiuRoom
 extends Node2D
-@icon('res://addons/Popochiu/icons/room.png')
 # The scenes used by Popochiu. Can have: Props, Hotspots, Regions, Points and
 # Walkable areas. Characters can move through this and interact with its Props
 # and Hotspots. Regions can be used to trigger methods when a character enters

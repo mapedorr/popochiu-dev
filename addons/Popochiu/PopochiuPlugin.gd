@@ -251,8 +251,8 @@ func _fix_dependencies(dir: EditorFileSystemDirectory) -> void:
 				continue
 			_fix_dependency(d, res, path)
 
-	for subdir in dir.get_subdir_count():
-		subdir = dir.get_subdir(subdir)
+	for subdir_id in dir.get_subdir_count():
+		var subdir := dir.get_subdir(subdir_id)
 		
 		for f in subdir.get_file_count():
 			var path = subdir.get_file_path(f)

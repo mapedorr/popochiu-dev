@@ -1,7 +1,7 @@
 @tool
+@icon('res://addons/Popochiu/icons/dialog.png')
 class_name PopochiuDialog
 extends Resource
-@icon('res://addons/Popochiu/icons/dialog.png')
 # For branching dialog, can have dialog options that trigger a script.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

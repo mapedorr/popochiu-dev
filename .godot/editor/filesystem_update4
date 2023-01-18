@@ -1,7 +1,1 @@
 res://popochiu/Rooms/101/Room101.tscn
-res://addons/Popochiu/Engine/Popochiu.gd
-res://popochiu/Rooms/Map/RoomMap.tscn
-res://popochiu/Rooms/Map/Hotspots/To101/HotspotTo101.gd
-res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd
-res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogMenu/DialogMenu.gd
-res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialog.gd

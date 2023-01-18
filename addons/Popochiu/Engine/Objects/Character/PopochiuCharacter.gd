@@ -1,7 +1,7 @@
 @tool
+@icon('res://addons/Popochiu/icons/character.png')
 class_name PopochiuCharacter
 extends PopochiuClickable
-@icon('res://addons/Popochiu/icons/character.png')
 # Any Object that can move, walk, navigate rooms, have an inventory, etc.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 # TODO: Use a state machine

@@ -8,112 +8,6 @@
 
 config_version=5
 
-_global_script_classes=[{
-"base": "PopochiuClickable",
-"class": &"PopochiuCharacter",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacter.gd"
-}, {
-"base": "Resource",
-"class": &"PopochiuCharacterData",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Character/PopochiuCharacterData.gd"
-}, {
-"base": "Area2D",
-"class": &"PopochiuClickable",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd"
-}, {
-"base": "Resource",
-"class": &"PopochiuDialog",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialog.gd"
-}, {
-"base": "Resource",
-"class": &"PopochiuDialogOption",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialogOption.gd"
-}, {
-"base": "PanelContainer",
-"class": &"PopochiuGroup",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Editor/MainDock/PopochiuGroup/PopochiuGroup.gd"
-}, {
-"base": "PopochiuClickable",
-"class": &"PopochiuHotspot",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Hotspot/PopochiuHotspot.gd"
-}, {
-"base": "TextureRect",
-"class": &"PopochiuInventoryItem",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/InventoryItem/PopochiuInventoryItem.gd"
-}, {
-"base": "Resource",
-"class": &"PopochiuInventoryItemData",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/InventoryItem/PopochiuInventoryItemData.gd"
-}, {
-"base": "PopochiuClickable",
-"class": &"PopochiuProp",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Prop/PopochiuProp.gd"
-}, {
-"base": "Area2D",
-"class": &"PopochiuRegion",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Region/PopochiuRegion.gd"
-}, {
-"base": "Node",
-"class": &"PopochiuResources",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/PopochiuResources.gd"
-}, {
-"base": "Node2D",
-"class": &"PopochiuRoom",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Room/PopochiuRoom.gd"
-}, {
-"base": "Resource",
-"class": &"PopochiuRoomData",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/Room/PopochiuRoomData.gd"
-}, {
-"base": "Resource",
-"class": &"PopochiuSettings",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd"
-}, {
-"base": "Node2D",
-"class": &"PopochiuWalkableArea",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/WalkableArea/PopochiuWalkableArea.gd"
-}, {
-"base": "CanvasLayer",
-"class": &"TransitionLayer",
-"language": &"GDScript",
-"path": "res://addons/Popochiu/Engine/Objects/TransitionLayer/TransitionLayer.gd"
-}]
-_global_script_class_icons={
-"PopochiuCharacter": "res://addons/Popochiu/icons/character.png",
-"PopochiuCharacterData": "res://addons/Popochiu/icons/character.png",
-"PopochiuClickable": "",
-"PopochiuDialog": "res://addons/Popochiu/icons/dialog.png",
-"PopochiuDialogOption": "",
-"PopochiuGroup": "res://addons/Popochiu/Editor/MainDock/PopochiuGroup/popochiu_group.svg",
-"PopochiuHotspot": "res://addons/Popochiu/icons/hotspot.png",
-"PopochiuInventoryItem": "res://addons/Popochiu/icons/inventory_item.png",
-"PopochiuInventoryItemData": "res://addons/Popochiu/icons/inventory_item.png",
-"PopochiuProp": "res://addons/Popochiu/icons/prop.png",
-"PopochiuRegion": "res://addons/Popochiu/icons/region.png",
-"PopochiuResources": "",
-"PopochiuRoom": "res://addons/Popochiu/icons/room.png",
-"PopochiuRoomData": "res://addons/Popochiu/icons/room.png",
-"PopochiuSettings": "",
-"PopochiuWalkableArea": "res://addons/Popochiu/icons/walkable_area.png",
-"TransitionLayer": ""
-}
-
 [application]
 
 config/name="popochiu-dev"
@@ -142,6 +36,10 @@ window/size/viewport_height=180
 window/size/window_width_override=640
 window/size/window_height_override=360
 window/stretch/mode="canvas_items"
+
+[editor]
+
+export/convert_text_resources_to_binary=true
 
 [editor_plugins]
 
