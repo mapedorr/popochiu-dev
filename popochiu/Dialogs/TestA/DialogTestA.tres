@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=6 format=2]
+[gd_resource type="Resource" load_steps=9 format=2]
 
 [ext_resource path="res://popochiu/Dialogs/TestA/DialogTestA.gd" type="Script" id=1]
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialogOption.gd" type="Script" id=2]
@@ -21,10 +21,37 @@ visible = false
 disabled = false
 always_on = false
 
-[sub_resource type="Resource" id=3]
+[sub_resource type="Resource" id=4]
 resource_name = "Opt3"
 script = ExtResource( 2 )
 id = "Opt3"
+text = "Option 3"
+visible = true
+disabled = false
+always_on = false
+
+[sub_resource type="Resource" id=5]
+resource_name = "Opt4"
+script = ExtResource( 2 )
+id = "Opt4"
+text = "Option 4"
+visible = true
+disabled = false
+always_on = false
+
+[sub_resource type="Resource" id=6]
+resource_name = "Opt5"
+script = ExtResource( 2 )
+id = "Opt5"
+text = "Option 5"
+visible = true
+disabled = false
+always_on = false
+
+[sub_resource type="Resource" id=3]
+resource_name = "Exit"
+script = ExtResource( 2 )
+id = "Exit"
 text = "Bye!"
 visible = true
 disabled = false
@@ -33,5 +60,5 @@ always_on = true
 [resource]
 resource_name = "TestA"
 script = ExtResource( 1 )
-options = [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ) ]
+options = [ SubResource( 1 ), SubResource( 2 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 3 ) ]
 script_name = "TestA"

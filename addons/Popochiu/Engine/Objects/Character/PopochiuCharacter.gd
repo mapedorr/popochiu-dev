@@ -198,6 +198,44 @@ func show_helpers() -> void:
 	if is_instance_valid(dialog_pos): dialog_pos.show()
 
 
+func walk_to(pos: Vector2) -> void:
+	yield()
+	
+	C.character_walk_to(script_name, pos, false)
+	
+	yield(C, 'character_move_ended')
+
+
+func walk_to_prop(id: String) -> void:
+	yield()
+	
+	C.character_walk_to(
+		script_name, E.current_room.get_prop(id).walk_to_point, false
+	)
+	
+	yield(C, 'character_move_ended')
+
+
+func walk_to_hotspot(id: String) -> void:
+	yield()
+	
+	C.character_walk_to(
+		script_name, E.current_room.get_hotspot(id).walk_to_point, false
+	)
+	
+	yield(C, 'character_move_ended')
+
+
+func walk_to_room_point(id: String) -> void:
+	yield()
+	
+	C.character_walk_to(
+		script_name, E.current_room.get_point(id), false
+	)
+	
+	yield(C, 'character_move_ended')
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
 func get_dialog_pos() -> float:
 	return $DialogPos.position.y

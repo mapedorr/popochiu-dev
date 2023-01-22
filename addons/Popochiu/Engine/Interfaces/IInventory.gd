@@ -15,6 +15,7 @@ signal inventory_hide_requested(use_anim)
 var active: PopochiuInventoryItem
 # Used for saving the game
 var items := []
+var items_states := {}
 
 var _item_instances := []
 

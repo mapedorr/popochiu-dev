@@ -166,7 +166,7 @@ func _store_data(type: String, save: Dictionary) -> void:
 					PopochiuResources.store_properties(
 						save[type][data.script_name].options[opt.id],
 						opt,
-						['id']
+						['id', 'always_on']
 					)
 		
 		if not save[type][data.script_name]:
@@ -186,11 +186,16 @@ func _load_state(type: String, loaded_game: Dictionary) -> void:
 			
 			state[p] = loaded_game[type][id][p]
 		
-		if type == 'rooms':
-			E.rooms_states[id] = state
-		elif type == 'dialogs':
-			D.trees[id] = state
-			_load_dialog_options(state, loaded_game[type][id].options)
+		match type:
+			'rooms':
+				E.rooms_states[id] = state
+			'characters':
+				C.characters_states[id] = state
+			'inventory_items':
+				I.items_states[id] = state
+			'dialogs':
+				D.trees[id] = state
+				_load_dialog_options(state, loaded_game[type][id].options)
 		
 		if loaded_game[type][id].has('custom_data')\
 		and state.has_method('on_load'):
@@ -204,5 +209,7 @@ func _load_dialog_options(
 		if not loaded_options.has(opt.id): continue
 		
 		for prop in opt.get_script().get_script_property_list():
+			if prop.name == 'always_on': continue
+			
 			if loaded_options[opt.id].has(prop.name):
 				opt[prop.name] = loaded_options[opt.id][prop.name]

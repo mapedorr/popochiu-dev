@@ -7,7 +7,6 @@ func on_start() -> void:
 	var op: PopochiuDialogOption = yield(D.show_inline_dialog([
 		'Hi',
 		'Oñiiii',
-		'Prrrrrrrr'
 	]), 'completed')
 	
 	yield(E.run([
@@ -28,7 +27,7 @@ func option_selected(opt: PopochiuDialogOption) -> void:
 			]), 'completed')
 			
 			opt.turn_off_forever()
-			turn_on_options(['Opt2'])
+			turn_on_options(['Opt2', 'Opt3', 'Opt4', 'Opt5'])
 		'Opt2':
 			if opt.used_times == 1:
 				yield(E.run([
@@ -41,6 +40,8 @@ func option_selected(opt: PopochiuDialogOption) -> void:
 				]), 'completed')
 			
 			turn_on_options(['Opt1'])
+		'Opt3', 'Opt4', 'Opt5':
+			pass
 		_:
 			# By default close the dialog
 			stop()

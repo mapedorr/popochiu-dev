@@ -10,6 +10,7 @@ signal character_grab_done(character)
 var player: PopochiuCharacter = null setget set_player
 var characters := []
 var camera_owner: PopochiuCharacter = null
+var characters_states := {}
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
