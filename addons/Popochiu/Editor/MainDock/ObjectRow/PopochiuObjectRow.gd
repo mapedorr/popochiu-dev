@@ -10,12 +10,15 @@ enum MenuOptions {
 	ADD_TO_CORE,
 	CREATE_STATE_SCRIPT,
 	SET_AS_MAIN,
+	SET_AS_PC,
 	START_WITH_IT,
 	CREATE_SCRIPT,
 	DELETE
 }
 
 const SELECTED_FONT_COLOR := Color('706deb')
+const PLAYER_CHARACTER_ICON := preload(\
+'res://addons/Popochiu/icons/player_character.png')
 const INVENTORY_START_ICON := preload(\
 'res://addons/Popochiu/icons/inventory_item_start.png')
 const ROOM_STATE_TEMPLATE :=\
@@ -32,8 +35,9 @@ const AudioCue := preload('res://addons/Popochiu/Engine/AudioManager/AudioCue.gd
 var type := -1
 var path := ''
 var node_path := ''
-var main_dock: Panel = null setget _set_main_dock
-var is_main := false setget _set_is_main
+var main_dock: Panel = null setget set_main_dock
+var is_main := false setget set_is_main
+var is_pc := false setget set_is_pc
 var is_on_start := false setget set_is_on_start
 
 var _delete_dialog: ConfirmationDialog
@@ -69,6 +73,12 @@ onready var _menu_cfg := [
 		types = [Constants.Types.ROOM]
 	},
 	{
+		id = MenuOptions.SET_AS_PC,
+		icon = PLAYER_CHARACTER_ICON,
+		label = 'Set as Player Character',
+		types = [Constants.Types.CHARACTER]
+	},
+	{
 		id = MenuOptions.START_WITH_IT,
 		icon = INVENTORY_START_ICON,
 		label = 'Start with it',
@@ -97,8 +107,11 @@ func _ready() -> void:
 	# Assign icons
 	_fav_icon.texture = get_icon('Heart', 'EditorIcons')
 	
-	if type == Constants.Types.INVENTORY_ITEM:
-		_fav_icon.texture = INVENTORY_START_ICON
+	match type:
+		Constants.Types.CHARACTER:
+			_fav_icon.texture = PLAYER_CHARACTER_ICON
+		Constants.Types.INVENTORY_ITEM:
+			_fav_icon.texture = INVENTORY_START_ICON
 	
 	_btn_open.icon = get_icon('InstanceOptions', 'EditorIcons')
 	_btn_script.icon = get_icon('Script', 'EditorIcons')
@@ -165,6 +178,34 @@ func show_create_state_script() -> void:
 	_menu_popup.set_item_disabled(1, false)
 
 
+# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
+func set_main_dock(value: Panel) -> void:
+	main_dock = value
+	_delete_dialog = main_dock.delete_dialog
+	_delete_all_checkbox = _delete_dialog.find_node('CheckBox')
+
+
+func set_is_main(value: bool) -> void:
+	is_main = value
+	_fav_icon.visible = value
+	_menu_popup.set_item_disabled(
+		_menu_popup.get_item_index(MenuOptions.SET_AS_MAIN), value
+	)
+
+
+func set_is_pc(value: bool) -> void:
+	is_pc = value
+	_fav_icon.visible = value
+	_menu_popup.set_item_disabled(
+		_menu_popup.get_item_index(MenuOptions.SET_AS_PC), value
+	)
+
+
+func set_is_on_start(value: bool) -> void:
+	is_on_start = value
+	_fav_icon.visible = value
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _create_menu() -> void:
 	_menu_popup.clear()
@@ -172,6 +213,8 @@ func _create_menu() -> void:
 	for option in _menu_cfg:
 		if option:
 			if option.has('types') and not type in option.types: continue
+			
+			prints(option.label, option.id)
 			
 			_menu_popup.add_icon_item(
 				option.icon,
@@ -194,11 +237,14 @@ func _menu_item_pressed(id: int) -> void:
 	match id:
 		MenuOptions.ADD_TO_CORE:
 			_add_object_to_core()
+		MenuOptions.CREATE_STATE_SCRIPT:
+			_create_state_script()
 		MenuOptions.SET_AS_MAIN:
 			main_dock.set_main_scene(path)
 			self.is_main = true
-		MenuOptions.CREATE_STATE_SCRIPT:
-			_create_state_script()
+		MenuOptions.SET_AS_PC:
+			main_dock.set_pc(name)
+			self.is_pc = true
 		MenuOptions.START_WITH_IT:
 			var settings := PopochiuResources.get_settings()
 			
@@ -550,23 +596,6 @@ func _disconnect_popup() -> void:
 	_delete_dialog.get_close_button().disconnect(
 		'pressed', self, '_disconnect_popup'
 	)
-
-
-func _set_main_dock(value: Panel) -> void:
-	main_dock = value
-	_delete_dialog = main_dock.delete_dialog
-	_delete_all_checkbox = _delete_dialog.find_node('CheckBox')
-
-
-func _set_is_main(value: bool) -> void:
-	is_main = value
-	_fav_icon.visible = value
-	_menu_popup.set_item_disabled(MenuOptions.SET_AS_MAIN, value)
-
-
-func set_is_on_start(value: bool) -> void:
-	is_on_start = value
-	_fav_icon.visible = value
 
 
 func _create_state_script() -> void:

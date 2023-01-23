@@ -85,14 +85,29 @@ func _ready() -> void:
 	add_child(gi)
 	add_child(tl)
 	
-	# Set the first character on the list to be the default PC (playable character)
-	var characters := PopochiuResources.get_section('characters')
-	if not characters.empty():
-		var pc: PopochiuCharacter = load(
-			(load(characters[0]) as PopochiuCharacterData).scene
-		).instance()
-		C.player = pc
-		C.characters.append(pc)
+	if settings.player_character:
+		var pc_data_path: String = PopochiuResources.get_data_value(
+			'characters', settings.player_character, ''
+		)
+		
+		if pc_data_path:
+			var pc_data: PopochiuCharacterData = load(pc_data_path)
+			var pc: PopochiuCharacter = load(pc_data.scene).instance()
+			
+			C.player = pc
+			C.characters.append(pc)
+	
+	if not C.player:
+		# Set the first character on the list to be the default player character
+		var characters := PopochiuResources.get_section('characters')
+
+		if not characters.empty():
+			var pc: PopochiuCharacter = load(
+				(load(characters[0]) as PopochiuCharacterData).scene
+			).instance()
+
+			C.player = pc
+			C.characters.append(pc)
 	
 	# Add inventory items on start (ignore animations (3rd parameter))
 	for key in settings.items_on_start:
@@ -286,7 +301,7 @@ func room_readied(room: PopochiuRoom) -> void:
 	
 	# Update the core state
 	if _loaded_game:
-		C.set_player(C.get_character(_loaded_game.player.id))
+		C.player = C.get_character(_loaded_game.player.id)
 	else:
 		current_room.state.visited = true
 		current_room.state.visited_times += 1
@@ -296,17 +311,13 @@ func room_readied(room: PopochiuRoom) -> void:
 	for c in current_room.characters_cfg:
 		var chr: PopochiuCharacter = C.get_character(c.script_name)
 		
-		if chr:
-			# ░▒░▒ FIX ░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░
-			# Temporary fix to make the character with is_player == true to
-			# be the PC
-			if chr.is_player:
-				C.set_player(chr)
-			# ░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░▒░░▒░▒ FIX ░▒░▒
-			
-			chr.position = c.position
-			current_room.add_character(chr)
+		if not chr: continue
+		
+		chr.position = c.position
+		current_room.add_character(chr)
 	
+	# If the room must have the player character but it is not part of its
+	# $Characters node, add it to the room
 	if current_room.has_player and is_instance_valid(C.player):
 		if not current_room.has_character(C.player.script_name):
 			current_room.add_character(C.player)

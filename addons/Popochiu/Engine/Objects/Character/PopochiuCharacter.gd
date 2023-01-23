@@ -12,7 +12,6 @@ signal started_walk_to(character, start, end)
 signal stoped_walk
 
 export var text_color := Color.white
-export var is_player := false
 export(FlipsWhen) var flips_when := 0
 export(Array, Dictionary) var voices := [] setget set_voices
 export var follow_player := false

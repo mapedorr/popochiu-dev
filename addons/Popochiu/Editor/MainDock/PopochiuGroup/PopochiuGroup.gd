@@ -66,7 +66,11 @@ func add(node: Node) -> void:
 
 func clear_favs() -> void:
 	for por in _list.get_children():
+		# This applies to Room rows
 		(por as PopochiuObjectRow).is_main = false
+		
+		# This applies to Character rows
+		(por as PopochiuObjectRow).is_pc = false
 
 
 func disable_create() -> void:

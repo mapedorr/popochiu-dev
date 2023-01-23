@@ -86,6 +86,11 @@ func _process(delta):
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
+# When the room this node is in has been charged
+func on_room_set() -> void:
+	pass
+
+
 # When the node is clicked
 func on_interact() -> void:
 	yield(E.run([
@@ -105,10 +110,6 @@ func on_item_used(item: PopochiuInventoryItem) -> void:
 	yield(E.run([
 		G.display("Can't USE %s here" % item.description)
 	]), 'completed')
-
-
-func on_room_set() -> void:
-	pass
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
