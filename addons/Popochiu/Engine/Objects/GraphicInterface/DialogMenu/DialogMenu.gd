@@ -14,6 +14,8 @@ preload('res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialogOption.gd')
 
 var current_options := []
 
+var _max_height := 0.0
+var _visible_options := 0
 
 @onready var _panel: Container = find_child('Panel')
 @onready var _options: Container = find_child('Options')
@@ -84,22 +86,29 @@ func _create_options(options := [], autoshow := false) -> void:
 			btn.hide()
 		else:
 			btn.show()
+			_visible_options += 1
+		
+		
+		if _max_height == 0.0:
+			_max_height = btn.size.y * E.settings.max_dialog_options
+			_max_height += E.settings.max_dialog_options - 1
 
 	if autoshow: show_options()
 	
 	await get_tree().process_frame
 
-	_panel.custom_minimum_size.y = _options.size.y
+	_panel.custom_minimum_size.y = min(_options.size.y, _max_height)
 
 
 func remove_options() -> void:
+	_visible_options = 0
+	
 	if not current_options.is_empty():
 		current_options.clear()
 
 		for btn in _options.get_children():
 			_options.remove_child(btn as Button)
 			(btn as Button).call_deferred('free')
-#		hide()
 	
 	await get_tree().process_frame
 

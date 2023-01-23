@@ -10,6 +10,7 @@ signal character_grab_done(character)
 var player: PopochiuCharacter : set = set_player
 var characters := []
 var camera_owner: PopochiuCharacter
+var characters_states := {}
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -27,7 +28,7 @@ func character_say_no_run(chr_name: String, dialog: String) -> void:
 	if talking_character:
 		await talking_character.say_no_run(dialog)
 	else:
-		printerr(
+		prints(
 			'[Popochiu] ICharacter.character_say:',
 			'character %s not found' % chr_name
 		)
@@ -61,12 +62,15 @@ func character_walk_to(chr_name: String, position: Vector2) -> Callable:
 func character_walk_to_no_run(chr_name: String, position: Vector2) -> void:
 	var walking_character: PopochiuCharacter = get_character(chr_name)
 	if walking_character:
+#		await walking_character.walk_no_run(position)
+#		await walking_character.walk_no_run(walking_character.to_global(position))
 		await walking_character.walk_no_run(E.current_room.to_global(position))
 	else:
-		printerr(
+		prints(
 			'[Popochiu] ICharacter.character_walk_to:',
 			'character %s not found' % chr_name
 		)
+		
 		await get_tree().process_frame
 
 

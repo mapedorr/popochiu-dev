@@ -22,12 +22,15 @@ used = Color(0.439216, 0.427451, 0.921569, 1)
 hover = Color(0.929412, 0.945098, 0.443137, 1)
 
 [node name="Panel" type="PanelContainer" parent="."]
-offset_top = 180.0
-offset_right = 320.0
-offset_bottom = 180.0
+layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_b2awe")
 
-[node name="Options" type="VBoxContainer" parent="Panel"]
-offset_right = 320.0
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="Options" type="VBoxContainer" parent="Panel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 8
+theme_override_constants/separation = 1

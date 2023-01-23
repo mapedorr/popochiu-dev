@@ -30,7 +30,7 @@ description = "Ground"
 
 [node name="Perimeter" type="NavigationRegion2D" parent="WalkableAreas/Ground"]
 modulate = Color(0, 1, 0, 1)
-navpoly = SubResource("1")
+navigation_polygon = SubResource("1")
 
 [node name="Props" type="Node2D" parent="."]
 
@@ -62,5 +62,5 @@ polygon = PackedVector2Array(-16, 18, -16, -16, -8, -24, 7, -24, 15, -10, 15, 27
 
 [node name="Characters" type="Node2D" parent="."]
 
-[node name="CharacterGoddiu *" parent="Characters" instance=ExtResource("7")]
+[node name="Character *" parent="Characters" instance=ExtResource("7")]
 position = Vector2(291, 151)

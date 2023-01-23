@@ -12,11 +12,13 @@ const CURSOR := preload('res://addons/Popochiu/Engine/Cursor/Cursor.gd')
 @export var clickable := true
 @export var baseline := 0 : set = set_baseline
 @export var walk_to_point: Vector2 : set = set_walk_to_point
-#@export var walk_to_point: Vector2 : get = get_walk_to_point, set = set_walk_to_point
+#@export var walk_to_point: Vector2 : set = set_walk_to_point, get = get_walk_to_point
 @export var cursor: CURSOR.Type = CURSOR.Type.NONE
 @export var always_on_top := false
 
 var room: Node2D = null : set = set_room # It is a PopochiuRoom
+var times_clicked := 0
+var times_right_clicked := 0
 
 @onready var _description_code := description
 
@@ -62,12 +64,16 @@ func _unhandled_input(event: InputEvent):
 					action = 'Interacted with: %s' % description
 				})
 				on_interact()
+				
+				times_clicked += 1
 		elif event.is_action_pressed('popochiu-look'):
 			if not I.active:
 				E.add_history({
 					action = 'Looked at: %s' % description
 				})
 				on_look()
+				
+				times_right_clicked += 1
 
 
 func _process(delta):
@@ -146,7 +152,7 @@ func _toggle_description(display: bool) -> void:
 	set_process_unhandled_input(display)
 	
 	if display:
-		if E.hovered and (
+		if E.hovered and is_instance_valid(E.hovered) and (
 			E.hovered.get_parent() == self or get_index() < E.hovered.get_index()
 		):
 			E.add_hovered(self, true)

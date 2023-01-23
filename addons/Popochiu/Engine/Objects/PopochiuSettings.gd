@@ -19,3 +19,4 @@ const ImporterDefaults := preload('res://addons/Popochiu/Engine/Others/ImporterD
 @export var toolbar_always_visible := false
 @export var fade_color: Color = Color.BLACK
 @export var scale_gui := true
+@export var max_dialog_options := 3

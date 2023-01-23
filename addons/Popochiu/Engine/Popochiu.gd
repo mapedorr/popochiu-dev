@@ -106,6 +106,13 @@ func _ready() -> void:
 	if settings.scale_gui:
 		Cursor.scale_cursor(scale)
 	
+	# Save the default state for the objects in the game
+	for room_tres in PopochiuResources.get_section('rooms'):
+		var res: PopochiuRoomData = load(room_tres)
+		E.rooms_states[res.script_name] = res
+		
+		res.save_childs_states()
+	
 	redied.emit()
 
 
@@ -244,6 +251,7 @@ func goto_room(
 	# Store the room state
 	if store_state:
 		rooms_states[current_room.script_name] = current_room.state
+		current_room.state.save_childs_states()
 	
 	# Remove PopochiuCharacter nodes from the room so they are not deleted
 	if Engine.get_process_frames() > 0:
@@ -289,13 +297,12 @@ func room_readied(room: PopochiuRoom) -> void:
 	current_room.setup_camera()
 	
 	# Update the core state
-	if _loaded_game.is_empty():
+	if _loaded_game:
+		C.set_player(C.get_character(_loaded_game.player.id))
+	else:
 		current_room.state.visited = true
 		current_room.state.visited_times += 1
 		current_room.state.visited_first_time = current_room.state.visited_times == 1
-	
-	if _loaded_game:
-		C.set_player(C.get_character(_loaded_game.player.id))
 	
 	# Add the PopochiuCharacter instances to the room
 	for c in current_room.characters_cfg:
@@ -317,6 +324,19 @@ func room_readied(room: PopochiuRoom) -> void:
 			current_room.add_character(C.player)
 		
 		await C.player.idle_no_run()
+	
+	# Load the state of Props, Hotspots, Regions and WalkableAreas
+	for type in PopochiuResources.ROOM_CHILDS:
+		for script_name in rooms_states[room.script_name][type]:
+			var node: Node2D = current_room.callv(
+				'get_' + type.trim_suffix('s'),
+				[script_name]
+			)
+			var node_dic: Dictionary =\
+			rooms_states[room.script_name][type][script_name]
+			
+			for property in node_dic:
+				node[property] = node_dic[property]
 	
 	for c in get_tree().get_nodes_in_group('PopochiuClickable'):
 		c.room = current_room
@@ -497,7 +517,7 @@ func change_text_speed() -> void:
 
 
 func has_save() -> bool:
-	return _saveload.count_saves() > 0
+	return !_saveload.get_saves_descriptions().is_empty()
 
 
 func saves_count() -> int:
@@ -516,6 +536,8 @@ func save_game(slot := 1, description := '') -> void:
 
 
 func load_game(slot := 1) -> void:
+	I.clean_inventory(true)
+	
 	_loaded_game = _saveload.load_game(slot)
 	
 	if _loaded_game.is_empty(): return

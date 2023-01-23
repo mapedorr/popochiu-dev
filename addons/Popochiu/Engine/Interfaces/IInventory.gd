@@ -15,6 +15,7 @@ signal inventory_hide_requested(use_anim)
 var active: PopochiuInventoryItem
 # Used for saving the game
 var items := []
+var items_states := {}
 
 var _item_instances := []
 
@@ -126,15 +127,18 @@ func discard_item_no_run(item_name: String) -> void:
 		await remove_item(item_name)
 
 
-func clean_inventory() -> void:
+func clean_inventory(in_bg := false) -> void:
 	items.clear()
 	
 	for ii in _item_instances:
-		ii.on_discard()
+		if not ii.in_inventory: continue
+		
+		if not in_bg:
+			ii.on_discard()
 		
 		item_discarded.emit(ii)
 		
-		remove_item(ii.script_name, false)
+		remove_item_no_run(ii.script_name, !in_bg)
 
 
 func show_inventory(time := 1.0) -> Callable:

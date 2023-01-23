@@ -28,6 +28,7 @@ func _ready() -> void:
 	_ok.pressed.connect(_confirmed)
 	
 	var saves: Dictionary = E.get_saves_descriptions()
+	
 	for btn in _slots.get_children():
 		(btn as Button).set_meta('has_save', false)
 		

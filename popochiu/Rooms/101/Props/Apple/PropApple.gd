@@ -8,16 +8,14 @@ extends PopochiuProp
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	# Replace the call to super() to implement your code. This only makes
-	# the default behavior to happen.
-	# For example you can make the character walk to the Prop and then say
-	# something:
-#	E.run([
-#		C.walk_to_clicked(),
-#		C.face_clicked(),
-#		'Player: Not picking that up'
-#	])
-	super()
+	D.show_inline_dialog([
+		'Eat',
+		'Look',
+		'Take',
+		'Examine',
+		'Push',
+		'Pull'
+	])
 
 
 # When the node is right clicked

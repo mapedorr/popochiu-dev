@@ -245,6 +245,46 @@ func show_helpers() -> void:
 	if is_instance_valid(dialog_pos): dialog_pos.show()
 
 
+func walk_to(pos: Vector2) -> Callable:
+	return func(): await walk_to_no_run(pos)
+
+
+func walk_to_no_run(pos: Vector2) -> void:
+	C.character_walk_to_no_run(script_name, pos)
+	
+	await C.character_move_ended
+
+
+func walk_to_prop(id: String) -> Callable:
+	return func(): await walk_to_prop_no_run(id)
+
+
+func walk_to_prop_no_run(id: String) -> void:
+	_walk_to_clickable(E.current_room.get_prop(id))
+	
+	await C.character_move_ended
+
+
+func walk_to_hotspot(id: String) -> Callable:
+	return func(): await walk_to_hotspot_no_run(id)
+
+
+func walk_to_hotspot_no_run(id: String) -> void:
+	_walk_to_clickable(E.current_room.get_hotspot(id))
+	
+	await C.character_move_ended
+
+
+func walk_to_room_point(id: String) -> Callable:
+	return func(): await walk_to_room_point_no_run(id)
+
+
+func walk_to_room_point_no_run(id: String) -> void:
+	C.character_walk_to_no_run(script_name, E.current_room.get_point(id))
+
+	await C.character_move_ended
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
 func get_dialog_pos() -> float:
 	return $DialogPos.position.y
@@ -286,3 +326,13 @@ func _get_vo_cue(emotion := '') -> String:
 			
 			return cue_name
 	return ''
+
+
+func _walk_to_clickable(node: PopochiuClickable) -> void:
+	if not node:
+		await get_tree().process_frame
+		return
+	
+	C.character_walk_to_no_run(
+		script_name, node.to_global(node.walk_to_point)
+	)

@@ -1,1 +1,15 @@
+res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogMenu/DialogMenu.tscn
+res://addons/Popochiu/Engine/Objects/GraphicInterface/Resources/PopochiuTheme.tres
 res://popochiu/Rooms/101/Room101.tscn
+res://addons/Popochiu/Engine/Objects/Room/PopochiuRoomData.gd
+res://addons/Popochiu/PopochiuResources.gd
+res://addons/Popochiu/Engine/Others/PopochiuSaveLoad.gd
+res://addons/Popochiu/Engine/Objects/GraphicInterface/SaveLoad/SaveLoad.gd
+res://addons/Popochiu/Engine/Popochiu.gd
+res://addons/Popochiu/Engine/Objects/GraphicInterface/SaveLoad/SaveLoad.tscn
+res://addons/Popochiu/Engine/Objects/GraphicInterface/GraphicInterface.tscn
+res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd
+res://popochiu/Rooms/Outside/RoomOutside.tscn
+res://popochiu/Dialogs/TestA/DialogTestA.tres
+res://popochiu/Rooms/101/Props/Apple/PropApple.gd
+res://addons/Popochiu/Engine/Objects/GraphicInterface/DialogMenu/DialogMenuOption.tscn

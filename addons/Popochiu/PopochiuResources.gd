@@ -66,6 +66,39 @@ const DATA := 'res://popochiu//PopochiuData.cfg'
 const SETTINGS := 'res://popochiu//PopochiuSettings.tres'
 const SETTINGS_CLASS :=\
 preload('res://addons/Popochiu/Engine/Objects/PopochiuSettings.gd')
+const ROOM_CHILDS := ['props', 'hotspots', 'walkable_areas', 'regions']
+const VALID_TYPES := [
+	TYPE_BOOL, TYPE_INT, TYPE_FLOAT, TYPE_STRING,
+	TYPE_ARRAY, TYPE_PACKED_STRING_ARRAY,
+	TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY,
+	TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY
+]
+const PROPS_IGNORE := [
+	'description',
+	'baseline',
+	'clickable',
+	'cursor',
+	'always_on_top',
+	'frames',
+	'link_to_item',
+	'_description_code',
+]
+const HOTSPOTS_IGNORE := [
+	'description',
+	'baseline',
+	'clickable',
+	'cursor',
+	'always_on_top',
+	'_description_code',
+]
+const WALKABLE_AREAS_IGNORE := [
+	'description',
+	'tint'
+]
+const REGIONS_IGNORE := [
+	'description',
+	'tint'
+]
 # ════ GODOT PROJECT SETTINGS ══════════════════════════════════════════════════
 const DISPLAY_WIDTH := 'display/window/size/viewport_width'
 const DISPLAY_HEIGHT := 'display/window/size/viewport_height'
@@ -158,6 +191,33 @@ static func get_section(section: String) -> Array:
 			resource_paths.append(config.get_value(section, key))
 	
 	return resource_paths
+
+
+static func store_properties(
+	target: Dictionary, source: Object, ignore_too := []
+) -> void:
+	var props_to_ignore := ['script_name', 'scene']
+	
+	if not ignore_too.is_empty():
+		props_to_ignore.append_array(ignore_too)
+	
+	# ---- Store basic type properties -----------------------------------------
+	# prop = {class_name, hint, hint_string, name, type, usage}
+	for prop in source.get_script().get_script_property_list():
+		if prop.name in props_to_ignore: continue
+		if not prop.type in VALID_TYPES: continue
+		
+		# Check if the property is a script variable (8192)
+		# or a export variable (8199)
+		if prop.usage == PROPERTY_USAGE_SCRIPT_VARIABLE or prop.usage == (
+			PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
+		):
+			target[prop.name] = source[prop.name]
+	
+	# ---- Call custom function to store extra data ----------------------------
+	if source.has_method('on_save'):
+		target.custom_data = source.on_save()
+		if target.custom_data.is_empty(): target.erase('custom_data')
 
 
 # ▨▨▨▨ SETTINGS ▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨▨
