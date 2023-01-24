@@ -12,7 +12,7 @@ enum MenuOptions {
 	SET_AS_MAIN,
 	SET_AS_PC,
 	START_WITH_IT,
-	CREATE_SCRIPT,
+	CREATE_PROP_SCRIPT,
 	DELETE
 }
 
@@ -85,7 +85,7 @@ onready var _menu_cfg := [
 		types = [Constants.Types.INVENTORY_ITEM]
 	},
 	{
-		id = MenuOptions.CREATE_SCRIPT,
+		id = MenuOptions.CREATE_PROP_SCRIPT,
 		icon = get_icon('ScriptCreate', 'EditorIcons'),
 		label = 'Create script',
 		types = [Constants.Types.PROP]
@@ -127,13 +127,20 @@ func _ready() -> void:
 	_create_menu()
 	
 	if type in Constants.MAIN_TYPES:
-		# By default disable the Add to Popochiu button. This will be enabled
-		# by PopochiuDock.gd if this object is not in PopochiuData.cfg
-		_menu_popup.set_item_disabled(0, true)
-		_menu_popup.set_item_disabled(1, true)
-	elif path.find('.gd') > -1:
-		# If the Room object has a script, disable the Create script button
-		_menu_popup.set_item_disabled(0, true)
+		# By default disable the Add to Popochiu and Create state script buttons
+		# This will be enabled by PopochiuDock.gd if the object is not in
+		# PopochiuData.cfg
+		_menu_popup.set_item_disabled(
+			_menu_popup.get_item_index(MenuOptions.ADD_TO_CORE), true
+		)
+		_menu_popup.set_item_disabled(
+			_menu_popup.get_item_index(MenuOptions.CREATE_STATE_SCRIPT), true
+		)
+	elif type == Constants.Types.PROP and path.find('.gd') > -1:
+		# If the Room object has a script, disable the Create prop script button
+		_menu_popup.set_item_disabled(
+			_menu_popup.get_item_index(MenuOptions.CREATE_PROP_SCRIPT), true
+		)
 	
 	# Hide buttons based on the type of the Object this row represents
 	_fav_icon.hide()
@@ -170,12 +177,16 @@ func unselect() -> void:
 
 func show_add_to_core() -> void:
 	_label.modulate.a = 0.5
-	_menu_popup.set_item_disabled(0, false)
+	_menu_popup.set_item_disabled(
+		_menu_popup.get_item_index(MenuOptions.ADD_TO_CORE), false
+	)
 
 
 func show_create_state_script() -> void:
 	_btn_state_script.disabled = true
-	_menu_popup.set_item_disabled(1, false)
+	_menu_popup.set_item_disabled(
+		_menu_popup.get_item_index(MenuOptions.CREATE_STATE_SCRIPT), false
+	)
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
@@ -188,6 +199,7 @@ func set_main_dock(value: Panel) -> void:
 func set_is_main(value: bool) -> void:
 	is_main = value
 	_fav_icon.visible = value
+	
 	_menu_popup.set_item_disabled(
 		_menu_popup.get_item_index(MenuOptions.SET_AS_MAIN), value
 	)
@@ -196,6 +208,7 @@ func set_is_main(value: bool) -> void:
 func set_is_pc(value: bool) -> void:
 	is_pc = value
 	_fav_icon.visible = value
+	
 	_menu_popup.set_item_disabled(
 		_menu_popup.get_item_index(MenuOptions.SET_AS_PC), value
 	)
@@ -213,8 +226,6 @@ func _create_menu() -> void:
 	for option in _menu_cfg:
 		if option:
 			if option.has('types') and not type in option.types: continue
-			
-			prints(option.label, option.id)
 			
 			_menu_popup.add_icon_item(
 				option.icon,
@@ -257,7 +268,7 @@ func _menu_item_pressed(id: int) -> void:
 			(main_dock.ei as EditorInterface).get_inspector().refresh()
 			
 			self.is_on_start = name in settings.items_on_start
-		MenuOptions.CREATE_SCRIPT:
+		MenuOptions.CREATE_PROP_SCRIPT:
 			var prop_template := load(PROP_SCRIPT_TEMPLATE)
 			var script_path := path + '/%s/Prop%s.gd' % [name, name]
 			
@@ -297,7 +308,9 @@ func _menu_item_pressed(id: int) -> void:
 			path = script_path
 			
 			_btn_script.show()
-			_menu_popup.set_item_disabled(0, true)
+			_menu_popup.set_item_disabled(
+				_menu_popup.get_item_index(MenuOptions.CREATE_PROP_SCRIPT), true
+			)
 		MenuOptions.DELETE:
 			_remove_object()
 
@@ -331,7 +344,9 @@ func _add_object_to_core() -> void:
 		return
 	
 	_label.modulate.a = 1.0
-	_menu_popup.set_item_disabled(0, true)
+	_menu_popup.set_item_disabled(
+		_menu_popup.get_item_index(MenuOptions.ADD_TO_CORE), true
+	)
 
 
 # Selecciona el archivo principal del objeto en el FileSystem y lo abre para que
@@ -633,7 +648,9 @@ func _create_state_script() -> void:
 	
 	# Disable the context menu option and enable the button to open the state
 	# script
-	_menu_popup.set_item_disabled(1, true)
+	_menu_popup.set_item_disabled(
+		_menu_popup.get_item_index(MenuOptions.CREATE_STATE_SCRIPT), true
+	)
 	_btn_state_script.disabled = false
 	
 	# Select and open the created script
