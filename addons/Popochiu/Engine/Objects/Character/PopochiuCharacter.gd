@@ -6,7 +6,7 @@ extends 'res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd'
 # TODO: Use a state machine
 
 enum FlipsWhen { NONE, MOVING_RIGHT, MOVING_LEFT }
-enum LOOKING {UP, UP_RIGHT, RIGHT, RIGHT_DOWN, DOWN, DOWN_LEFT, LEFT, UP_LEFT}
+enum LOOKING {UP, UP_RIGHT, RIGHT, RIGHT_DOWN, DOWN, DOWN_LEFT, DOWN_RIGHT, LEFT, UP_LEFT}
 
 signal started_walk_to(character, start, end)
 signal stoped_walk
@@ -57,8 +57,10 @@ func walk(target_pos: Vector2, is_in_queue := true) -> void:
 	if is_in_queue: yield()
 	
 	is_moving = true
-	_looking_dir = LOOKING.LEFT if target_pos.x < position.x else LOOKING.RIGHT
-	
+	# Make the char face in the correct direction
+	face_direction(target_pos)
+	# The ROOM will take care of moving the character
+	# and face her in the correct direction from here
 	if has_node('Sprite'):
 		match flips_when:
 			FlipsWhen.MOVING_LEFT:
@@ -81,9 +83,7 @@ func walk(target_pos: Vector2, is_in_queue := true) -> void:
 		
 		return
 	
-	play_walk(target_pos)
-	
-	# Trigger the signal for the room  to start moving the character
+	# Trigger the signal for the room to start moving the character
 	emit_signal('started_walk_to', self, position, target_pos)
 	
 	yield(C, 'character_move_ended')
@@ -114,6 +114,11 @@ func face_up_right(is_in_queue := true) -> void:
 	_looking_dir = LOOKING.UP_RIGHT
 	yield(idle(false), 'completed')
 
+func face_up_left(is_in_queue := true) -> void:
+	if is_in_queue: yield()
+
+	_looking_dir = LOOKING.UP_LEFT
+	yield(idle(false), 'completed')
 
 func face_down(is_in_queue := true) -> void:
 	if is_in_queue: yield()
@@ -121,6 +126,17 @@ func face_down(is_in_queue := true) -> void:
 	_looking_dir = LOOKING.DOWN
 	yield(idle(false), 'completed')
 
+func face_down_left(is_in_queue := true) -> void:
+	if is_in_queue: yield()
+
+	_looking_dir = LOOKING.DOWN_LEFT
+	yield(idle(false), 'completed')
+
+func face_down_right(is_in_queue := true) -> void:
+	if is_in_queue: yield()
+
+	_looking_dir = LOOKING.DOWN_RIGHT
+	yield(idle(false), 'completed')
 
 func face_left(is_in_queue := true) -> void:
 	if is_in_queue: yield()
@@ -205,7 +221,7 @@ func get_dialog_pos() -> float:
 
 func set_voices(value: Array) -> void:
 	voices = value
-	
+
 	for idx in value.size():
 		if not value[idx]:
 			voices[idx] = {
@@ -240,17 +256,72 @@ func _get_vo_cue(emotion := '') -> String:
 			return cue_name
 	return ''
 
+func face_direction(destination: Vector2, is_in_queue := true):
+	# Get the vector from the origin to the destination.
+	var vectX = destination.x - position.x
+	var vectY = destination.y - position.y
+	# Determine the angle of the movement vector.
+	var rad = atan2(vectY, vectX)
+	var angle = rad2deg(rad)
+	# Tolerance in degrees, to avoid U D L R are only
+	# achieved on precise angles such as 0 90 180 deg.
+	var t = 20
+	# Determine the direction the character is facing.
+	# Remember: Y coordinates have opposite sign in Godot.
+	# this means that negative angles are up movements.
+	if angle >= -(0 + t) and angle < (0 + t): 
+		face_right(is_in_queue)
+	elif angle > (0 + t) and angle < (90 - t): 
+		face_down_right(is_in_queue)
+	elif angle > (90 - t) and angle < (90 + t): 
+		face_down(is_in_queue)
+	elif angle > (90 + t) and angle < (180 - t): 
+		face_down_left(is_in_queue)
+	elif angle >= (180 - t) or angle <= -(180 -t ): 
+		face_left(is_in_queue)
+	elif angle <= -(0 + t) and angle > -(90 - t): 
+		face_up_right(is_in_queue)
+	elif angle < -(90 - t) and angle > -(90 + t): 
+		face_up(is_in_queue)
+	elif angle < -(90 + t) and angle > -(180 - t): 
+		face_up_left(is_in_queue)
 
-# ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
+func play_animation(animation_label: String, animation_fallback := 'idle', blocking := false):
+	if has_node("AnimationPlayer"):
+		if animation_label == null:
+			$AnimationPlayer.stop()
+			return
+		if $AnimationPlayer.has_animation(animation_label):
+			$AnimationPlayer.play(animation_label)
+		else:
+		   $AnimationPlayer.play(animation_fallback)
+
 func play_idle() -> void:
+	play_animation('idle');
 	pass
-
 
 func play_walk(target_pos: Vector2) -> void:
-	pass
-
+	# Set the default parameters for play_animation()
+	var animation_label = 'walk'
+	var animation_fallback = 'idle'
+	# If facing any direction that is not up or down
+	# use an horizontal walking animation, or suggest
+	# the use of a proper animation for up and down.
+	if _looking_dir in [LOOKING.LEFT, LOOKING.RIGHT, LOOKING.UP_LEFT, LOOKING.UP_RIGHT, LOOKING.DOWN_LEFT, LOOKING.DOWN_RIGHT]:
+		animation_label = 'walk'
+	else:
+		animation_fallback = 'walk'
+		match _looking_dir:
+			LOOKING.DOWN: animation_label = 'walk_f'
+			LOOKING.UP: animation_label = 'walk_b'
+	# The play_animation method will consider the suggestion
+	# passed here but will evaluate if the animation
+	# is present and use the fallback if necessary,
+	# to allow the use of a single "walk" animation.
+	play_animation(animation_label, animation_fallback);
 
 func play_talk() -> void:
+	play_animation('talk');
 	pass
 
 

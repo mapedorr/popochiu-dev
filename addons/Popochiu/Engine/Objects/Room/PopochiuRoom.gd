@@ -264,6 +264,10 @@ func _move_along_path(distance):
 
 		distance -= distance_between_points
 		last_point = _path[0]
+		# Based on the destination, turn the character
+		_moving_character.face_direction(last_point, false)
+		# Play the animation on the character
+		_moving_character.play_walk(last_point)
 		_path.remove(0)
 
 	_moving_character.position = last_point
