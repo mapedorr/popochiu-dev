@@ -269,25 +269,29 @@ func face_direction(destination: Vector2, is_in_queue := true):
 	# Determine the direction the character is facing.
 	# Remember: Y coordinates have opposite sign in Godot.
 	# this means that negative angles are up movements.
-	if angle >= -(0 + t) and angle < (0 + t): 
-		face_right(is_in_queue)
-	elif angle > (0 + t) and angle < (90 - t): 
-		face_down_right(is_in_queue)
-	elif angle > (90 - t) and angle < (90 + t): 
-		face_down(is_in_queue)
-	elif angle > (90 + t) and angle < (180 - t): 
-		face_down_left(is_in_queue)
-	elif angle >= (180 - t) or angle <= -(180 -t ): 
-		face_left(is_in_queue)
-	elif angle <= -(0 + t) and angle > -(90 - t): 
-		face_up_right(is_in_queue)
-	elif angle < -(90 - t) and angle > -(90 + t): 
-		face_up(is_in_queue)
-	elif angle < -(90 + t) and angle > -(180 - t): 
-		face_up_left(is_in_queue)
+	# Set the direction using the _looking property.
+	# We cannot use the face_* functions because they
+	# set the state as IDLE.
+	if angle >= -(0 + t) and angle < (0 + t):
+		_looking_dir = LOOKING.RIGHT
+	elif angle > (0 + t) and angle < (90 - t):
+		_looking_dir = LOOKING.DOWN_RIGHT
+	elif angle > (90 - t) and angle < (90 + t):
+		_looking_dir = LOOKING.DOWN
+	elif angle > (90 + t) and angle < (180 - t):
+		_looking_dir = LOOKING.DOWN_LEFT
+	elif angle >= (180 - t) or angle <= -(180 -t ):
+		_looking_dir = LOOKING.LEFT
+	elif angle <= -(0 + t) and angle > -(90 - t):
+		_looking_dir = LOOKING.UP_RIGHT
+	elif angle < -(90 - t) and angle > -(90 + t):
+		_looking_dir = LOOKING.UP
+	elif angle < -(90 + t) and angle > -(180 - t):
+		_looking_dir = LOOKING.UP_LEFT
 
 func play_animation(animation_label: String, animation_fallback := 'idle', blocking := false):
 	if has_node("AnimationPlayer"):
+		# Check if animation is null in case it is call dynamically.
 		if animation_label == null:
 			$AnimationPlayer.stop()
 			return

@@ -40,7 +40,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=2]
 resource_name = "walk"
-length = 0.5
+length = 0.3
 loop = true
 step = 0.05
 tracks/0/type = "value"
@@ -50,15 +50,15 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.25 ),
+"times": PoolRealArray( 0, 0.15 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ 6, 7 ]
+"values": [ 7, 6 ]
 }
 
 [sub_resource type="Animation" id=3]
 resource_name = "walk_b"
-length = 0.5
+length = 0.3
 loop = true
 step = 0.05
 tracks/0/type = "value"
@@ -68,7 +68,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.25 ),
+"times": PoolRealArray( 0, 0.15 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 10, 11 ]
@@ -76,7 +76,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=4]
 resource_name = "walk_f"
-length = 0.5
+length = 0.3
 loop = true
 step = 0.05
 tracks/0/type = "value"
@@ -86,7 +86,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.25 ),
+"times": PoolRealArray( 0, 0.15 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 8, 9 ]
@@ -103,6 +103,7 @@ clickable = false
 cursor = 8
 is_player = true
 flips_when = 2
+walk_speed = 100.0
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PoolVector2Array( -9, -45, -1, -47, 17, -39, 22, -34, 23, -26, 19, -18, 10, -13, -4, -12, -17, -14, -22, -20, -22, -28 )
@@ -129,7 +130,6 @@ color = Color( 0, 1, 1, 1 )
 position = Vector2( 0, -27 )
 texture = ExtResource( 2 )
 hframes = 12
-frame = 4
 
 [node name="DialogPos" type="Position2D" parent="."]
 visible = false
