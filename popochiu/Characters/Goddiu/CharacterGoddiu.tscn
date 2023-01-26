@@ -56,26 +56,8 @@ tracks/0/keys = {
 "values": [ 7, 6 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "walk_b"
-length = 0.3
-loop = true
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.15 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ 10, 11 ]
-}
-
 [sub_resource type="Animation" id=4]
-resource_name = "walk_f"
+resource_name = "walk_d"
 length = 0.3
 loop = true
 step = 0.05
@@ -90,6 +72,24 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 8, 9 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "walk_u"
+length = 0.3
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 10, 11 ]
 }
 
 [node name="CharacterGoddiu" type="Area2D"]
@@ -139,5 +139,5 @@ position = Vector2( -3, -48 )
 anims/idle = SubResource( 1 )
 anims/talk = SubResource( 5 )
 anims/walk = SubResource( 2 )
-anims/walk_b = SubResource( 3 )
-anims/walk_f = SubResource( 4 )
+anims/walk_d = SubResource( 4 )
+anims/walk_u = SubResource( 3 )

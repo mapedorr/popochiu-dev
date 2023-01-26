@@ -256,7 +256,7 @@ func _get_vo_cue(emotion := '') -> String:
 			return cue_name
 	return ''
 
-func face_direction(destination: Vector2, is_in_queue := true):
+func face_direction(destination: Vector2):
 	# Get the vector from the origin to the destination.
 	var vectX = destination.x - position.x
 	var vectY = destination.y - position.y
@@ -274,57 +274,81 @@ func face_direction(destination: Vector2, is_in_queue := true):
 	# set the state as IDLE.
 	if angle >= -(0 + t) and angle < (0 + t):
 		_looking_dir = LOOKING.RIGHT
-	elif angle > (0 + t) and angle < (90 - t):
+	elif angle >= (0 + t) and angle < (90 - t):
 		_looking_dir = LOOKING.DOWN_RIGHT
-	elif angle > (90 - t) and angle < (90 + t):
+	elif angle >= (90 - t) and angle < (90 + t):
 		_looking_dir = LOOKING.DOWN
-	elif angle > (90 + t) and angle < (180 - t):
+	elif angle >= (90 + t) and angle < (180 - t):
 		_looking_dir = LOOKING.DOWN_LEFT
 	elif angle >= (180 - t) or angle <= -(180 -t ):
 		_looking_dir = LOOKING.LEFT
 	elif angle <= -(0 + t) and angle > -(90 - t):
 		_looking_dir = LOOKING.UP_RIGHT
-	elif angle < -(90 - t) and angle > -(90 + t):
+	elif angle <= -(90 - t) and angle > -(90 + t):
 		_looking_dir = LOOKING.UP
-	elif angle < -(90 + t) and angle > -(180 - t):
+	elif angle <= -(90 + t) and angle > -(180 - t):
 		_looking_dir = LOOKING.UP_LEFT
 
+
+func _get_valid_oriented_animation(animation_label):
+	var suffixes = []
+	# Based on the character facing direction,
+	# define a set of animation suffixes in
+	# preference order.
+	match _looking_dir:
+		LOOKING.DOWN_LEFT: suffixes = ['_dl', '_l']
+		LOOKING.UP_LEFT: suffixes = ['_ul', '_l']
+		LOOKING.LEFT: suffixes = ['_l']
+		LOOKING.UP_RIGHT: suffixes = ['_ur', '_r']
+		LOOKING.DOWN_RIGHT: suffixes = ['_dr', '_r']
+		LOOKING.RIGHT: suffixes = ['_r']
+		LOOKING.DOWN: suffixes = ['_d']
+		LOOKING.UP: suffixes = ['_u']
+	# Add an empty suffix to support the most
+	# basic animation case.
+	suffixes = suffixes + ['']
+	# The list of prefixes is in order of preference
+	# Eg. walk_dl, walk_l, walk
+	# Scan the AnimationPlayer and return the first that matches.
+	for suffix in suffixes:
+		var animation = "%s%s" % [animation_label, suffix]
+		if $AnimationPlayer.has_animation(animation):
+			return animation
+	# No valid animation is found.
+	return null
+
+
 func play_animation(animation_label: String, animation_fallback := 'idle', blocking := false):
-	if has_node("AnimationPlayer"):
-		# Check if animation is null in case it is call dynamically.
-		if animation_label == null:
-			$AnimationPlayer.stop()
-			return
-		if $AnimationPlayer.has_animation(animation_label):
-			$AnimationPlayer.play(animation_label)
-		else:
-		   $AnimationPlayer.play(animation_fallback)
+	if not has_node("AnimationPlayer"):
+		printerr("Expected AnimationPlayer not fount in character ", script_name)
+		return
+
+	# Search for a valid animation corresponding to animation_label
+	var animation = _get_valid_oriented_animation(animation_label)
+	# If is not present, do the same for the the fallback animation.
+	if animation == null: animation = _get_valid_oriented_animation(animation_fallback)
+	# In neither are available, exit and throw an error to check for the presence of the animations.
+	if animation == null: # Again!
+		printerr("Neither the requested nor the fallback animation could be found for character ", script_name, ". Requested: ", animation_label, " - Fallback: " , animation_fallback)
+		return
+	# Play the animation in the best available orientation.
+	$AnimationPlayer.play(animation)
+
 
 func play_idle() -> void:
 	play_animation('idle');
+
 
 func play_walk(target_pos: Vector2) -> void:
 	# Set the default parameters for play_animation()
 	var animation_label = 'walk'
 	var animation_fallback = 'idle'
-	# If facing any direction that is not up or down
-	# use an horizontal walking animation, or suggest
-	# the use of a proper animation for up and down.
-	if _looking_dir in [LOOKING.LEFT, LOOKING.RIGHT, LOOKING.UP_LEFT, LOOKING.UP_RIGHT, LOOKING.DOWN_LEFT, LOOKING.DOWN_RIGHT]:
-		animation_label = 'walk'
-	else:
-		animation_fallback = 'walk'
-		match _looking_dir:
-			LOOKING.DOWN: animation_label = 'walk_f'
-			LOOKING.UP: animation_label = 'walk_b'
-	# The play_animation method will consider the suggestion
-	# passed here but will evaluate if the animation
-	# is present and use the fallback if necessary,
-	# this should allow the use of a single "walk" animation.
 	play_animation(animation_label, animation_fallback);
+
 
 func play_talk() -> void:
 	play_animation('talk');
 
+
 func play_grab() -> void:
-	pass
+	play_animation('grab');
