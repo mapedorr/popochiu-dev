@@ -6,7 +6,7 @@ extends 'res://addons/Popochiu/Engine/Objects/Clickable/PopochiuClickable.gd'
 # TODO: Use a state machine
 
 enum FlipsWhen { NONE, MOVING_RIGHT, MOVING_LEFT }
-enum LOOKING {UP, UP_RIGHT, RIGHT, RIGHT_DOWN, DOWN, DOWN_LEFT, DOWN_RIGHT, LEFT, UP_LEFT}
+enum LOOKING {UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT}
 
 signal started_walk_to(character, start, end)
 signal stoped_walk
@@ -302,7 +302,6 @@ func play_animation(animation_label: String, animation_fallback := 'idle', block
 
 func play_idle() -> void:
 	play_animation('idle');
-	pass
 
 func play_walk(target_pos: Vector2) -> void:
 	# Set the default parameters for play_animation()
@@ -321,13 +320,11 @@ func play_walk(target_pos: Vector2) -> void:
 	# The play_animation method will consider the suggestion
 	# passed here but will evaluate if the animation
 	# is present and use the fallback if necessary,
-	# to allow the use of a single "walk" animation.
+	# this should allow the use of a single "walk" animation.
 	play_animation(animation_label, animation_fallback);
 
 func play_talk() -> void:
 	play_animation('talk');
-	pass
-
 
 func play_grab() -> void:
 	pass
