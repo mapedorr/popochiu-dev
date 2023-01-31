@@ -12,6 +12,7 @@ var state: PopochiuRoomData = preload('RoomOutside.tres')
 # What happens when Popochiu loads the room. At this point the room is in the
 # tree but it is not visible
 func on_room_entered() -> void:
+#	C.player.position = get_point('Border')
 	pass
 
 

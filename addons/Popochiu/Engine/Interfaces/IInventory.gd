@@ -98,6 +98,8 @@ func remove_item(
 		emit_signal('item_removed', i, animate)
 		
 		yield(self, 'item_remove_done')
+	else:
+		yield(get_tree(), 'idle_frame')
 
 
 func is_item_in_inventory(item_name: String) -> bool:
@@ -159,6 +161,20 @@ func hide_inventory(use_anim := true, is_in_queue := true) -> void:
 	yield(get_tree(), 'idle_frame')
 
 
+#func get_runtime_inventory_item(script_name: String) -> PopochiuInventoryItem:
+#	var item: PopochiuInventoryItem = null
+#
+#	for ii in _item_instances:
+#		if ii.script_name.to_lower() == script_name.to_lower():
+#			item = ii
+#			break
+#
+#	if not item:
+#		printerr('[Popochiu] Inventory item %s is not in the inventory')
+#
+#	return item
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _get_item_instance(item_name: String) -> PopochiuInventoryItem:
 	for ii in _item_instances:
@@ -174,5 +190,7 @@ func _get_item_instance(item_name: String) -> PopochiuInventoryItem:
 	if new_intentory_item:
 		_item_instances.append(new_intentory_item)
 		return new_intentory_item
+	
+	printerr('[Popochiu] Inventory item %s does not exists')
 	
 	return null

@@ -96,6 +96,7 @@ func _ready() -> void:
 			
 			C.player = pc
 			C.characters.append(pc)
+			C.set(pc.script_name, pc)
 	
 	if not C.player:
 		# Set the first character on the list to be the default player character
@@ -108,6 +109,7 @@ func _ready() -> void:
 
 			C.player = pc
 			C.characters.append(pc)
+			C.set(pc.script_name, pc)
 	
 	# Add inventory items on start (ignore animations (3rd parameter))
 	for key in settings.items_on_start:
@@ -650,7 +652,7 @@ func _eval_string(text: String) -> void:
 				).to_lower()
 				
 				if not C.is_valid_character(character_name):
-					prints('[Popochiu] No PopochiuCharacter with name: %s'\
+					printerr('[Popochiu] No PopochiuCharacter with name: %s'\
 					% character_name)
 					return yield(get_tree(), 'idle_frame')
 				

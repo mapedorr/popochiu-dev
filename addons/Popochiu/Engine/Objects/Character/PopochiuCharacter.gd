@@ -47,6 +47,13 @@ func idle(is_in_queue := true) -> void:
 		yield(get_tree(), 'idle_frame')
 		return
 	
+	if has_node('Sprite'):
+		match flips_when:
+			FlipsWhen.MOVING_LEFT:
+				$Sprite.flip_h = _looking_dir == LOOKING.LEFT
+			FlipsWhen.MOVING_RIGHT:
+				$Sprite.flip_h = _looking_dir == LOOKING.RIGHT
+	
 	play_idle()
 	
 	yield(get_tree().create_timer(0.2), 'timeout')

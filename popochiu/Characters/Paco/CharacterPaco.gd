@@ -4,25 +4,29 @@ extends PopochiuCharacter
 # Use yield(E.run([]), 'completed') if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
-const State := preload('CharacterGoddiuState.gd')
+const State := preload('CharacterPacoState.gd')
 
-var state: State = preload('CharacterGoddiu.tres')
-var tired := false
-var hired := false
-var xxx
+var state: State = preload('CharacterPaco.tres')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
+# When the PopochiuRoom where this node was already loaded
+func on_room_set() -> void:
+	pass
+
+
 # When the node is clicked
 func on_interact() -> void:
-	pass
+	# Replace the call to .on_interact() to implement your code. This only makes
+	# the default behavior to happen.
+	.on_interact()
 
 
 # When the node is right clicked
 func on_look() -> void:
 	# Replace the call to .on_look() to implement your code. This only makes
 	# the default behavior to happen.
-	C.player = self
+	.on_look()
 
 
 # When the node is clicked and there is an inventory item selected
@@ -50,12 +54,4 @@ func play_talk() -> void:
 
 # Use it to play the grab animation for the character
 func play_grab() -> void:
-	pass
-
-
-func coco() -> void:
-	prints('El coco es muy rico')
-
-
-func pera() -> void:
 	pass

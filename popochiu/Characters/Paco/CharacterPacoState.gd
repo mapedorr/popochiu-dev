@@ -6,9 +6,7 @@ extends PopochiuCharacterData
 # script_name and scene variables from the inherited class will not be saved.
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-var coco := 'coco'
-var is_poopy := false
-var caca
+var zapo := true
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -23,7 +21,3 @@ func on_save() -> Dictionary:
 # one in on_save().
 func on_load(data: Dictionary) -> void:
 	prints(data)
-
-
-func get_emotion_value() -> void:
-	prints('Hi!!!')

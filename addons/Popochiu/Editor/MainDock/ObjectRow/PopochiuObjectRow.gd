@@ -455,17 +455,29 @@ func _search_audio_files(dir: EditorFileSystemDirectory) -> Array:
 
 
 func _remove_from_core() -> void:
-	# Eliminar el objeto de Popochiu -------------------------------------------
+	# Delete the object from Popochiu ------------------------------------------
 	match type:
 		Constants.Types.ROOM:
 			PopochiuResources.erase_data_value('rooms', name)
 		Constants.Types.CHARACTER:
+			PopochiuResources.remove_autoload_obj(PopochiuResources.C_SNGL, name)
+			main_dock.fs.update_script_classes()
+			
 			PopochiuResources.erase_data_value('characters', name)
 		Constants.Types.INVENTORY_ITEM:
+			PopochiuResources.remove_autoload_obj(PopochiuResources.I_SNGL, name)
+			main_dock.fs.update_script_classes()
+			
 			PopochiuResources.erase_data_value('inventory_items', name)
 		Constants.Types.DIALOG:
+			PopochiuResources.remove_autoload_obj(PopochiuResources.D_SNGL, name)
+			main_dock.fs.update_script_classes()
+			
 			PopochiuResources.erase_data_value('dialogs', name)
-		Constants.Types.PROP, Constants.Types.HOTSPOT, Constants.Types.REGION, Constants.Types.WALKABLE_AREA:
+		Constants.Types.PROP,\
+		Constants.Types.HOTSPOT,\
+		Constants.Types.REGION,\
+		Constants.Types.WALKABLE_AREA:
 			var opened_room: PopochiuRoom = main_dock.get_opened_room()
 			if opened_room:
 				match type:

@@ -21,10 +21,19 @@ func on_room_entered() -> void:
 func on_room_transition_finished() -> void:
 	if state.visited_times == 1:
 		yield(E.run([
-			'Player: Here we go again',
-			'Popsy: What!?'
+			'.',
+#			C.Goddiu.face_left(),
+#			C.Popsy.face_right(),
+#			'...',
+#			C.Goddiu.face_right(),
+#			C.Popsy.face_left(),
+#			'Player: Here we go again',
+#			'Popsy: What!?',
+#			C.Popsy.walk_to_prop('ToyCar'),
+#			'Popsy: THIS IS MY TOY CAR!!!',
+#			I.Key.add_as_active(),
 		]), 'completed')
-
+	pass
 
 # What happens before Popochiu unloads the room.
 # At this point, the screen is black, processing is disabled and all characters

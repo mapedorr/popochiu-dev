@@ -68,19 +68,22 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the script for the item
-	var item_template := load(INVENTORY_ITEM_SCRIPT_TEMPLATE)
+	var item_template: Script = load(INVENTORY_ITEM_SCRIPT_TEMPLATE)
+	
+	item_template.source_code = item_template.source_code.replace(
+		'InventoryItemStateTemplate',
+		'Inventory%sState' % _new_item_name
+	)
+	
+	item_template.source_code = item_template.source_code.replace(
+		'State = null',
+		"State = preload('Inventory%s.tres')" % _new_item_name
+	)
+	
 	if ResourceSaver.save(_new_item_path + '.gd', item_template) != OK:
 		push_error('[Popochiu] Could not create script: %s.gd' % _new_item_name)
 		# TODO: Show feedback in the popup
 		return
-	
-	# Assign the state to the item
-	var item_script: Script = load(_new_item_path + '.gd')
-	item_script.source_code = item_script.source_code.replace(
-		'PopochiuInventoryItemData = null',
-		"PopochiuInventoryItemData = preload('Inventory%s.tres')" % _new_item_name
-	)
-	ResourceSaver.save(_new_item_path + '.gd', item_script)
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the item instance
@@ -114,6 +117,11 @@ func create() -> void:
 		_new_item_name)
 		# TODO: Show feedback in the popup
 		return
+	
+	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+	# Add the inventory item to the I singleton
+	PopochiuResources.update_autoloads(true)
+	_main_dock.fs.update_script_classes()
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Update the list of characters in the dock

@@ -60,6 +60,10 @@ func turn_off_forever_options(ids: Array) -> void:
 		if opt: opt.turn_off_forever()
 
 
+func play() -> void:
+	D.show_dialog(script_name)
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ SET & GET ░░░░
 func set_options(value: Array) -> void:
 	options = value
