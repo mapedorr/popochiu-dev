@@ -1,7 +1,9 @@
 tool
 extends PopochiuRoom
 
-var state: PopochiuRoomData = preload('Room101.tres')
+const Data := preload('res://popochiu/Rooms/101/Room101State.gd')
+
+var state: Data = preload('Room101.tres')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░

@@ -4,9 +4,9 @@ extends PopochiuCharacter
 # Use yield(E.run([]), 'completed') if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
-const State := preload('CharacterGoddiuState.gd')
+const Data := preload('CharacterGoddiuState.gd')
 
-var state: State = preload('CharacterGoddiu.tres')
+var state: Data = preload('CharacterGoddiu.tres')
 var tired := false
 var hired := false
 var xxx

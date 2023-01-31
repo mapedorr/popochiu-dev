@@ -42,6 +42,7 @@ const GLOBALS_SNGL := 'res://popochiu/PopochiuGlobals.gd'
 const UTILS_SNGL := 'res://addons/Popochiu/Engine/Others/PopochiuUtils.gd'
 const CURSOR_SNGL := 'res://addons/Popochiu/Engine/Cursor/Cursor.tscn'
 const POPOCHIU_SNGL := 'res://addons/Popochiu/Engine/Popochiu.tscn'
+const IROOM := 'res://addons/Popochiu/Engine/Interfaces/IRoom.gd'
 const ICHARACTER := 'res://addons/Popochiu/Engine/Interfaces/ICharacter.gd'
 const IINVENTORY := 'res://addons/Popochiu/Engine/Interfaces/IInventory.gd'
 const IDIALOG := 'res://addons/Popochiu/Engine/Interfaces/IDialog.gd'
@@ -49,6 +50,7 @@ const IGRAPHIC_INTERFACE_SNGL :=\
 'res://addons/Popochiu/Engine/Interfaces/IGraphicInterface.gd'
 const IAUDIO_MANAGER_SNGL :=\
 'res://addons/Popochiu/Engine/AudioManager/AudioManager.tscn'
+const R_SNGL := 'res://popochiu/Autoloads/R.gd'
 const C_SNGL := 'res://popochiu/Autoloads/C.gd'
 const I_SNGL := 'res://popochiu/Autoloads/I.gd'
 const D_SNGL := 'res://popochiu/Autoloads/D.gd'
@@ -111,6 +113,14 @@ const SNGL_TEMPLATE := 'extends "%s"\n\n' +\
 '# ---- functions\n' +\
 '\n'
 const SNGL_SETUP := {
+	R_SNGL : {
+		interface = IROOM,
+		section = 'rooms',
+		'class' : 'res://popochiu/Rooms/%s/Room%s.gd',
+		'const' : "const PR%s := preload('%s')\n",
+		node = "var %s: PR%s setget , get_%s\n",
+		'func' : "func get_%s(): return .get_runtime_room('%s')\n",
+	},
 	C_SNGL : {
 		interface = ICHARACTER,
 		section = 'characters',
@@ -202,7 +212,12 @@ static func update_autoloads(save := false) -> void:
 				return
 			
 			for key in get_data_cfg().get_section_keys(SNGL_SETUP[id].section):
-				if code.find('var %s' % key) < 0:
+				var var_name: String = key
+					
+				if int(var_name[0]) != 0:
+					var_name = var_name.insert(0, 'R')
+				
+				if code.find('var %s' % var_name) < 0:
 					var classes_idx := code.find('# ---- classes')
 					var class_path: String = SNGL_SETUP[id].class % [key, key]
 					
@@ -214,7 +229,7 @@ static func update_autoloads(save := false) -> void:
 					var characters_idx := code.find('# ---- nodes')
 					code = code.insert(
 						characters_idx,
-						SNGL_SETUP[id].node % [key, key, key]
+						SNGL_SETUP[id].node % [var_name, key, key]
 					)
 					
 					var functions_idx := code.find('# ---- functions')

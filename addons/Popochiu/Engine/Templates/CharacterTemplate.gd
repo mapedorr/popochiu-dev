@@ -1,9 +1,9 @@
 tool
 extends PopochiuCharacter
 
-const State := preload('CharacterStateTemplate.gd')
+const Data := preload('CharacterStateTemplate.gd')
 
-var state: State = null
+var state: Data = null
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░

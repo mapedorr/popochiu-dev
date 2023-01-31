@@ -14,7 +14,7 @@ const SaveLoad := preload('res://addons/Popochiu/Engine/Others/PopochiuSaveLoad.
 var in_run := false
 # Used to prevent going to another room when there is one being loaded
 var in_room := false setget _set_in_room
-var current_room: PopochiuRoom = null
+var current_room: PopochiuRoom = null setget set_current_room
 # Stores the las PopochiuClickable node clicked to ease access to it from
 # any other class
 var clicked: Node = null
@@ -617,6 +617,11 @@ func get_hovered() -> PopochiuClickable:
 func clear_hovered() -> void:
 	_hovered_queue.clear()
 	self.hovered = null
+
+
+func set_current_room(value: PopochiuRoom) -> void:
+	current_room = value
+	R.current = value
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░

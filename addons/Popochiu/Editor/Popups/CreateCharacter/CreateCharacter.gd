@@ -75,8 +75,8 @@ func create() -> void:
 	)
 	
 	character_template.source_code = character_template.source_code.replace(
-		'State = null',
-		"State = preload('Character%s.tres')" % _new_character_name
+		'Data = null',
+		"Data = preload('Character%s.tres')" % _new_character_name
 	)
 	
 	if ResourceSaver.save(_new_character_path + '.gd', character_template) != OK:

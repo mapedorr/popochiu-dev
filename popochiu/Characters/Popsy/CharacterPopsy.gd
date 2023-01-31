@@ -4,13 +4,16 @@ extends PopochiuCharacter
 # Use yield(E.run([]), 'completed') if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
-var state: PopochiuCharacterData = preload('CharacterPopsy.tres')
+const Data := preload('CharacterPopsyState.gd')
+
+var state: Data = preload('CharacterPopsy.tres')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
-	D.Welcome.play()
+	D.TestA.start()
+	
 #	if state.is_hungry:
 #		state.is_hungry = false
 #		E.run([

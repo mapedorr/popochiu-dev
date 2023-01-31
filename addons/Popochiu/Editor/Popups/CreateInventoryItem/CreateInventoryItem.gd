@@ -76,8 +76,8 @@ func create() -> void:
 	)
 	
 	item_template.source_code = item_template.source_code.replace(
-		'State = null',
-		"State = preload('Inventory%s.tres')" % _new_item_name
+		'Data = null',
+		"Data = preload('Inventory%s.tres')" % _new_item_name
 	)
 	
 	if ResourceSaver.save(_new_item_path + '.gd', item_template) != OK:
