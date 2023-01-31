@@ -21,13 +21,14 @@ func on_room_entered() -> void:
 # What happens when the room changing transition finishes. At this point the room
 # is visible.
 func on_room_transition_finished() -> void:
-	if E.rooms_states['101'].props.Drawer.opened:
-		E.run([
-			"Player: I shouldn't have left that drawer open"
-		])
-	
-	prints('101 Window have been clicked %d times'\
-	% E.rooms_states['101'].hotspots.Window.times_clicked)
+#	if E.rooms_states['101'].props.Drawer.opened:
+#		E.run([
+#			"Player: I shouldn't have left that drawer open"
+#		])
+#
+#	prints('101 Window have been clicked %d times'\
+#	% E.rooms_states['101'].hotspots.Window.times_clicked)
+	pass
 
 
 # What happens before Popochiu unloads the room.

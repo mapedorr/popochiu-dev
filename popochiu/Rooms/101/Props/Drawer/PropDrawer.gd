@@ -13,7 +13,8 @@ func on_interact() -> void:
 	opened = !opened
 	
 	self.current_frame = 1 if opened else 0
-	R.get_prop('ToyCar').modulate = Color.aqua
+	
+	R.Outside.state.is_rainning = true
 
 
 # When the node is right clicked

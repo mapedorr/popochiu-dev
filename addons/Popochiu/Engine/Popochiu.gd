@@ -279,6 +279,7 @@ func goto_room(
 	if Engine.get_idle_frames() == 0:
 		yield(get_tree(), 'idle_frame')
 	
+	R.clear_instances()
 	clear_hovered()
 	get_tree().change_scene(load(rp).scene)
 
