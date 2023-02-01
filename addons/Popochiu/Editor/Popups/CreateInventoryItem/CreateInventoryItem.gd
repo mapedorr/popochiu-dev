@@ -68,20 +68,31 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the script for the item
-	var item_template: Script = load(INVENTORY_ITEM_SCRIPT_TEMPLATE)
+	var item_script: Script = load(INVENTORY_ITEM_SCRIPT_TEMPLATE)
+	var new_code := item_script.source_code
 	
-	item_template.source_code = item_template.source_code.replace(
+	item_script.source_code = ''
+	
+	if ResourceSaver.save(_new_item_path + '.gd', item_script) != OK:
+		push_error('[Popochiu] Could not create script: %s.gd' % _new_item_name)
+		# TODO: Show feedback in the popup
+		return
+	
+	new_code = new_code.replace(
 		'InventoryItemStateTemplate',
 		'Inventory%sState' % _new_item_name
 	)
 	
-	item_template.source_code = item_template.source_code.replace(
+	new_code = new_code.replace(
 		'Data = null',
 		"Data = preload('Inventory%s.tres')" % _new_item_name
 	)
 	
-	if ResourceSaver.save(_new_item_path + '.gd', item_template) != OK:
-		push_error('[Popochiu] Could not create script: %s.gd' % _new_item_name)
+	item_script = load(_new_item_path + '.gd')
+	item_script.source_code = new_code
+	
+	if ResourceSaver.save(_new_item_path + '.gd', item_script) != OK:
+		push_error('[Popochiu] Could not update script: %s.gd' % _new_item_name)
 		# TODO: Show feedback in the popup
 		return
 	

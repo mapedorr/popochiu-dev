@@ -123,6 +123,10 @@ func _exit_tree() -> void:
 		remove_inspector_plugin(_inspector_plugin)
 
 
+func get_plugin_name() -> String:
+	return 'Popochiu'
+
+
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 func enable_plugin() -> void:
 	_create_input_actions()

@@ -458,6 +458,9 @@ func _remove_from_core() -> void:
 	# Delete the object from Popochiu ------------------------------------------
 	match type:
 		Constants.Types.ROOM:
+			PopochiuResources.remove_autoload_obj(PopochiuResources.R_SNGL, name)
+			main_dock.fs.update_script_classes()
+			
 			PopochiuResources.erase_data_value('rooms', name)
 		Constants.Types.CHARACTER:
 			PopochiuResources.remove_autoload_obj(PopochiuResources.C_SNGL, name)
@@ -510,6 +513,10 @@ func _remove_from_core() -> void:
 		queue_free()
 	
 	_disconnect_popup()
+	
+	if main_dock.ei.get_edited_scene_root().script_name == name:
+		return
+	
 	main_dock.ei.save_scene()
 
 

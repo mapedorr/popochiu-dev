@@ -67,20 +67,31 @@ func create() -> void:
 
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the script for the character
-	var character_template: Script = load(CHARACTER_SCRIPT_TEMPLATE)
+	var character_script: Script = load(CHARACTER_SCRIPT_TEMPLATE)
+	var new_code := character_script.source_code
 	
-	character_template.source_code = character_template.source_code.replace(
+	character_script.source_code = ''
+	
+	if ResourceSaver.save(_new_character_path + '.gd', character_script) != OK:
+		push_error('[Popochiu] Could not create script: %s.gd' % _new_character_name)
+		# TODO: Show feedback in the popup
+		return
+	
+	new_code = new_code.replace(
 		'CharacterStateTemplate',
 		'Character%sState' % _new_character_name
 	)
 	
-	character_template.source_code = character_template.source_code.replace(
+	new_code = new_code.replace(
 		'Data = null',
 		"Data = preload('Character%s.tres')" % _new_character_name
 	)
 	
-	if ResourceSaver.save(_new_character_path + '.gd', character_template) != OK:
-		push_error('[Popochiu] Could not create script: %s.gd' % _new_character_name)
+	character_script = load(_new_character_path + '.gd')
+	character_script.source_code = new_code
+	
+	if ResourceSaver.save(_new_character_path + '.gd', character_script) != OK:
+		push_error('[Popochiu] Could not update script: %s.gd' % _new_character_name)
 		# TODO: Show feedback in the popup
 		return
 

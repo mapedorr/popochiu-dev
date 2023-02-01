@@ -74,23 +74,36 @@ func create() -> void:
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the script for the room
-	var room_template: Script = load(ROOM_SCRIPT_TEMPLATE)
+	var room_script: Script = load(ROOM_SCRIPT_TEMPLATE)
+	var new_code := room_script.source_code
 	
-	room_template.source_code = room_template.source_code.replace(
-		'RoomStateTemplate',
-		'Room%sState' % _new_room_name
-	)
+	room_script.source_code = ''
 	
-	room_template.source_code = room_template.source_code.replace(
-		'Data = null',
-		"Data = preload('Room%s.tres')" % _new_room_name
-	)
-	
-	if ResourceSaver.save(_new_room_path + '.gd', room_template) != OK:
+	if ResourceSaver.save(_new_room_path + '.gd', room_script) != OK:
 		push_error('[Popochiu] Could not create script: %s' %\
 		_new_room_name)
 		# TODO: Show feedback in the popup
 		return
+	
+	new_code = new_code.replace(
+		'RoomStateTemplate',
+		'Room%sState' % _new_room_name
+	)
+	
+	new_code = new_code.replace(
+		'Data = null',
+		"Data = preload('Room%s.tres')" % _new_room_name
+	)
+	
+	room_script = load(_new_room_path + '.gd')
+	room_script.source_code = new_code
+	
+	if ResourceSaver.save(_new_room_path + '.gd', room_script) != OK:
+		push_error('[Popochiu] Could not update script: %s' %\
+		_new_room_name)
+		# TODO: Show feedback in the popup
+		return
+	
 	
 	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 	# Create the room instance
