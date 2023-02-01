@@ -209,7 +209,7 @@ static func update_autoloads(save := false) -> void:
 			var modified := false
 			
 			if not get_data_cfg().has_section(SNGL_SETUP[id].section):
-				return
+				continue
 			
 			for key in get_data_cfg().get_section_keys(SNGL_SETUP[id].section):
 				var var_name: String = key

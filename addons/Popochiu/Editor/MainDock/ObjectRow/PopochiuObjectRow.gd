@@ -343,6 +343,11 @@ func _add_object_to_core() -> void:
 		push_error("[Popochiu] Couldn't add Object to Popochiu: %s" % name)
 		return
 	
+	# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+	# Add the object to its corresponding singleton
+	PopochiuResources.update_autoloads(true)
+	main_dock.fs.update_script_classes()
+	
 	_label.modulate.a = 1.0
 	_menu_popup.set_item_disabled(
 		_menu_popup.get_item_index(MenuOptions.ADD_TO_CORE), true
