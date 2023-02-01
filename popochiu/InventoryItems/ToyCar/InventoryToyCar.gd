@@ -1,6 +1,8 @@
 extends PopochiuInventoryItem
 
-var state: PopochiuInventoryItemData = preload('InventoryToyCar.tres')
+const State := preload('InventoryToyCarState.gd')
+
+var state: State = preload('InventoryToyCar.tres')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░

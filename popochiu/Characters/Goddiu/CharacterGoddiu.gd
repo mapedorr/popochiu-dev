@@ -4,7 +4,12 @@ extends PopochiuCharacter
 # Use yield(E.run([]), 'completed') if you want to pause the excecution of
 # the function until the sequence of events finishes.
 
-var state: PopochiuCharacterData = preload('CharacterGoddiu.tres')
+const Data := preload('CharacterGoddiuState.gd')
+
+var state: Data = preload('CharacterGoddiu.tres')
+var tired := false
+var hired := false
+var xxx
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
@@ -45,4 +50,12 @@ func play_talk() -> void:
 
 # Use it to play the grab animation for the character
 func play_grab() -> void:
+	pass
+
+
+func coco() -> void:
+	prints('El coco es muy rico')
+
+
+func pera() -> void:
 	pass

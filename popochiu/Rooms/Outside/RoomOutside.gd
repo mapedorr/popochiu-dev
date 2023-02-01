@@ -1,7 +1,9 @@
 tool
 extends PopochiuRoom
 
-var state: PopochiuRoomData = preload('RoomOutside.tres')
+const Data := preload('res://popochiu/Rooms/Outside/RoomOutsideState.gd')
+
+var state: Data = preload('RoomOutside.tres')
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -12,13 +14,20 @@ var state: PopochiuRoomData = preload('RoomOutside.tres')
 # What happens when Popochiu loads the room. At this point the room is in the
 # tree but it is not visible
 func on_room_entered() -> void:
+	prints(state.is_rainning)
 	pass
 
 
 # What happens when the room changing transition finishes. At this point the room
 # is visible.
 func on_room_transition_finished() -> void:
-	# You can use yield(E.run([]), 'completed') to excecute a queue of instructions
+#	if E.rooms_states['101'].props.Drawer.opened:
+#		E.run([
+#			"Player: I shouldn't have left that drawer open"
+#		])
+#
+#	prints('101 Window have been clicked %d times'\
+#	% E.rooms_states['101'].hotspots.Window.times_clicked)
 	pass
 
 

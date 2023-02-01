@@ -64,6 +64,9 @@ polygon = PoolVector2Array( -16, 18, -16, -16, -8, -24, 7, -24, 15, -10, 15, 27 
 
 [node name="Points" type="Node2D" parent="."]
 
+[node name="Border" type="Position2D" parent="Points"]
+position = Vector2( 61, 101 )
+
 [node name="Characters" type="YSort" parent="."]
 sort_enabled = false
 

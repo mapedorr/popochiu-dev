@@ -4,27 +4,27 @@
 [ext_resource path="res://addons/Popochiu/Engine/Objects/Dialog/PopochiuDialogOption.gd" type="Script" id=2]
 
 [sub_resource type="Resource" id=1]
-resource_name = "Opt1"
+resource_name = "Hi"
 script = ExtResource( 2 )
-id = "Opt1"
+id = "Hi"
 text = "Hi"
 visible = true
 disabled = false
 always_on = false
 
 [sub_resource type="Resource" id=2]
-resource_name = "Opt2"
+resource_name = "How"
 script = ExtResource( 2 )
-id = "Opt2"
+id = "How"
 text = "How are you?"
 visible = false
 disabled = false
 always_on = false
 
 [sub_resource type="Resource" id=3]
-resource_name = "Opt3"
+resource_name = "Exit"
 script = ExtResource( 2 )
-id = "Opt3"
+id = "Exit"
 text = "Bye!"
 visible = true
 disabled = false
