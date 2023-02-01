@@ -8,10 +8,13 @@ extends PopochiuProp
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ VIRTUAL ░░░░
 # When the node is clicked
 func on_interact() -> void:
+	A.sfx_toy_car.play_fade_no_run()
+	
 	yield(E.run([
 		C.walk_to_clicked(),
 		C.face_clicked(),
 		"Player: I'm gonna take this with me",
+		A.sfx_toy_car.play(),
 		I.add_item('ToyCar')
 	]), 'completed')
 

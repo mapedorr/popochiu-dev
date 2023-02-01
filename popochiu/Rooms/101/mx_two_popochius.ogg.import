@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/mx_two_popochius.ogg-a00d57166afa033a6bc6ff16c63d5776.oggstr"
+
+[deps]
+
+source_file="res://popochiu/Rooms/101/mx_two_popochius.ogg"
+dest_files=[ "res://.import/mx_two_popochius.ogg-a00d57166afa033a6bc6ff16c63d5776.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

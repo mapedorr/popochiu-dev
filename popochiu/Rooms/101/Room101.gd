@@ -14,7 +14,7 @@ var state: Data = preload('Room101.tres')
 # What happens when Popochiu loads the room. At this point the room is in the
 # tree but it is not visible
 func on_room_entered() -> void:
-#	print_stray_nodes()
+#	A.mx_two_popochius.play_no_run(2.0)
 	pass
 
 

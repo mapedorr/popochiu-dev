@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/sfx_toy_car.ogg-84e1cd7e9b78f917d6b86e67cb47bf39.oggstr"
+
+[deps]
+
+source_file="res://popochiu/Rooms/101/sfx_toy_car.ogg"
+dest_files=[ "res://.import/sfx_toy_car.ogg-84e1cd7e9b78f917d6b86e67cb47bf39.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
