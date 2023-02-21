@@ -10,8 +10,8 @@
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_5y34t"]
 vertices = PackedVector2Array(-152, -53, 148, -52, 150, 83, -149, 84)
-polygons = [PackedInt32Array(0, 1, 2, 3)]
-outlines = [PackedVector2Array(-152, -53, 148, -52, 150, 83, -149, 84)]
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-152, -53, 148, -52, 150, 83, -149, 84)])
 
 [node name="RoomMap" type="Node2D"]
 script = ExtResource("1_7k1yg")
@@ -46,7 +46,7 @@ baseline = -90
 position = Vector2(47, 120)
 script = ExtResource("7_lr5cl")
 script_name = "To101"
-description = "To101"
+description = "To 101"
 
 [node name="InteractionPolygon" type="CollisionPolygon2D" parent="Hotspots/To101"]
 modulate = Color(0, 0, 1, 1)

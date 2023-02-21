@@ -30,7 +30,7 @@ func play_transition(type := FADE_IN, duration := 1.0) -> void:
 	for c in $Transitions.get_children():
 		(c as Sprite2D).modulate = E.settings.fade_color
 	
-	$AnimationPlayer.playback_speed = 1.0 / duration
+	$AnimationPlayer.speed_scale = 1.0 / duration
 	
 	match type:
 		FADE_IN_OUT:

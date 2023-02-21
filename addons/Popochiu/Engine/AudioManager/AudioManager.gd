@@ -4,7 +4,7 @@ extends Node
 # TODO: Create AudioHandle so each AudioCue has its own AudioStreamPlayer...
 # http://www.powerhoof.com/public/powerquestdocs/class_power_tools_1_1_quest_1_1_audio_handle.html
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-@warning_ignore(return_value_discarded)
+@warning_ignore("return_value_discarded")
 
 const AudioCue := preload('AudioCue.gd')
 

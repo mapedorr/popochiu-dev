@@ -26,7 +26,7 @@ func add_item(item_name: String, animate := true) -> Callable:
 
 # Adds an item to the inventory. The item is added based checked its script_name
 # property.
-func add_item_no_run(item_name: String, animate := true) -> void:
+func add_item_no_run(item_name: String, animate := true) -> PopochiuInventoryItem:
 	if E.settings.inventory_limit > 0\
 	and items.size() == E.settings.inventory_limit:
 		prints(
@@ -45,9 +45,10 @@ func add_item_no_run(item_name: String, animate := true) -> void:
 		i.in_inventory = true
 		
 		await self.item_add_done
-		return
+		return i
 	
 	await get_tree().process_frame
+	return null
 
 
 func add_item_as_active(item_name: String, animate := true) -> Callable:
@@ -59,7 +60,7 @@ func add_item_as_active(item_name: String, animate := true) -> Callable:
 func add_item_as_active_no_run(
 	item_name: String, animate := true
 ) -> PopochiuInventoryItem:
-	var item: PopochiuInventoryItem = await add_item(item_name, animate)
+	var item: PopochiuInventoryItem = await add_item_no_run(item_name, animate)
 	
 	if is_instance_valid(item):
 		set_active_item(item, E.in_no_run())

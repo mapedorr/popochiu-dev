@@ -21,6 +21,8 @@ var _audio_files_to_assign := []
 var _audio_cues_to_create := []
 var _created_audio_cues := 0
 var _utils := PopochiuUtils.new()
+# TODO: Remove this. The only reason for doing it is to use its sort_resource_paths
+# to sort the audio paths
 var _audio_manager := AudioManager.new()
 
 @onready var _unassigned_group: PopochiuGroup = find_child('UnassignedGroup')

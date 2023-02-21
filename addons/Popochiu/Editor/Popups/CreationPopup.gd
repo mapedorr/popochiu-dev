@@ -13,7 +13,7 @@ func _ready() -> void:
 	register_text_enter(_input)
 	
 	confirmed.connect(create)
-	cancelled.connect(_clear_fields)
+	canceled.connect(_clear_fields)
 	close_requested.connect(_clear_fields)
 	_input.text_changed.connect(_update_name)
 
